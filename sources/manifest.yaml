@@ -1,0 +1,96 @@
+# Source documents for the rule base (D17, D20).
+# PDFs go in sources/<group>/ and are git-ignored. Only this manifest is committed.
+# Rules cite sources as "<id> p.<printed page>" (the page number printed on the page, not the PDF index).
+#
+# index: true   → extracted and searchable with `just find-clause`
+# pdf_pages     → limit extraction to this PDF page range (1-based, inclusive)
+# text_fix      → special handling needed during extraction (see ROADMAP P0.9)
+# authority     → primary = basis for pass/fail rules · fallback = only where the primary source defers to it ·
+#                 reference = never used for pass/fail; only for "newer guidance" notes and freshness flags
+
+documents:
+  # --- Maharashtra (state) — PRIMARY ---------------------------------------
+  - id: udcpr2020
+    title: "Unified Development Control and Promotion Regulations for Maharashtra State (UDCPR-2020), updated as on 30 January 2025"
+    group: udcpr2020
+    file: sources/udcpr2020/UDCPR-30.01.25.pdf
+    publisher: Urban Development Department, Government of Maharashtra
+    date: 2025-01-30
+    url: https://www.pmrda.gov.in/wp-content/uploads/2025/09/Updated-UDCPR-30.01.25.pdf
+    authority: primary
+    index: true
+    pdf_page_offset: 22              # printed page = PDF page − 22 (checked: printed p.265 = PDF p.287)
+    notes: >
+      Contains Ch.10.1 Pune City Municipal Corporation (printed p.171) and Reg. 14.2.1 TOD for the PMC area
+      (printed p.265). Amendments after 30 Jan 2025 must be added as separate entries.
+      PDF pp.428–576 are scanned images (Appendix M road cross-sections and city plans), not regulation text: no OCR needed.
+    sha256: 0708af5b440fd6b3b69f34d2a6ad2351441bddeeb183e032410ee8aeafc510c5
+
+  # Add one entry per amendment notification after 30 Jan 2025:
+  # - id: udcpr2020-amend-YYYYMMDD
+  #   title: "<notification subject>"
+  #   group: udcpr2020
+  #   file: sources/udcpr2020/<YYYY-MM-DD>_<short>.pdf
+  #   status: final | draft            # drafts are only used for freshness flags, never for rules
+  #   amends: [<regulation numbers as printed>]
+
+  # --- National — FALLBACK -----------------------------------------------------
+  - id: nbc2016
+    title: "National Building Code of India 2016, Volume 1 (file 1 of 3: Parts 0–4)"
+    group: nbc2016
+    file: "sources/nbc2016/Part 01-Vol 01.pdf"
+    publisher: Bureau of Indian Standards
+    date: 2016
+    url: null
+    authority: fallback              # UDCPR names NBC 2016 and defers to NBC Part 4 for fire aspects it doesn't cover
+    index: true
+    text_fix: glyph_hex              # text comes out as /G50/G41… = hex ASCII; decode before indexing
+    notes: "Part 3 (Development Control Rules) and Part 4 (Fire & Life Safety) are both in this file; Part 4 starts around PDF p.250–290."
+    sha256: 899174d4deb15b5e0481ecad456c3282930b609e59ddebe5111eb4eb497588d3
+
+  # The other NBC 2016 files (Parts 5–12: materials, structure, services) were deleted on 2026-10-11; they aren't needed.
+
+  # --- National — REFERENCE ONLY ---------------------------------------------
+  - id: nbcs2026
+    title: "National Building Construction Standards 2026 (SP 7:2026), Volumes 1 & 2"
+    group: nbcs2026
+    file: sources/nbcs2026/NBC_2026.pdf
+    publisher: Bureau of Indian Standards
+    date: 2026
+    url: null
+    authority: reference             # self-declared "voluntary and non-binding"; excludes FAR, DCRs, parking, open spaces, ground coverage
+    index: true
+    pdf_pages: [2729, 2974]          # Part F Fire and Life Safety (starts p.2731; Index of Terms at p.2975). Checked 2026-10-11
+    notes: "Used only to flag where the newer national fire guidance differs from NBC 2016 Part 4 (D20)."
+    sha256: 2c4b2ec601b19575b8722c28988d275257efce51f1ad471cecdd719fea77a0cb
+
+  # --- Maharashtra fire law — PRIMARY (advisory rules only, D23) -------------
+  - id: mfa2006
+    title: "The Maharashtra Fire Prevention and Life Safety Measures Act, 2006 (text as on 7 July 2025)"
+    group: mfa2006
+    file: "sources/mfa2006/Maharashtra Fire Prevention Jul 2025.pdf"
+    publisher: Government of Maharashtra
+    date: 2025-07-07
+    url: https://lj.maharashtra.gov.in/en/document/the-maharashtra-fire-prevention-and-life-safety-measures-act-2006-text-as-on-7th-july-2025/
+    authority: primary
+    index: true
+    notes: "48 pages; amended by Mah. 12 of 2015 and Mah. 24 of 2023. Schedule I = minimum fire-fighting installations by occupancy and height. The Act only; the 2009 Rules aren't needed for v1."
+    sha256: 46d3c693f83560c7535fb47bd9de4ecb4da19b51b3c037d382ebfd1b498c0f21
+
+  # --- Pune Municipal Corporation -------------------------------------------
+  # The TOD rules for PMC are in UDCPR Reg. 14.2.1 (PDF pp.287–292). No official TOD delineation map found (D22).
+  - id: pune-metro-map
+    title: "Pune Metro route map and station list (screenshot)"
+    group: pmc
+    file: "sources/pmc/Metro station list.png"
+    url: https://www.punemetrorail.org/route-map.aspx
+    captured: 2026-10-11
+    authority: reference             # used only to check station data (P3.10); transcribed to rules/cities/pmc/data/metro_reference.yaml
+    index: false
+    sha256: 7b811ec4021d2f8d25150d0d45c00d6d21f50c0f71fabf5adaa23d113e3afa9a
+
+  # Add here if found: the TOD delineation map, PMC circulars.
+  # - id: pmc-tod-map-<date>
+  #   group: pmc
+  #   file: sources/pmc/<YYYY-MM-DD>_tod-map.pdf
+  #   authority: primary

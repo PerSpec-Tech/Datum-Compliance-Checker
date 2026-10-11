@@ -1,0 +1,19 @@
+# Planning authority definition (P0.8, D15, D21).
+id: pmc
+name: Pune Municipal Corporation
+state: Maharashtra
+# Reverse-geocode matches (P3.4): any of these in the Nominatim address → this authority.
+match:
+  city: [Pune, Pune City, पुणे]
+  state: [Maharashtra]
+  exclude_city: [Pimpri-Chinchwad, Pimpri Chinchwad]   # PCMC: separate authority, not covered yet
+rulesets: [nbc2016, udcpr2020, pmc]                    # later overrides earlier
+sources: [udcpr2020, nbc2016, mfa2006, nbcs2026]       # manifest doc ids
+# Domains given to Tavily as include_domains (P3.3). Government and official sources only.
+tavily_domains:
+  - pmc.gov.in
+  - pmrda.gov.in
+  - urban.maharashtra.gov.in
+  - lj.maharashtra.gov.in
+  - punemetrorail.org
+  - mahafireservice.gov.in

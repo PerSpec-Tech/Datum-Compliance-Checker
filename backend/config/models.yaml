@@ -1,0 +1,30 @@
+# Nebius Token Factory model IDs per role. The ONLY place model IDs appear (CLAUDE.md).
+# Rewritten by `just smoke-llm --write` (scripts/smoke_nebius.py) after live checks.
+# verified: false means the ID hasn't been checked against GET /v1/models yet.
+
+checked: null
+roles:
+  agent:
+    model: nvidia/nemotron-3-super-120b-a12b
+    verified: false
+    tools: null
+    json_schema: null
+    reasoning: { method: null, default: on }
+  fast:
+    model: null              # Nemotron 3 Nano 30B, ID found by smoke test
+    verified: false
+    tools: null
+    json_schema: null
+    reasoning: { method: null, default: off }
+  reviewer:
+    model: null              # Nemotron 3 Ultra 550B, ID found by smoke test
+    verified: false
+    tools: null
+    json_schema: null
+    reasoning: { method: null, default: on }
+  vision:
+    model: null              # Nemotron 3 Nano Omni (stretch goal)
+    verified: false
+    tools: null
+    json_schema: null
+    reasoning: { method: null, default: off }

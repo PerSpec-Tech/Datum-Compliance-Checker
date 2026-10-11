@@ -1,0 +1,59 @@
+# Pune Metro reference list, transcribed by hand from sources/pmc/Metro station list.png (captured 2026-10-11)
+# from https://www.punemetrorail.org/route-map.aspx
+# Used only to cross-check OSM station data in P3.10 (D22). Names are as printed in the screenshot.
+# Status values: operational | under_construction | proposed
+
+lines:
+  - { id: "1",  name: "PCMC – Swargate",                 status: operational }
+  - { id: "2",  name: "Vanaz – Ramwadi",                 status: operational }
+  - { id: "1A", name: "PCMC – Bhakti Shakti",            status: under_construction }
+  - { id: "1B", name: "Swargate – Katraj",               status: under_construction }
+  - { id: "2A", name: "Vanaz – Chandani Chowk",          status: under_construction }
+  - { id: "2B", name: "Ramwadi – Wagholi/Vitthalwadi",   status: under_construction }
+  - { id: "3",  name: "Maan – Hinjawadi – Shivajinagar (PMRDA)", status: unknown }   # no status shown in the legend; confirm
+  - { id: "4",  name: "Khadakwasla – Kharadi",           status: under_construction }
+  - { id: "4A", name: "Nal Stop – Warje – Manik Baug",   status: under_construction }
+  - { id: "4B", name: "Hadapsar – Loni Kalbhor",         status: proposed }
+  - { id: "4C", name: "Hadapsar – Saswad Road",          status: proposed }
+
+# Operational stations, from the "Corridor" lists on the right of the screenshot.
+operational_stations:
+  corridor_1:   # Line 1, PCMC – Swargate
+    - PCMC
+    - Sant Tukaram Nagar
+    - Bhosari [Nashik Phata]
+    - Kasarwadi
+    - Phugewadi
+    - Dapodi
+    - Bopodi
+    - Khadki
+    - Shivaji Nagar
+    - District Court
+    - Kasba Peth
+    - Mahatma Phule Mandai
+    - Swargate
+  corridor_2:   # Line 2, Vanaz – Ramwadi
+    - Vanaz
+    - Anand Nagar
+    - Paud Phata
+    - S.N.D.T College
+    - Garware College
+    - Deccan Gymkhana
+    - Chhatrapati Sambhaji Udyan
+    - PMC
+    - District Court          # interchange with Line 1
+    - R.T.O Pune
+    - Pune Rly. Station
+    - Ruby Hall Clinic
+    - Bund Garden
+    - Yerawada
+    - Kalyani Nagar
+    - Ramwadi
+
+# Listed on the screenshot but NOT passenger stations: excluded from the TOD distance calculation.
+depots:
+  - Range Hill Depot
+  - Hill View Park Car Depot
+
+# Stations on under-construction and proposed lines are taken from OSM in P3.10 and checked by hand against the
+# map in the screenshot. They aren't transcribed here because the map labels are too dense to read reliably.

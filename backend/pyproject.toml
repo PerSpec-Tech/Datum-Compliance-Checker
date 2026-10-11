@@ -1,0 +1,48 @@
+[project]
+name = "compliance"
+version = "0.1.0"
+description = "Bylaw compliance checker backend: rule engine, Nemotron agents, API"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "pydantic>=2.8",
+    "pydantic-settings>=2.4",
+    "openai>=1.40",
+    "httpx>=0.27",
+    "tavily-python>=0.5",
+    "ifcopenshell>=0.8",
+    "shapely>=2.0",
+    "pyyaml>=6.0",
+    "jsonschema>=4.23",
+    "sse-starlette>=2.1",
+    "rank-bm25>=0.2.2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.6",
+    "datamodel-code-generator>=0.26",
+    "pypdf>=5.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/compliance"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["src/compliance/models/generated"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
