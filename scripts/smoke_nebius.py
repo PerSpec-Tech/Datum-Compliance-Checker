@@ -18,8 +18,10 @@ ROLE_MATCH = {  # role -> (must contain all, must contain none)
     "agent": (["nemotron", "super"], ["omni"]),
     "fast": (["nemotron", "nano"], ["omni", "vl"]),
     "reviewer": (["nemotron", "ultra"], ["omni"]),
-    "vision": (["nemotron", "omni"], []),
 }
+
+# Token Factory serves models from regional endpoints (D28); list each one.
+REGION_URLS = ["https://api.tokenfactory.us-central1.nebius.com/v1/"]
 
 TOOL = {
     "type": "function",
@@ -156,26 +158,33 @@ def main() -> int:
     if not s.nebius_api_key:
         print("NEBIUS_API_KEY is empty. Fill in .env (P0.3) first.")
         return 1
-    client = OpenAI(base_url=s.nebius_base_url, api_key=s.nebius_api_key, timeout=120)
 
-    ids = sorted(m.id for m in client.models.list().data)
-    nemo = [m for m in ids if "nemotron" in m.lower()]
-    print(f"{len(ids)} models available; {len(nemo)} Nemotron:")
-    for m in nemo:
-        print(f"  - {m}")
-    emb = [m for m in ids if "embed" in m.lower()]
-    print(f"Embedding models: {emb or 'none'}")
+    host: dict[str, str] = {}  # model id -> base_url that lists it
+    for url in [s.nebius_base_url, *REGION_URLS]:
+        try:
+            client = OpenAI(base_url=url, api_key=s.nebius_api_key, timeout=60)
+            ids = sorted(m.id for m in client.models.list().data)
+        except Exception as e:  # noqa: BLE001
+            print(f"{url}: FAIL listing models: {e}")
+            continue
+        nemo = [m for m in ids if "nemotron" in m.lower()]
+        emb = [m for m in ids if "embed" in m.lower()]
+        print(f"{url}: {len(ids)} models, Nemotron: {nemo or 'none'}, embedding: {emb or 'none'}")
+        for m in ids:
+            host.setdefault(m, url)
 
     cfg = yaml.safe_load(s.models_file.read_text(encoding="utf-8"))
-    for role in ROLE_MATCH:
-        model = pick(nemo, role)
-        print(f"\n[{role}] -> {model}")
+    nemo_all = sorted(m for m in host if "nemotron" in m.lower())
+    for role, entry in cfg["roles"].items():
+        model = entry.get("model") if entry.get("model") in host else pick(nemo_all, role)
+        print(f"\n[{role}] -> {model} @ {host.get(model)}")
         if not model:
             continue
+        client = OpenAI(base_url=host[model], api_key=s.nebius_api_key, timeout=120)
         res = check_role(client, model)
-        entry = cfg["roles"][role]
         entry.update(
             model=res["model"],
+            base_url=None if host[model] == s.nebius_base_url else host[model],
             verified=res["verified"],
             tools=res.get("tools"),
             json_schema=res.get("json_schema"),
