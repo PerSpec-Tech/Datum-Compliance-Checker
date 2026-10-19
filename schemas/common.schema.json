@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Common",
+  "description": "Shared types for the compliance checker contracts (ROADMAP §5). Units are SI: metres, m², decimal degrees.",
+  "definitions": {
+    "Source": {
+      "description": "Where a fact came from (D4). 'declared' always wins over the others.",
+      "type": "string",
+      "enum": ["model", "inferred", "declared", "default"]
+    },
+    "Point2": {
+      "description": "[x, y] in project coordinates, metres.",
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "Polygon": {
+      "description": "Closed implicitly (last point is not repeated), counter-clockwise.",
+      "type": "array",
+      "items": { "$ref": "#/definitions/Point2" },
+      "minItems": 3
+    },
+    "ElementKind": {
+      "type": "string",
+      "enum": ["spaces", "areas", "stairs", "doors", "levels", "units", "site.edges", "site", "building"]
+    },
+    "ElementRef": {
+      "description": "Points a result at one element. source_id is the Revit UniqueId or IFC GlobalId used to send results back.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "id", "source_id"],
+      "properties": {
+        "kind": { "$ref": "#/definitions/ElementKind" },
+        "id": { "type": "string" },
+        "source_id": { "type": ["string", "null"] }
+      }
+    },
+    "Clause": {
+      "description": "Citation copied from source text, never from memory (D13).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "excerpt", "source"],
+      "properties": {
+        "ref": { "type": "string", "description": "Exactly as printed in the source, e.g. '14.2.1.2'." },
+        "excerpt": { "type": "string", "description": "Up to 2 sentences, verbatim." },
+        "source": { "type": "string", "description": "Manifest doc id + printed page, e.g. 'udcpr2020 p.266'." },
+        "retrieved": { "type": ["string", "null"], "format": "date" }
+      }
+    },
+    "FreshnessStatus": {
+      "type": "string",
+      "enum": ["unchecked", "current", "possibly_superseded"]
+    },
+    "Freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "url", "checked"],
+      "properties": {
+        "status": { "$ref": "#/definitions/FreshnessStatus" },
+        "url": { "type": ["string", "null"] },
+        "checked": { "type": ["string", "null"], "format": "date" }
+      }
+    },
+
+    "Usage": {
+      "type": "string",
+      "enum": ["habitable", "bedroom", "living", "kitchen", "bathroom", "wc", "corridor", "stair", "lobby", "parking", "office", "retail", "assembly", "storage", "utility", "other"]
+    },
+    "EdgeKind": { "type": "string", "enum": ["road", "neighbour", "open_space"] },
+    "RoadWidthBasis": { "type": "string", "enum": ["existing", "development_plan"] },
+    "BuildingType": { "type": "string", "enum": ["group_housing", "standalone", "bungalow_self_use", "mixed_use", "other"] },
+    "UnitUse": { "type": "string", "enum": ["residential", "commercial", "office", "other"] },
+    "OccupancyGroup": { "type": "string", "enum": ["A", "B", "C", "D", "E", "F", "G", "H", "J"] },
+    "LineStatus": { "type": "string", "enum": ["operational", "under_construction", "proposed", "unknown"] },
+
+    "LatLon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lat", "lon"],
+      "properties": {
+        "lat": { "type": "number", "minimum": -90, "maximum": 90 },
+        "lon": { "type": "number", "minimum": -180, "maximum": 180 }
+      }
+    },
+    "Occupancy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["group", "subdivision"],
+      "properties": {
+        "group": { "$ref": "#/definitions/OccupancyGroup" },
+        "subdivision": { "type": ["string", "null"], "description": "e.g. 'A-4', as printed in the source." }
+      }
+    },
+    "MetroStation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "line", "status", "distance_m"],
+      "properties": {
+        "name": { "type": "string" },
+        "line": { "type": ["string", "null"] },
+        "status": { "$ref": "#/definitions/LineStatus" },
+        "distance_m": { "type": "number", "minimum": 0 }
+      }
+    },
+
+    "FactNumber": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "type": ["number", "null"] },
+        "source": { "$ref": "#/definitions/Source" },
+        "note": { "type": ["string", "null"] },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "FactString": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "type": ["string", "null"] },
+        "source": { "$ref": "#/definitions/Source" },
+        "note": { "type": ["string", "null"] },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "FactBool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "type": ["boolean", "null"] },
+        "source": { "$ref": "#/definitions/Source" },
+        "note": { "type": ["string", "null"] },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "FactStringList": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "type": ["array", "null"], "items": { "type": "string" } },
+        "source": { "$ref": "#/definitions/Source" },
+        "note": { "type": ["string", "null"] },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "FactLatLon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "anyOf": [{ "$ref": "#/definitions/LatLon" }, { "type": "null" }] },
+        "source": { "$ref": "#/definitions/Source" },
+        "note": { "type": ["string", "null"] },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "FactOccupancy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "anyOf": [{ "$ref": "#/definitions/Occupancy" }, { "type": "null" }] },
+        "source": { "$ref": "#/definitions/Source" },
+        "note": { "type": ["string", "null"] },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "FactMetroStation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "anyOf": [{ "$ref": "#/definitions/MetroStation" }, { "type": "null" }] },
+        "source": { "$ref": "#/definitions/Source" },
+        "note": { "type": ["string", "null"] },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "FactUsage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "anyOf": [{ "$ref": "#/definitions/Usage" }, { "type": "null" }] },
+        "source": { "$ref": "#/definitions/Source" },
+        "note": { "type": ["string", "null"] },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "FactEdgeKind": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "anyOf": [{ "$ref": "#/definitions/EdgeKind" }, { "type": "null" }] },
+        "source": { "$ref": "#/definitions/Source" },
+        "note": { "type": ["string", "null"] },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "FactRoadWidthBasis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "anyOf": [{ "$ref": "#/definitions/RoadWidthBasis" }, { "type": "null" }] },
+        "source": { "$ref": "#/definitions/Source" },
+        "note": { "type": ["string", "null"] },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "FactBuildingType": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "anyOf": [{ "$ref": "#/definitions/BuildingType" }, { "type": "null" }] },
+        "source": { "$ref": "#/definitions/Source" },
+        "note": { "type": ["string", "null"] },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "FactUnitUse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "source"],
+      "properties": {
+        "value": { "anyOf": [{ "$ref": "#/definitions/UnitUse" }, { "type": "null" }] },
+        "source": { "$ref": "#/definitions/Source" },
+        "note": { "type": ["string", "null"] },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    }
+  }
+}

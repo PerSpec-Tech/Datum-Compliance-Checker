@@ -1,0 +1,25 @@
+id: udcpr2020.ch9.kitchen-height-min
+title: Minimum kitchen height
+authority: udcpr2020
+clause:
+  ref: 9.3.2
+  excerpt: The height of a kitchen measured from the surface of the floor, to the lowest point in the
+    ceiling (bottom of slab) shall not be less than 2.75 m. except for the portion to accommodate floor
+    trap of the upper floor.
+  source: udcpr2020 p.154
+  retrieved: '2026-10-19'
+status: draft
+severity: major
+kind: check
+for_each: spaces
+applies_when: item.usage == 'kitchen'
+limit: '2.75'
+measured: item.clear_height_m
+check: measured >= limit
+message: Kitchen height is {measured:.2f} m; minimum is {limit:.2f} m.
+fix_unit: m
+compiled_by: agent:claude-opus-5-5@p2.6-batch1
+freshness:
+  status: unchecked
+  url: null
+  checked: null

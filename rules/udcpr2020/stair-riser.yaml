@@ -1,0 +1,23 @@
+id: udcpr2020.ch9.stair-riser-max
+title: Maximum riser height
+authority: udcpr2020
+clause:
+  ref: 9.29.3 (v)
+  excerpt: The maximum height of riser shall be 19 cm. in the case of residential buildings and 15 cm.
+    in the case of other buildings. They shall be limited to 15 per flight.
+  source: udcpr2020 p.166
+  retrieved: '2026-10-19'
+status: draft
+severity: major
+kind: check
+for_each: stairs
+limit: 0.19 if project.occupancy.group == 'A' else 0.15
+measured: item.riser_m
+check: measured <= limit
+message: Riser is {measured:.3f} m; maximum is {limit:.2f} m.
+fix_unit: m
+compiled_by: agent:claude-opus-5-5@p2.6-batch1
+freshness:
+  status: unchecked
+  url: null
+  checked: null

@@ -1,0 +1,24 @@
+id: udcpr2020.ch9.bath-wc-height-min
+title: Minimum bathroom / WC height
+authority: udcpr2020
+clause:
+  ref: 9.4.2
+  excerpt: The height of a bathroom or water closet measured from the surface of the floor to the lowest
+    point in the ceiling (bottom of slab) shall be not less than 2.1 m.
+  source: udcpr2020 p.154
+  retrieved: '2026-10-19'
+status: draft
+severity: minor
+kind: check
+for_each: spaces
+applies_when: item.usage in ['bathroom', 'wc']
+limit: '2.1'
+measured: item.clear_height_m
+check: measured >= limit
+message: Height is {measured:.2f} m; minimum is {limit:.2f} m.
+fix_unit: m
+compiled_by: agent:claude-opus-5-5@p2.6-batch1
+freshness:
+  status: unchecked
+  url: null
+  checked: null

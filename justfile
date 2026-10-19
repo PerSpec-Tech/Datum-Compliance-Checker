@@ -12,7 +12,7 @@ setup:
 
 # Generate Python/TS/C# types from schemas/ (P1.5)
 codegen:
-    @just _todo P1.5
+    {{py}} scripts/codegen.py
 
 # Export OpenAPI and generate the web API client (P4.5)
 codegen-api:
@@ -20,11 +20,11 @@ codegen-api:
 
 # Validate one JSON file against its schema (P1.6)
 validate file:
-    @just _todo P1.6
+    {{py}} scripts/validate.py "{{file}}"
 
 # Validate every fixture in fixtures/models (P1.6)
 validate-fixtures:
-    @just _todo P1.6
+    {{py}} scripts/validate.py --fixtures
 
 # Run backend tests; extra args go to pytest, e.g. `just test-backend -k expr`
 [working-directory: 'backend']

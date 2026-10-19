@@ -1,0 +1,25 @@
+id: udcpr2020.ch9.habitable-height-max
+title: Maximum height of habitable rooms
+authority: udcpr2020
+clause:
+  ref: Table No. 9-A (Regulation 9.2.2)
+  excerpt: 'The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder.
+    Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum
+    4.5 m.'
+  source: udcpr2020 p.153
+  retrieved: '2026-10-19'
+status: draft
+severity: minor
+kind: check
+for_each: spaces
+applies_when: item.usage in ['habitable', 'bedroom', 'living']
+limit: '4.5'
+measured: item.clear_height_m
+check: measured <= limit
+message: Clear height is {measured:.2f} m; maximum is {limit:.2f} m.
+fix_unit: m
+compiled_by: agent:claude-opus-5-5@p2.6-batch1
+freshness:
+  status: unchecked
+  url: null
+  checked: null

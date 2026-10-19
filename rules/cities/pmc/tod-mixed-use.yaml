@@ -1,0 +1,23 @@
+id: pmc.tod.mixed-use-road-width
+title: Mixed use in TOD zone needs a 12 m road
+authority: pmc
+clause:
+  ref: 14.2.1.4
+  excerpt: Mixed use in the form of residential and commercial may be permissible on the residential plot
+    in TOD zone fronting on the road width of 12 m., and above.
+  source: udcpr2020 p.268
+  retrieved: '2026-10-19'
+status: draft
+severity: major
+kind: check
+applies_when: project.overlays.metro_tod and project.building_type == 'mixed_use'
+limit: '12.0'
+measured: derived.front_road_width_m
+check: measured >= limit
+message: Front road is {measured:.1f} m; mixed use in the TOD zone needs {limit:.1f} m or more.
+fix_unit: m
+compiled_by: agent:claude-opus-5-5@p2.6-batch1
+freshness:
+  status: unchecked
+  url: null
+  checked: null

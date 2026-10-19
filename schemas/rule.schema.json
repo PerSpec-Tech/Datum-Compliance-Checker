@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Rule",
+  "description": "One compliance rule, stored as one YAML file under rules/<ruleset>/ (ROADMAP §5.2). Expressions are Python-syntax strings evaluated only by engine/expr.py (AST whitelist, never eval/exec).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "authority", "clause", "status", "severity", "check", "message", "compiled_by"],
+  "properties": {
+    "id": {
+      "description": "<authority>.<part>.<slug>, unique across all rule sets.",
+      "type": "string",
+      "pattern": "^[a-z0-9_]+(\\.[a-z0-9_-]+)+$"
+    },
+    "title": { "type": "string", "minLength": 3 },
+    "authority": {
+      "description": "Rule set this rule belongs to, e.g. nbc2016 | udcpr2020 | pmc.",
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "overrides": {
+      "description": "Rule id from an earlier rule set that this rule replaces for projects using both sets.",
+      "type": ["string", "null"]
+    },
+    "clause": { "$ref": "common.schema.json#/definitions/Clause" },
+    "status": {
+      "description": "Only a human sets 'verified'.",
+      "$ref": "#/definitions/RuleStatus"
+    },
+    "severity": { "$ref": "#/definitions/Severity" },
+    "kind": {
+      "description": "'check' produces pass/fail; 'advisory' produces an obligation the model can't confirm (D23).",
+      "$ref": "#/definitions/RuleKind"
+    },
+    "for_each": {
+      "description": "Evaluate once per element of this collection; the element is available as `item`.",
+      "anyOf": [{ "$ref": "#/definitions/Collection" }, { "type": "null" }]
+    },
+    "applies_when": { "$ref": "#/definitions/Expression", "description": "Optional; default True. False → not_applicable." },
+    "limit": { "$ref": "#/definitions/Expression", "description": "Optional named expression, available to `check` as `limit`." },
+    "measured": { "$ref": "#/definitions/Expression", "description": "Optional named expression, available to `check` as `measured`." },
+    "check": { "$ref": "#/definitions/Expression", "description": "Must evaluate to a bool. For advisory rules, True means the obligation is triggered." },
+    "message": {
+      "description": "str.format template; may use {measured} and {limit} with format specs.",
+      "type": "string"
+    },
+    "compiled_by": {
+      "description": "'human' or 'agent:<model-id>@<prompt-version>'.",
+      "type": "string",
+      "pattern": "^(human|agent:.+@.+)$"
+    },
+    "freshness": { "$ref": "common.schema.json#/definitions/Freshness" },
+    "metric": {
+      "description": "Tag used by the FSI headroom summary (P2.8).",
+      "anyOf": [{ "$ref": "#/definitions/Metric" }, { "type": "null" }]
+    },
+    "fix_unit": {
+      "description": "Unit shown with fix_by, e.g. 'm', 'm2'. Null = no unit.",
+      "type": ["string", "null"]
+    },
+    "guidance_note": {
+      "description": "Note from a reference-only document (e.g. NBCS 2026). Never affects status (D20).",
+      "anyOf": [{ "$ref": "#/definitions/GuidanceNote" }, { "type": "null" }]
+    },
+    "review_notes": {
+      "description": "Notes from the reviewer model (P3.5 --review).",
+      "type": ["string", "null"]
+    }
+  },
+  "definitions": {
+    "Expression": { "type": "string", "minLength": 1 },
+    "RuleStatus": { "type": "string", "enum": ["draft", "verified"] },
+    "Severity": { "type": "string", "enum": ["critical", "major", "minor"] },
+    "RuleKind": { "type": "string", "enum": ["check", "advisory"], "default": "check" },
+    "Collection": { "type": "string", "enum": ["spaces", "areas", "stairs", "doors", "levels", "units", "site.edges"] },
+    "Metric": { "type": "string", "enum": ["fsi_used", "fsi_base", "fsi_max"] },
+    "GuidanceNote": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "source"],
+      "properties": {
+        "text": { "type": "string" },
+        "source": { "type": "string", "description": "Manifest doc id + page." }
+      }
+    }
+  }
+}

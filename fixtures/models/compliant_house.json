@@ -1,0 +1,507 @@
+{
+  "schema_version": "1.0",
+  "_notes": [
+    "Individual house G+1 in PMC, outside the TOD zone, non-congested area. Intended to PASS every rule.",
+    "Limits used when designing it (UDCPR-2020 as on 30.01.2025): Table 9-A habitable height 2.75–4.5 m; 9.3.2 kitchen height ≥ 2.75 m; 9.4.2 bath/WC height ≥ 2.1 m; 9.4.1 combined bath+WC ≥ 1.50 sq.m, width ≥ 1.00 m; Table 9-G stair ≥ 0.75 m (individual housing up to G+2); 9.29.3 riser ≤ 0.19 m, tread ≥ 0.25 m (residential); 9.29.1 exit door ≥ 0.90 m wide and ≥ 2.00 m high, bath/WC doors ≥ 0.75 m.",
+    "Margins kept generous (front 4.5 m, sides 3.0 m, rear 5.0 m) so it passes any Table 6-D row for a 9 m road."
+  ],
+  "meta": {
+    "source_kind": "manual",
+    "source_file": "compliant_house.json",
+    "exported_at": "2026-10-19T10:00:00Z",
+    "tool_version": "fixture-1"
+  },
+  "project": {
+    "name": "Fixture — compliant house",
+    "location": {
+      "value": {
+        "lat": 18.4655,
+        "lon": 73.896
+      },
+      "source": "declared"
+    },
+    "authority_id": {
+      "value": "pmc",
+      "source": "inferred"
+    },
+    "rulesets": {
+      "value": [
+        "nbc2016",
+        "udcpr2020",
+        "pmc"
+      ],
+      "source": "inferred"
+    },
+    "occupancy": {
+      "value": {
+        "group": "A",
+        "subdivision": "A-2"
+      },
+      "source": "declared"
+    },
+    "zone": {
+      "value": "residential",
+      "source": "declared"
+    },
+    "congested_area": {
+      "value": false,
+      "source": "declared"
+    },
+    "special": {
+      "heritage": {
+        "value": false,
+        "source": "declared"
+      },
+      "coastal": {
+        "value": false,
+        "source": "declared"
+      },
+      "airport_zone": {
+        "value": false,
+        "source": "declared"
+      },
+      "ht_line": {
+        "value": false,
+        "source": "declared"
+      },
+      "railway": {
+        "value": false,
+        "source": "declared"
+      },
+      "river_flood_line": {
+        "value": false,
+        "source": "declared"
+      },
+      "hill_slope_bdp": {
+        "value": false,
+        "source": "declared"
+      },
+      "defence_vicinity": {
+        "value": false,
+        "source": "declared"
+      },
+      "metro_rail_within_20m": {
+        "value": false,
+        "source": "declared"
+      }
+    },
+    "building_type": {
+      "value": "bungalow_self_use",
+      "source": "declared"
+    },
+    "overlays": {
+      "nearest_metro_station": {
+        "value": {
+          "name": "Swargate",
+          "line": "1",
+          "status": "operational",
+          "distance_m": 4200.0
+        },
+        "source": "inferred"
+      },
+      "metro_tod": {
+        "value": false,
+        "source": "inferred"
+      },
+      "plot_share_in_tod": {
+        "value": 0.0,
+        "source": "inferred"
+      }
+    }
+  },
+  "site": {
+    "boundary": [
+      [
+        0,
+        0
+      ],
+      [
+        15,
+        0
+      ],
+      [
+        15,
+        20
+      ],
+      [
+        0,
+        20
+      ]
+    ],
+    "plot_area_declared_m2": {
+      "value": 300.0,
+      "source": "declared"
+    },
+    "is_corner_plot": {
+      "value": false,
+      "source": "declared"
+    },
+    "ground_level_m": 0.0,
+    "edges": [
+      {
+        "id": "e1",
+        "a": [
+          0,
+          0
+        ],
+        "b": [
+          15,
+          0
+        ],
+        "kind": {
+          "value": "road",
+          "source": "declared"
+        },
+        "road_width_m": {
+          "value": 9.0,
+          "source": "declared"
+        },
+        "road_width_basis": {
+          "value": "development_plan",
+          "source": "declared"
+        }
+      },
+      {
+        "id": "e2",
+        "a": [
+          15,
+          0
+        ],
+        "b": [
+          15,
+          20
+        ],
+        "kind": {
+          "value": "neighbour",
+          "source": "declared"
+        },
+        "road_width_m": {
+          "value": null,
+          "source": "default"
+        },
+        "road_width_basis": {
+          "value": null,
+          "source": "default"
+        }
+      },
+      {
+        "id": "e3",
+        "a": [
+          15,
+          20
+        ],
+        "b": [
+          0,
+          20
+        ],
+        "kind": {
+          "value": "neighbour",
+          "source": "declared"
+        },
+        "road_width_m": {
+          "value": null,
+          "source": "default"
+        },
+        "road_width_basis": {
+          "value": null,
+          "source": "default"
+        }
+      },
+      {
+        "id": "e4",
+        "a": [
+          0,
+          20
+        ],
+        "b": [
+          0,
+          0
+        ],
+        "kind": {
+          "value": "neighbour",
+          "source": "declared"
+        },
+        "road_width_m": {
+          "value": null,
+          "source": "default"
+        },
+        "road_width_basis": {
+          "value": null,
+          "source": "default"
+        }
+      }
+    ]
+  },
+  "levels": [
+    {
+      "id": "L0",
+      "source_id": "fx-lvl-0",
+      "name": "Ground",
+      "elevation_m": 0.0,
+      "is_basement": false
+    },
+    {
+      "id": "L1",
+      "source_id": "fx-lvl-1",
+      "name": "First",
+      "elevation_m": 3.2,
+      "is_basement": false
+    }
+  ],
+  "building": {
+    "footprint": [
+      [
+        3,
+        4.5
+      ],
+      [
+        12,
+        4.5
+      ],
+      [
+        12,
+        15
+      ],
+      [
+        3,
+        15
+      ]
+    ],
+    "roof_top_m": 6.4,
+    "highest_point_m": 7.4
+  },
+  "spaces": [
+    {
+      "id": "S1",
+      "source_id": "fx-sp-1",
+      "name": "Living",
+      "level_id": "L0",
+      "usage": {
+        "value": "living",
+        "source": "model"
+      },
+      "area_m2": 31.5,
+      "clear_height_m": 3.0,
+      "polygon": [
+        [
+          3,
+          4.5
+        ],
+        [
+          12,
+          4.5
+        ],
+        [
+          12,
+          8
+        ],
+        [
+          3,
+          8
+        ]
+      ]
+    },
+    {
+      "id": "S2",
+      "source_id": "fx-sp-2",
+      "name": "Kitchen",
+      "level_id": "L0",
+      "usage": {
+        "value": "kitchen",
+        "source": "model"
+      },
+      "area_m2": 12.0,
+      "clear_height_m": 3.0,
+      "polygon": [
+        [
+          3,
+          8
+        ],
+        [
+          7,
+          8
+        ],
+        [
+          7,
+          11
+        ],
+        [
+          3,
+          11
+        ]
+      ]
+    },
+    {
+      "id": "S3",
+      "source_id": "fx-sp-3",
+      "name": "Toilet",
+      "level_id": "L0",
+      "usage": {
+        "value": "bathroom",
+        "source": "model"
+      },
+      "area_m2": 3.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          7,
+          8
+        ],
+        [
+          8.5,
+          8
+        ],
+        [
+          8.5,
+          10
+        ],
+        [
+          7,
+          10
+        ]
+      ]
+    },
+    {
+      "id": "S4",
+      "source_id": "fx-sp-4",
+      "name": "Bedroom 1",
+      "level_id": "L1",
+      "usage": {
+        "value": "bedroom",
+        "source": "model"
+      },
+      "area_m2": 14.0,
+      "clear_height_m": 3.0,
+      "polygon": [
+        [
+          3,
+          4.5
+        ],
+        [
+          7,
+          4.5
+        ],
+        [
+          7,
+          8
+        ],
+        [
+          3,
+          8
+        ]
+      ]
+    },
+    {
+      "id": "S5",
+      "source_id": "fx-sp-5",
+      "name": "Bedroom 2",
+      "level_id": "L1",
+      "usage": {
+        "value": "bedroom",
+        "source": "model"
+      },
+      "area_m2": 15.75,
+      "clear_height_m": 3.0,
+      "polygon": [
+        [
+          7,
+          4.5
+        ],
+        [
+          12,
+          4.5
+        ],
+        [
+          12,
+          7.65
+        ],
+        [
+          7,
+          7.65
+        ]
+      ]
+    }
+  ],
+  "areas": [
+    {
+      "id": "A0",
+      "source_id": "fx-ar-0",
+      "scheme": "Gross Building",
+      "level_id": "L0",
+      "name": "BUA Ground",
+      "area_m2": 94.5,
+      "counts_to_far": {
+        "value": true,
+        "source": "model"
+      }
+    },
+    {
+      "id": "A1",
+      "source_id": "fx-ar-1",
+      "scheme": "Gross Building",
+      "level_id": "L1",
+      "name": "BUA First",
+      "area_m2": 94.5,
+      "counts_to_far": {
+        "value": true,
+        "source": "model"
+      }
+    }
+  ],
+  "stairs": [
+    {
+      "id": "ST1",
+      "source_id": "fx-st-1",
+      "base_level_id": "L0",
+      "top_level_id": "L1",
+      "min_run_width_m": 0.9,
+      "riser_m": 0.16,
+      "tread_m": 0.28,
+      "is_exit": {
+        "value": false,
+        "source": "inferred"
+      }
+    }
+  ],
+  "doors": [
+    {
+      "id": "D1",
+      "source_id": "fx-dr-1",
+      "level_id": "L0",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": true,
+        "source": "declared"
+      },
+      "from_space_id": "S1",
+      "to_space_id": null
+    },
+    {
+      "id": "D2",
+      "source_id": "fx-dr-2",
+      "level_id": "L0",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred"
+      },
+      "from_space_id": "S2",
+      "to_space_id": "S3"
+    }
+  ],
+  "units": [
+    {
+      "id": "U1",
+      "source_id": "fx-un-1",
+      "name": "House",
+      "level_id": "L0",
+      "carpet_area_m2": 160.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    }
+  ]
+}

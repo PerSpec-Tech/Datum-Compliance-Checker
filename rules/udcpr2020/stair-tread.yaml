@@ -1,0 +1,23 @@
+id: udcpr2020.ch9.stair-tread-min
+title: Minimum tread width
+authority: udcpr2020
+clause:
+  ref: 9.29.3 (iv)
+  excerpt: The minimum width of tread without nosing shall be 25 cm. for an internal staircase for residential
+    buildings. In the case of other buildings, the minimum tread shall be 30 cm.
+  source: udcpr2020 p.166
+  retrieved: '2026-10-19'
+status: draft
+severity: major
+kind: check
+for_each: stairs
+limit: 0.25 if project.occupancy.group == 'A' else 0.30
+measured: item.tread_m
+check: measured >= limit
+message: Tread is {measured:.3f} m; minimum is {limit:.2f} m.
+fix_unit: m
+compiled_by: agent:claude-opus-5-5@p2.6-batch1
+freshness:
+  status: unchecked
+  url: null
+  checked: null

@@ -1,0 +1,25 @@
+id: pmc.tod.max-fsi
+title: Maximum total FSI in the TOD zone
+authority: pmc
+clause:
+  ref: 14.2.1.2
+  excerpt: The maximum permissible total FSI in TOD zone shall be 4.00 including the base permissible
+    FSI, subject to condition that, the additional FSI over and above the base permissible FSI shall be
+    allowed within the overall limit of maximum permissible FSI, as given in the Table below.
+  source: udcpr2020 p.266
+  retrieved: '2026-10-19'
+status: draft
+severity: critical
+kind: check
+applies_when: project.overlays.metro_tod and derived.front_road_width_m >= 9
+limit: table('pmc.tod_max_fsi', derived.front_road_width_m)
+measured: derived.far
+check: measured <= limit
+message: FSI is {measured:.2f}; the TOD maximum for this road width is {limit:.2f}.
+metric: fsi_max
+fix_unit: FSI
+compiled_by: agent:claude-opus-5-5@p2.6-batch1
+freshness:
+  status: unchecked
+  url: null
+  checked: null

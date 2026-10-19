@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LookupTable",
+  "description": "Lookup table used by rule expressions via table(name, *keys) (ROADMAP §5.2). Stored under rules/<ruleset>/tables/<name>.yaml.\n- map: table(name, key) → entries[key]\n- bands: table(name, x) → value of the band with min <= x < max (max null = no upper bound)\n- map_of_bands: table(name, key, x) → bands of map[key], then as 'bands'",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "authority", "kind", "source"],
+  "properties": {
+    "name": {
+      "description": "Unique; referenced as table('<name>', ...).",
+      "type": "string",
+      "pattern": "^[a-z0-9_]+(\\.[a-z0-9_-]+)+$"
+    },
+    "authority": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "description": { "type": ["string", "null"] },
+    "unit": { "type": ["string", "null"], "description": "Unit of the values, e.g. 'm', 'fsi'." },
+    "source": { "$ref": "common.schema.json#/definitions/Clause" },
+    "kind": { "type": "string", "enum": ["map", "bands", "map_of_bands"] },
+    "map": {
+      "description": "kind=map. Keys are strings; numeric keys are written as strings.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/definitions/Value" }
+    },
+    "bands": {
+      "description": "kind=bands.",
+      "type": "array",
+      "items": { "$ref": "#/definitions/Band" }
+    },
+    "map_of_bands": {
+      "description": "kind=map_of_bands.",
+      "type": "object",
+      "additionalProperties": { "type": "array", "items": { "$ref": "#/definitions/Band" } }
+    }
+  },
+  "allOf": [
+    { "if": { "properties": { "kind": { "const": "map" } } }, "then": { "required": ["map"] } },
+    { "if": { "properties": { "kind": { "const": "bands" } } }, "then": { "required": ["bands"] } },
+    { "if": { "properties": { "kind": { "const": "map_of_bands" } } }, "then": { "required": ["map_of_bands"] } }
+  ],
+  "definitions": {
+    "Value": { "type": ["number", "string", "boolean", "null"] },
+    "Band": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["min", "max", "value"],
+      "properties": {
+        "min": { "type": "number", "description": "Inclusive." },
+        "max": { "type": ["number", "null"], "description": "Exclusive; null = no upper bound." },
+        "value": { "$ref": "#/definitions/Value" }
+      }
+    }
+  }
+}

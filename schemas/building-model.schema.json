@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BuildingModel",
+  "description": "One building, normalised from Revit or IFC (ROADMAP §5.1). SI units. Any measured value may be null; the engine then reports 'cannot verify'.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "meta", "project", "site", "levels", "building", "spaces", "areas", "stairs", "doors", "units"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "_notes": {
+      "description": "Free-text notes for hand-written fixtures (e.g. the list of deliberate failures). Ignored by the engine.",
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "meta": { "$ref": "#/definitions/Meta" },
+    "project": { "$ref": "#/definitions/Project" },
+    "site": { "$ref": "#/definitions/Site" },
+    "levels": { "type": "array", "items": { "$ref": "#/definitions/Level" } },
+    "building": { "$ref": "#/definitions/Building" },
+    "spaces": { "type": "array", "items": { "$ref": "#/definitions/Space" } },
+    "areas": { "type": "array", "items": { "$ref": "#/definitions/Area" } },
+    "stairs": { "type": "array", "items": { "$ref": "#/definitions/Stair" } },
+    "doors": { "type": "array", "items": { "$ref": "#/definitions/Door" } },
+    "units": { "type": "array", "items": { "$ref": "#/definitions/Unit" } }
+  },
+  "definitions": {
+    "SourceKind": { "type": "string", "enum": ["revit", "ifc", "manual"] },
+    "Meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_kind", "source_file", "exported_at", "tool_version"],
+      "properties": {
+        "source_kind": { "$ref": "#/definitions/SourceKind" },
+        "source_file": { "type": ["string", "null"] },
+        "exported_at": { "type": "string", "format": "date-time" },
+        "tool_version": { "type": ["string", "null"] }
+      }
+    },
+    "Special": {
+      "description": "Declared yes/no constraints (D19). metro_rail_within_20m triggers the Metro NOC advisory (UDCPR 14.2.1.7).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["heritage", "coastal", "airport_zone", "ht_line", "railway", "river_flood_line", "hill_slope_bdp", "defence_vicinity", "metro_rail_within_20m"],
+      "properties": {
+        "heritage": { "$ref": "common.schema.json#/definitions/FactBool" },
+        "coastal": { "$ref": "common.schema.json#/definitions/FactBool" },
+        "airport_zone": { "$ref": "common.schema.json#/definitions/FactBool" },
+        "ht_line": { "$ref": "common.schema.json#/definitions/FactBool" },
+        "railway": { "$ref": "common.schema.json#/definitions/FactBool" },
+        "river_flood_line": { "$ref": "common.schema.json#/definitions/FactBool" },
+        "hill_slope_bdp": { "$ref": "common.schema.json#/definitions/FactBool" },
+        "defence_vicinity": { "$ref": "common.schema.json#/definitions/FactBool" },
+        "metro_rail_within_20m": { "$ref": "common.schema.json#/definitions/FactBool" }
+      }
+    },
+    "Overlays": {
+      "description": "Spatial overlays (D18, D22).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nearest_metro_station", "metro_tod", "plot_share_in_tod"],
+      "properties": {
+        "nearest_metro_station": { "$ref": "common.schema.json#/definitions/FactMetroStation" },
+        "metro_tod": { "$ref": "common.schema.json#/definitions/FactBool" },
+        "plot_share_in_tod": { "$ref": "common.schema.json#/definitions/FactNumber", "description": "0..1; declared only in v1 (UDCPR 14.2.1.2.4)." }
+      }
+    },
+    "Project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "location", "authority_id", "rulesets", "occupancy", "zone", "congested_area", "special", "building_type", "overlays"],
+      "properties": {
+        "name": { "type": "string" },
+        "location": { "$ref": "common.schema.json#/definitions/FactLatLon" },
+        "authority_id": { "$ref": "common.schema.json#/definitions/FactString", "description": "e.g. 'pmc'; matches rules/cities/<id>/." },
+        "rulesets": { "$ref": "common.schema.json#/definitions/FactStringList", "description": "Ordered, later overrides earlier, e.g. [nbc2016, udcpr2020, pmc] (D15)." },
+        "occupancy": { "$ref": "common.schema.json#/definitions/FactOccupancy" },
+        "zone": { "$ref": "common.schema.json#/definitions/FactString", "description": "Development Plan land-use zone, as declared." },
+        "congested_area": { "$ref": "common.schema.json#/definitions/FactBool", "description": "Plot lies in a congested area as shown in the Development Plan / Gaothan (UDCPR 6.1 vs 6.2 margins and FSI). Declared." },
+        "special": { "$ref": "#/definitions/Special" },
+        "building_type": { "$ref": "common.schema.json#/definitions/FactBuildingType" },
+        "overlays": { "$ref": "#/definitions/Overlays" }
+      }
+    },
+    "Edge": {
+      "description": "One side of the plot boundary. Road width is a legal fact: declared, never measured (D5).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "a", "b", "kind", "road_width_m", "road_width_basis"],
+      "properties": {
+        "id": { "type": "string" },
+        "a": { "$ref": "common.schema.json#/definitions/Point2" },
+        "b": { "$ref": "common.schema.json#/definitions/Point2" },
+        "kind": { "$ref": "common.schema.json#/definitions/FactEdgeKind" },
+        "road_width_m": { "$ref": "common.schema.json#/definitions/FactNumber" },
+        "road_width_basis": { "$ref": "common.schema.json#/definitions/FactRoadWidthBasis" }
+      }
+    },
+    "Site": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["boundary", "plot_area_declared_m2", "is_corner_plot", "ground_level_m", "edges"],
+      "properties": {
+        "boundary": {
+          "description": "From property lines. Null means site checks can't be verified.",
+          "anyOf": [{ "$ref": "common.schema.json#/definitions/Polygon" }, { "type": "null" }]
+        },
+        "plot_area_declared_m2": { "$ref": "common.schema.json#/definitions/FactNumber", "description": "Plot area as per ownership documents." },
+        "is_corner_plot": { "$ref": "common.schema.json#/definitions/FactBool" },
+        "ground_level_m": { "type": ["number", "null"] },
+        "edges": { "type": "array", "items": { "$ref": "#/definitions/Edge" } }
+      }
+    },
+    "Level": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "source_id", "name", "elevation_m", "is_basement"],
+      "properties": {
+        "id": { "type": "string" },
+        "source_id": { "type": ["string", "null"] },
+        "name": { "type": "string" },
+        "elevation_m": { "type": "number" },
+        "is_basement": { "type": "boolean" }
+      }
+    },
+    "Building": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["footprint", "roof_top_m", "highest_point_m"],
+      "properties": {
+        "footprint": { "anyOf": [{ "$ref": "common.schema.json#/definitions/Polygon" }, { "type": "null" }] },
+        "roof_top_m": { "type": ["number", "null"], "description": "Elevation of the highest roof/terrace finish." },
+        "highest_point_m": { "type": ["number", "null"], "description": "Elevation of the highest point of any element." }
+      }
+    },
+    "Space": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "source_id", "name", "level_id", "usage", "area_m2", "clear_height_m", "polygon"],
+      "properties": {
+        "id": { "type": "string" },
+        "source_id": { "type": ["string", "null"] },
+        "name": { "type": "string" },
+        "level_id": { "type": "string" },
+        "usage": { "$ref": "common.schema.json#/definitions/FactUsage" },
+        "area_m2": { "type": ["number", "null"], "minimum": 0 },
+        "clear_height_m": { "type": ["number", "null"], "minimum": 0 },
+        "polygon": { "anyOf": [{ "$ref": "common.schema.json#/definitions/Polygon" }, { "type": "null" }] }
+      }
+    },
+    "Area": {
+      "description": "Revit Area (area plan) or equivalent, used for built-up / FSI.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "source_id", "scheme", "level_id", "name", "area_m2", "counts_to_far"],
+      "properties": {
+        "id": { "type": "string" },
+        "source_id": { "type": ["string", "null"] },
+        "scheme": { "type": "string" },
+        "level_id": { "type": "string" },
+        "name": { "type": "string" },
+        "area_m2": { "type": ["number", "null"], "minimum": 0 },
+        "counts_to_far": { "$ref": "common.schema.json#/definitions/FactBool" }
+      }
+    },
+    "Stair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "source_id", "base_level_id", "top_level_id", "min_run_width_m", "riser_m", "tread_m", "is_exit"],
+      "properties": {
+        "id": { "type": "string" },
+        "source_id": { "type": ["string", "null"] },
+        "base_level_id": { "type": "string" },
+        "top_level_id": { "type": ["string", "null"] },
+        "min_run_width_m": { "type": ["number", "null"], "minimum": 0 },
+        "riser_m": { "type": ["number", "null"], "minimum": 0 },
+        "tread_m": { "type": ["number", "null"], "minimum": 0 },
+        "is_exit": { "$ref": "common.schema.json#/definitions/FactBool" }
+      }
+    },
+    "Door": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "source_id", "level_id", "width_m", "height_m", "is_exit", "from_space_id", "to_space_id"],
+      "properties": {
+        "id": { "type": "string" },
+        "source_id": { "type": ["string", "null"] },
+        "level_id": { "type": "string" },
+        "width_m": { "type": ["number", "null"], "minimum": 0 },
+        "height_m": { "type": ["number", "null"], "minimum": 0 },
+        "is_exit": { "$ref": "common.schema.json#/definitions/FactBool" },
+        "from_space_id": { "type": ["string", "null"] },
+        "to_space_id": { "type": ["string", "null"] }
+      }
+    },
+    "Unit": {
+      "description": "A tenement / flat (TOD 14.2.1.3).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "source_id", "name", "level_id", "carpet_area_m2", "use"],
+      "properties": {
+        "id": { "type": "string" },
+        "source_id": { "type": ["string", "null"] },
+        "name": { "type": "string" },
+        "level_id": { "type": "string" },
+        "carpet_area_m2": { "type": ["number", "null"], "minimum": 0 },
+        "use": { "$ref": "common.schema.json#/definitions/FactUnitUse" }
+      }
+    }
+  }
+}

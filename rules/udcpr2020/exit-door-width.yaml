@@ -1,0 +1,24 @@
+id: udcpr2020.ch9.exit-door-width
+title: Minimum exit door width
+authority: udcpr2020
+clause:
+  ref: 9.29.1 (ii)
+  excerpt: No exit doorway shall be less than 90 cm. in width except assembly buildings where door width
+    shall be not less than 200 cm. Doorway shall be not less than 200 cm. in height.
+  source: udcpr2020 p.165
+  retrieved: '2026-10-19'
+status: draft
+severity: critical
+kind: check
+for_each: doors
+applies_when: item.is_exit
+limit: 2.0 if project.occupancy.group == 'D' else 0.9
+measured: item.width_m
+check: measured >= limit
+message: Exit door is {measured:.2f} m wide; minimum is {limit:.2f} m.
+fix_unit: m
+compiled_by: agent:claude-opus-5-5@p2.6-batch1
+freshness:
+  status: unchecked
+  url: null
+  checked: null

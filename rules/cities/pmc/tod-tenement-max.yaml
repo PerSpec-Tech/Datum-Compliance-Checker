@@ -1,0 +1,24 @@
+id: pmc.tod.tenement-max-carpet
+title: Maximum tenement size in TOD zone
+authority: pmc
+clause:
+  ref: 14.2.1.3
+  excerpt: For any development or redevelopment within TOD zone, size of tenement shall be minimum 25
+    sq.m. and maximum 120 sq.m. of carpet area.
+  source: udcpr2020 p.268
+  retrieved: '2026-10-19'
+status: draft
+severity: major
+kind: check
+for_each: units
+applies_when: project.overlays.metro_tod and item.use == 'residential'
+limit: '120.0'
+measured: item.carpet_area_m2
+check: measured <= limit
+message: Tenement carpet area is {measured:.1f} sq.m; maximum in TOD zone is {limit:.0f} sq.m.
+fix_unit: m2
+compiled_by: agent:claude-opus-5-5@p2.6-batch1
+freshness:
+  status: unchecked
+  url: null
+  checked: null

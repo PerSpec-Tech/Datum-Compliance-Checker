@@ -1,0 +1,26 @@
+name: pmc.tod_max_fsi
+authority: pmc
+description: Maximum permissible total FSI in the PMC TOD zone by road width. The source rows read '9.0
+  m. and up to 12.0 m.', '12.0 m. and up to 15.0 m.' etc.; a width exactly on a boundary is put in the
+  higher band (min inclusive). Roads under 9 m have no TOD row.
+unit: fsi
+source:
+  ref: Table in 14.2.1.2
+  excerpt: 9.0 m. and up to 12.0 m. 2.50; 12.0 m. and up to 15.0 m. 3.00; 15.0 m. and up to 24.0 m. 3.50;
+    24.0 m. and above 4.00
+  source: udcpr2020 p.266
+  retrieved: '2026-10-19'
+kind: bands
+bands:
+- min: 9.0
+  max: 12.0
+  value: 2.5
+- min: 12.0
+  max: 15.0
+  value: 3.0
+- min: 15.0
+  max: 24.0
+  value: 3.5
+- min: 24.0
+  max: null
+  value: 4.0
