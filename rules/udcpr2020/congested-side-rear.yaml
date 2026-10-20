@@ -1,0 +1,26 @@
+id: udcpr2020.ch6.congested-side-rear
+title: Side and rear marginal distance (congested area)
+authority: udcpr2020
+clause:
+  ref: Table No. 6-C and 6.1.1 (vi)
+  excerpt: 'Side and rear: up to 1000 sq.m. 0.00; above 1000 & upto 4000 sq.m. 1.00 m.; above 4000 sq.m.
+    as per Regulation for non-congested area. Marginal distances shall be increased by 1.0 m. for buildings
+    having height 15.0 m. and more but less than 24.0 m.'
+  source: udcpr2020 p.107
+  retrieved: '2026-10-19'
+status: draft
+severity: major
+kind: check
+for_each: site.edges
+applies_when: project.occupancy.group == 'A' and item.kind != 'road' and (project.congested_area == True
+  and derived.plot_area_m2 <= 4000 and derived.building_height_m < 24)
+limit: (0.0 if derived.plot_area_m2 <= 1000 else 1.0) + (1.0 if derived.building_height_m >= 15 else 0.0)
+measured: derived.setback_m[item.id]
+check: measured >= limit
+message: Margin on this side is {measured:.2f} m; minimum is {limit:.2f} m.
+fix_unit: m
+compiled_by: agent:claude-opus-5-5@p2.6-batch2
+freshness:
+  status: unchecked
+  url: null
+  checked: null

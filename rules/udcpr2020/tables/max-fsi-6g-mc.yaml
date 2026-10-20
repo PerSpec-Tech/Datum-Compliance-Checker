@@ -1,0 +1,32 @@
+name: udcpr2020.max_fsi_6g_mc
+authority: udcpr2020
+description: Maximum building potential including in-situ FSI, 'For all Municipal Corporations' column
+  of Table 6-G (non-congested area).
+unit: fsi
+source:
+  ref: Table 6-G (Regulation 6.3)
+  excerpt: Permissible basic FSI, additional FSI on payment of premium, Permissible TDR Loading on a plot
+    in non-congested area for Residential and Residential with mixed uses and other buildings in developable
+    zones like residential, commercial, public-semi-public etc. shall be as given in Table 6-G below.
+  source: udcpr2020 p.115
+  retrieved: '2026-10-19'
+kind: bands
+bands:
+- min: 0
+  max: 9
+  value: 1.1
+- min: 9
+  max: 12
+  value: 2.0
+- min: 12
+  max: 15
+  value: 2.25
+- min: 15
+  max: 24
+  value: 2.5
+- min: 24
+  max: 30
+  value: 2.75
+- min: 30
+  max: null
+  value: 3.0

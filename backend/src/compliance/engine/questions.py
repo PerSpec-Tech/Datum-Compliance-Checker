@@ -67,6 +67,20 @@ _SPECS: dict[str, tuple[str, str, list[str] | None]] = {
     ),
 }
 _OPTIONS = {"project.occupancy": "OccupancyGroup", "project.building_type": "BuildingType"}
+# Per-element model gaps that have a natural question (count of elements is appended).
+_COLLECTION_SPECS: dict[str, tuple[str, str, str | None]] = {
+    "areas[*].counts_to_far": (
+        "bool",
+        "Do these Revit area schemes count towards FSI (built-up area)?",
+        None,
+    ),
+    "spaces[*].usage": (
+        "enum",
+        "What are these rooms used for? Their names weren't recognised.",
+        "Usage",
+    ),
+    "units[*].use": ("enum", "Are these units residential, commercial or office?", "UnitUse"),
+}
 
 
 def question_key(path: str) -> str | None:
@@ -118,6 +132,13 @@ def _question(key: str, rule_ids: set[str], elements: set[str]) -> dict[str, Any
     elif key.startswith("project.special."):
         flag = key.rsplit(".", 1)[1].replace("_", " ")
         input_type, prompt, options = "bool", f"Does this apply to the site: {flag}?", None
+    elif key in _COLLECTION_SPECS:
+        input_type, prompt, enum_name = _COLLECTION_SPECS[key]
+        n = len(elements)
+        prompt = (
+            f"{prompt} ({n} {'item' if n == 1 else 'items'}: {', '.join(sorted(elements)[:6])})"
+        )
+        options = _enum(enum_name) if enum_name else None
     elif key.split("[", 1)[0] in _COLLECTIONS:
         coll, field = key.split("[*].", 1) if "[*]." in key else (key.split("[", 1)[0], "data")
         n = len(elements)

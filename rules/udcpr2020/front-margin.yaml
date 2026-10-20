@@ -1,0 +1,27 @@
+id: udcpr2020.ch6.front-margin
+title: Front setback from each road (non-congested area)
+authority: udcpr2020
+clause:
+  ref: Table No. 6-D (Regulation 6.2.1)
+  excerpt: 'Min. setback from road side / Min. side margins / Min. rear margins: roads of width 30.0 m.
+    and above 6.0 (A, B, C class Municipal Corporations) / 3.0 / 3.0; 18.0 m. and above but below 30.0
+    m. 4.5 / 2.0 / 2.0; 15.0 m. and above but below 18.0 m. 3.0 / 1.5 / 1.5; less than 15.0 m. 3.0 / 1.5
+    / 1.5.'
+  source: udcpr2020 p.108
+  retrieved: '2026-10-19'
+status: draft
+severity: critical
+kind: check
+for_each: site.edges
+applies_when: project.occupancy.group == 'A' and item.kind == 'road' and (project.congested_area == False
+  or derived.plot_area_m2 > 4000 or derived.building_height_m >= 24)
+limit: table('udcpr2020.front_margin_6d', item.road_width_m)
+measured: derived.setback_m[item.id]
+check: measured >= limit
+message: Setback from this road is {measured:.2f} m; minimum is {limit:.2f} m.
+fix_unit: m
+compiled_by: agent:claude-opus-5-5@p2.6-batch2
+freshness:
+  status: unchecked
+  url: null
+  checked: null

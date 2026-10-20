@@ -1,0 +1,25 @@
+name: udcpr2020.max_fsi_6a_mc
+authority: udcpr2020
+description: Maximum building potential on plot, 'For all Municipal Corporations' column of Table 6-A
+  (congested area).
+unit: fsi
+source:
+  ref: Table No. 6-A (Regulation 6.1.1)
+  excerpt: The maximum permissible basic floor space index, FSI on payment of premium, permissible TDR
+    loading shall be as per the following Table No.6-A.
+  source: udcpr2020 p.105
+  retrieved: '2026-10-19'
+kind: bands
+bands:
+- min: 0
+  max: 9
+  value: 1.5
+- min: 9
+  max: 18
+  value: 2.6
+- min: 18
+  max: 30
+  value: 2.8
+- min: 30
+  max: null
+  value: 3.0

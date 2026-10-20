@@ -1,0 +1,12 @@
+name: pmc.tod_zone_radius
+authority: pmc
+description: Radius of the TOD zone around a metro station (UDCPR 14.2.1.1). Used by the overlay stage to infer whether a site is in the zone; the zone delineated by the Planning Authority always wins when declared.
+unit: m
+source:
+  ref: 14.2.1.1 (i)
+  excerpt: "TOD zone : - It is the area 500 m. around the proposed Metro station boundary as will be delineated by the Planning Authority with the approval of the State Government."
+  source: udcpr2020 p.266
+  retrieved: '2026-10-20'
+kind: map
+map:
+  radius_m: 500

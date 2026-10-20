@@ -1,0 +1,7 @@
+---
+authority: udcpr2020
+clause_ref: "9.29.1 (ii)"
+source: "udcpr2020 p.165"
+---
+9.29.1 Doorways
+ii) No exit doorway shall be less than 90 cm. in width except assembly buildings where door width shall be not less than 200 cm. Doorway shall be not less than 200 cm. in height. Doorways for the bathrooms, water-closets or stores shall be not less than 75 cm. wide.

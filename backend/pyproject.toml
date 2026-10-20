@@ -46,3 +46,11 @@ extend-exclude = ["src/compliance/models/generated"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+# SQL statements read better unbroken.
+"src/compliance/store/*.py" = ["E501"]
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI's dependency markers are meant to be called in argument defaults.
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Body", "fastapi.Header", "fastapi.Query"]

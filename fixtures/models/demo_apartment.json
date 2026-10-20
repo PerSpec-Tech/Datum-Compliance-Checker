@@ -1,0 +1,9668 @@
+{
+  "schema_version": "1.0",
+  "_notes": [
+    "G+4 mixed use near a metro station (TOD zone), 10.5 m DP road. Planted failures:\n  front margin 2.5 m < 3.0 · east side margin 2.8 m < 3.12 (H/5) · FSI 2.58 > 2.5 (TOD) ·\n  mixed use needs a 12 m road · stair 1.0 m < 1.2 m (building over 15 m) · entrance door 0.85 m\n  < 0.90 m · Shop 2 clear height 2.9 m < 3.0 · Flat 302 Bedroom 2 clear height 2.6 m < 2.75 ·\n  Flat 105 studio carpet 24 sq.m < 25 sq.m (TOD)."
+  ],
+  "meta": {
+    "source_kind": "manual",
+    "source_file": "demo_apartment.json",
+    "exported_at": "2026-10-20T10:00:00Z",
+    "tool_version": "demo-1"
+  },
+  "project": {
+    "name": "Demo — mixed-use building near a metro station",
+    "location": {
+      "value": {
+        "lat": 18.5165,
+        "lon": 73.842
+      },
+      "source": "declared"
+    },
+    "authority_id": {
+      "value": "pmc",
+      "source": "inferred"
+    },
+    "rulesets": {
+      "value": [
+        "nbc2016",
+        "udcpr2020",
+        "pmc"
+      ],
+      "source": "inferred"
+    },
+    "occupancy": {
+      "value": {
+        "group": "A",
+        "subdivision": "A-4"
+      },
+      "source": "declared"
+    },
+    "zone": {
+      "value": "residential",
+      "source": "declared"
+    },
+    "congested_area": {
+      "value": false,
+      "source": "declared"
+    },
+    "special": {
+      "heritage": {
+        "value": false,
+        "source": "declared"
+      },
+      "coastal": {
+        "value": false,
+        "source": "declared"
+      },
+      "airport_zone": {
+        "value": false,
+        "source": "declared"
+      },
+      "ht_line": {
+        "value": false,
+        "source": "declared"
+      },
+      "railway": {
+        "value": false,
+        "source": "declared"
+      },
+      "river_flood_line": {
+        "value": false,
+        "source": "declared"
+      },
+      "hill_slope_bdp": {
+        "value": false,
+        "source": "declared"
+      },
+      "defence_vicinity": {
+        "value": false,
+        "source": "declared"
+      },
+      "metro_rail_within_20m": {
+        "value": false,
+        "source": "declared"
+      }
+    },
+    "building_type": {
+      "value": "mixed_use",
+      "source": "declared"
+    },
+    "overlays": {
+      "nearest_metro_station": {
+        "value": null,
+        "source": "default"
+      },
+      "metro_tod": {
+        "value": true,
+        "source": "declared"
+      },
+      "plot_share_in_tod": {
+        "value": 1.0,
+        "source": "declared"
+      }
+    }
+  },
+  "site": {
+    "boundary": [
+      [
+        0,
+        0
+      ],
+      [
+        25,
+        0
+      ],
+      [
+        25,
+        40
+      ],
+      [
+        0,
+        40
+      ]
+    ],
+    "plot_area_declared_m2": {
+      "value": 1000.0,
+      "source": "declared"
+    },
+    "is_corner_plot": {
+      "value": false,
+      "source": "declared"
+    },
+    "ground_level_m": 0.0,
+    "edges": [
+      {
+        "id": "e1",
+        "a": [
+          0,
+          0
+        ],
+        "b": [
+          25,
+          0
+        ],
+        "kind": {
+          "value": "road",
+          "source": "declared"
+        },
+        "road_width_m": {
+          "value": 10.5,
+          "source": "declared"
+        },
+        "road_width_basis": {
+          "value": "development_plan",
+          "source": "declared"
+        }
+      },
+      {
+        "id": "e2",
+        "a": [
+          25,
+          0
+        ],
+        "b": [
+          25,
+          40
+        ],
+        "kind": {
+          "value": "neighbour",
+          "source": "declared"
+        },
+        "road_width_m": {
+          "value": null,
+          "source": "default"
+        },
+        "road_width_basis": {
+          "value": null,
+          "source": "default"
+        }
+      },
+      {
+        "id": "e3",
+        "a": [
+          25,
+          40
+        ],
+        "b": [
+          0,
+          40
+        ],
+        "kind": {
+          "value": "neighbour",
+          "source": "declared"
+        },
+        "road_width_m": {
+          "value": null,
+          "source": "default"
+        },
+        "road_width_basis": {
+          "value": null,
+          "source": "default"
+        }
+      },
+      {
+        "id": "e4",
+        "a": [
+          0,
+          40
+        ],
+        "b": [
+          0,
+          0
+        ],
+        "kind": {
+          "value": "neighbour",
+          "source": "declared"
+        },
+        "road_width_m": {
+          "value": null,
+          "source": "default"
+        },
+        "road_width_basis": {
+          "value": null,
+          "source": "default"
+        }
+      }
+    ]
+  },
+  "levels": [
+    {
+      "id": "L0",
+      "source_id": "demo-lvl-L0",
+      "name": "Ground Floor",
+      "elevation_m": 0.0,
+      "is_basement": false
+    },
+    {
+      "id": "L1",
+      "source_id": "demo-lvl-L1",
+      "name": "Floor 1",
+      "elevation_m": 3.6,
+      "is_basement": false
+    },
+    {
+      "id": "L2",
+      "source_id": "demo-lvl-L2",
+      "name": "Floor 2",
+      "elevation_m": 6.6,
+      "is_basement": false
+    },
+    {
+      "id": "L3",
+      "source_id": "demo-lvl-L3",
+      "name": "Floor 3",
+      "elevation_m": 9.6,
+      "is_basement": false
+    },
+    {
+      "id": "L4",
+      "source_id": "demo-lvl-L4",
+      "name": "Floor 4",
+      "elevation_m": 12.6,
+      "is_basement": false
+    }
+  ],
+  "building": {
+    "footprint": [
+      [
+        3.5,
+        2.5
+      ],
+      [
+        22.2,
+        2.5
+      ],
+      [
+        22.2,
+        33.5
+      ],
+      [
+        3.5,
+        33.5
+      ]
+    ],
+    "roof_top_m": 15.6,
+    "highest_point_m": 15.6
+  },
+  "spaces": [
+    {
+      "id": "G-SH1",
+      "source_id": "demo-sp-G-SH1",
+      "name": "Shop 1",
+      "level_id": "L0",
+      "usage": {
+        "value": "retail",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 76.5,
+      "clear_height_m": 3.3,
+      "polygon": [
+        [
+          3.5,
+          2.5
+        ],
+        [
+          12.0,
+          2.5
+        ],
+        [
+          12.0,
+          11.5
+        ],
+        [
+          3.5,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "G-ENT",
+      "source_id": "demo-sp-G-ENT",
+      "name": "Entrance Lobby",
+      "level_id": "L0",
+      "usage": {
+        "value": "lobby",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 15.3,
+      "clear_height_m": 3.3,
+      "polygon": [
+        [
+          12.0,
+          2.5
+        ],
+        [
+          13.7,
+          2.5
+        ],
+        [
+          13.7,
+          11.5
+        ],
+        [
+          12.0,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "G-SH2",
+      "source_id": "demo-sp-G-SH2",
+      "name": "Shop 2",
+      "level_id": "L0",
+      "usage": {
+        "value": "retail",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 76.5,
+      "clear_height_m": 2.9,
+      "polygon": [
+        [
+          13.7,
+          2.5
+        ],
+        [
+          22.2,
+          2.5
+        ],
+        [
+          22.2,
+          11.5
+        ],
+        [
+          13.7,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "L0-SRV",
+      "source_id": "demo-sp-L0-SRV",
+      "name": "Services L0",
+      "level_id": "L0",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 17.5,
+      "clear_height_m": 3.3,
+      "polygon": [
+        [
+          3.5,
+          11.5
+        ],
+        [
+          7.0,
+          11.5
+        ],
+        [
+          7.0,
+          16.5
+        ],
+        [
+          3.5,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L0-STR",
+      "source_id": "demo-sp-L0-STR",
+      "name": "Staircase L0",
+      "level_id": "L0",
+      "usage": {
+        "value": "stair",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 12.5,
+      "clear_height_m": 3.3,
+      "polygon": [
+        [
+          7.0,
+          11.5
+        ],
+        [
+          9.5,
+          11.5
+        ],
+        [
+          9.5,
+          16.5
+        ],
+        [
+          7.0,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L0-LOB",
+      "source_id": "demo-sp-L0-LOB",
+      "name": "Lift Lobby L0",
+      "level_id": "L0",
+      "usage": {
+        "value": "lobby",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 33.5,
+      "clear_height_m": 3.3,
+      "polygon": [
+        [
+          9.5,
+          11.5
+        ],
+        [
+          16.2,
+          11.5
+        ],
+        [
+          16.2,
+          16.5
+        ],
+        [
+          9.5,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L0-LFT",
+      "source_id": "demo-sp-L0-LFT",
+      "name": "Lift L0",
+      "level_id": "L0",
+      "usage": {
+        "value": "utility",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.25,
+      "clear_height_m": 3.3,
+      "polygon": [
+        [
+          16.2,
+          11.5
+        ],
+        [
+          18.7,
+          11.5
+        ],
+        [
+          18.7,
+          14.0
+        ],
+        [
+          16.2,
+          14.0
+        ]
+      ]
+    },
+    {
+      "id": "L0-ELE",
+      "source_id": "demo-sp-L0-ELE",
+      "name": "Electrical Room L0",
+      "level_id": "L0",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.25,
+      "clear_height_m": 3.3,
+      "polygon": [
+        [
+          16.2,
+          14.0
+        ],
+        [
+          18.7,
+          14.0
+        ],
+        [
+          18.7,
+          16.5
+        ],
+        [
+          16.2,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L0-STO",
+      "source_id": "demo-sp-L0-STO",
+      "name": "Store L0",
+      "level_id": "L0",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 17.5,
+      "clear_height_m": 3.3,
+      "polygon": [
+        [
+          18.7,
+          11.5
+        ],
+        [
+          22.2,
+          11.5
+        ],
+        [
+          22.2,
+          16.5
+        ],
+        [
+          18.7,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "G-PRK",
+      "source_id": "demo-sp-G-PRK",
+      "name": "Parking",
+      "level_id": "L0",
+      "usage": {
+        "value": "parking",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 317.9,
+      "clear_height_m": 3.3,
+      "polygon": [
+        [
+          3.5,
+          16.5
+        ],
+        [
+          22.2,
+          16.5
+        ],
+        [
+          22.2,
+          33.5
+        ],
+        [
+          3.5,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "L1-COR",
+      "source_id": "demo-sp-L1-COR",
+      "name": "Corridor L1",
+      "level_id": "L1",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 15.3,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          12.0,
+          2.5
+        ],
+        [
+          13.7,
+          2.5
+        ],
+        [
+          13.7,
+          11.5
+        ],
+        [
+          12.0,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "L1-SRV",
+      "source_id": "demo-sp-L1-SRV",
+      "name": "Services L1",
+      "level_id": "L1",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 17.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          11.5
+        ],
+        [
+          7.0,
+          11.5
+        ],
+        [
+          7.0,
+          16.5
+        ],
+        [
+          3.5,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L1-STR",
+      "source_id": "demo-sp-L1-STR",
+      "name": "Staircase L1",
+      "level_id": "L1",
+      "usage": {
+        "value": "stair",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 12.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          7.0,
+          11.5
+        ],
+        [
+          9.5,
+          11.5
+        ],
+        [
+          9.5,
+          16.5
+        ],
+        [
+          7.0,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L1-LOB",
+      "source_id": "demo-sp-L1-LOB",
+      "name": "Lift Lobby L1",
+      "level_id": "L1",
+      "usage": {
+        "value": "lobby",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 33.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          9.5,
+          11.5
+        ],
+        [
+          16.2,
+          11.5
+        ],
+        [
+          16.2,
+          16.5
+        ],
+        [
+          9.5,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L1-LFT",
+      "source_id": "demo-sp-L1-LFT",
+      "name": "Lift L1",
+      "level_id": "L1",
+      "usage": {
+        "value": "utility",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          16.2,
+          11.5
+        ],
+        [
+          18.7,
+          11.5
+        ],
+        [
+          18.7,
+          14.0
+        ],
+        [
+          16.2,
+          14.0
+        ]
+      ]
+    },
+    {
+      "id": "L1-ELE",
+      "source_id": "demo-sp-L1-ELE",
+      "name": "Electrical Room L1",
+      "level_id": "L1",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          16.2,
+          14.0
+        ],
+        [
+          18.7,
+          14.0
+        ],
+        [
+          18.7,
+          16.5
+        ],
+        [
+          16.2,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L1-STO",
+      "source_id": "demo-sp-L1-STO",
+      "name": "Store L1",
+      "level_id": "L1",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 17.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          18.7,
+          11.5
+        ],
+        [
+          22.2,
+          11.5
+        ],
+        [
+          22.2,
+          16.5
+        ],
+        [
+          18.7,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L1-CR2",
+      "source_id": "demo-sp-L1-CR2",
+      "name": "Rear Corridor L1",
+      "level_id": "L1",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 28.9,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          12.0,
+          16.5
+        ],
+        [
+          13.7,
+          16.5
+        ],
+        [
+          13.7,
+          33.5
+        ],
+        [
+          12.0,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "101-LIV",
+      "source_id": "demo-sp-101-LIV",
+      "name": "Flat 101 Living",
+      "level_id": "L1",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 22.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          2.5
+        ],
+        [
+          8.0,
+          2.5
+        ],
+        [
+          8.0,
+          7.5
+        ],
+        [
+          3.5,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "101-BR2",
+      "source_id": "demo-sp-101-BR2",
+      "name": "Flat 101 Bedroom 2",
+      "level_id": "L1",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 14.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          2.5
+        ],
+        [
+          12.0,
+          2.5
+        ],
+        [
+          12.0,
+          6.0
+        ],
+        [
+          8.0,
+          6.0
+        ]
+      ]
+    },
+    {
+      "id": "101-PAS",
+      "source_id": "demo-sp-101-PAS",
+      "name": "Flat 101 Passage",
+      "level_id": "L1",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          6.0
+        ],
+        [
+          12.0,
+          6.0
+        ],
+        [
+          12.0,
+          7.5
+        ],
+        [
+          8.0,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "101-BR1",
+      "source_id": "demo-sp-101-BR1",
+      "name": "Flat 101 Bedroom 1",
+      "level_id": "L1",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 16.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          7.5
+        ],
+        [
+          7.5,
+          7.5
+        ],
+        [
+          7.5,
+          11.5
+        ],
+        [
+          3.5,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "101-BTH",
+      "source_id": "demo-sp-101-BTH",
+      "name": "Flat 101 Bath",
+      "level_id": "L1",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          7.5,
+          7.5
+        ],
+        [
+          9.5,
+          7.5
+        ],
+        [
+          9.5,
+          9.5
+        ],
+        [
+          7.5,
+          9.5
+        ]
+      ]
+    },
+    {
+      "id": "101-WC",
+      "source_id": "demo-sp-101-WC",
+      "name": "Flat 101 WC",
+      "level_id": "L1",
+      "usage": {
+        "value": "wc",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          7.5,
+          9.5
+        ],
+        [
+          9.5,
+          9.5
+        ],
+        [
+          9.5,
+          11.5
+        ],
+        [
+          7.5,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "101-KIT",
+      "source_id": "demo-sp-101-KIT",
+      "name": "Flat 101 Kitchen",
+      "level_id": "L1",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          9.5,
+          7.5
+        ],
+        [
+          12.0,
+          7.5
+        ],
+        [
+          12.0,
+          11.5
+        ],
+        [
+          9.5,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "102-LIV",
+      "source_id": "demo-sp-102-LIV",
+      "name": "Flat 102 Living",
+      "level_id": "L1",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 22.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          2.5
+        ],
+        [
+          22.2,
+          2.5
+        ],
+        [
+          22.2,
+          7.5
+        ],
+        [
+          17.7,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "102-BR2",
+      "source_id": "demo-sp-102-BR2",
+      "name": "Flat 102 Bedroom 2",
+      "level_id": "L1",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 14.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          2.5
+        ],
+        [
+          17.7,
+          2.5
+        ],
+        [
+          17.7,
+          6.0
+        ],
+        [
+          13.7,
+          6.0
+        ]
+      ]
+    },
+    {
+      "id": "102-PAS",
+      "source_id": "demo-sp-102-PAS",
+      "name": "Flat 102 Passage",
+      "level_id": "L1",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          6.0
+        ],
+        [
+          17.7,
+          6.0
+        ],
+        [
+          17.7,
+          7.5
+        ],
+        [
+          13.7,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "102-BR1",
+      "source_id": "demo-sp-102-BR1",
+      "name": "Flat 102 Bedroom 1",
+      "level_id": "L1",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 16.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          18.2,
+          7.5
+        ],
+        [
+          22.2,
+          7.5
+        ],
+        [
+          22.2,
+          11.5
+        ],
+        [
+          18.2,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "102-BTH",
+      "source_id": "demo-sp-102-BTH",
+      "name": "Flat 102 Bath",
+      "level_id": "L1",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          16.2,
+          7.5
+        ],
+        [
+          18.2,
+          7.5
+        ],
+        [
+          18.2,
+          9.5
+        ],
+        [
+          16.2,
+          9.5
+        ]
+      ]
+    },
+    {
+      "id": "102-WC",
+      "source_id": "demo-sp-102-WC",
+      "name": "Flat 102 WC",
+      "level_id": "L1",
+      "usage": {
+        "value": "wc",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          16.2,
+          9.5
+        ],
+        [
+          18.2,
+          9.5
+        ],
+        [
+          18.2,
+          11.5
+        ],
+        [
+          16.2,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "102-KIT",
+      "source_id": "demo-sp-102-KIT",
+      "name": "Flat 102 Kitchen",
+      "level_id": "L1",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          7.5
+        ],
+        [
+          16.2,
+          7.5
+        ],
+        [
+          16.2,
+          11.5
+        ],
+        [
+          13.7,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "103-LIV",
+      "source_id": "demo-sp-103-LIV",
+      "name": "Flat 103 Living",
+      "level_id": "L1",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          16.5
+        ],
+        [
+          8.0,
+          16.5
+        ],
+        [
+          8.0,
+          21.0
+        ],
+        [
+          3.5,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "103-KIT",
+      "source_id": "demo-sp-103-KIT",
+      "name": "Flat 103 Kitchen",
+      "level_id": "L1",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          16.5
+        ],
+        [
+          12.0,
+          16.5
+        ],
+        [
+          12.0,
+          19.0
+        ],
+        [
+          8.0,
+          19.0
+        ]
+      ]
+    },
+    {
+      "id": "103-PAS",
+      "source_id": "demo-sp-103-PAS",
+      "name": "Flat 103 Passage",
+      "level_id": "L1",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          19.0
+        ],
+        [
+          12.0,
+          19.0
+        ],
+        [
+          12.0,
+          21.0
+        ],
+        [
+          8.0,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "103-BR",
+      "source_id": "demo-sp-103-BR",
+      "name": "Flat 103 Bedroom",
+      "level_id": "L1",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          21.0
+        ],
+        [
+          8.0,
+          21.0
+        ],
+        [
+          8.0,
+          25.0
+        ],
+        [
+          3.5,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "103-BTH",
+      "source_id": "demo-sp-103-BTH",
+      "name": "Flat 103 Bath",
+      "level_id": "L1",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          8.0,
+          21.0
+        ],
+        [
+          10.0,
+          21.0
+        ],
+        [
+          10.0,
+          25.0
+        ],
+        [
+          8.0,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "103-UTL",
+      "source_id": "demo-sp-103-UTL",
+      "name": "Flat 103 Utility",
+      "level_id": "L1",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          10.0,
+          21.0
+        ],
+        [
+          12.0,
+          21.0
+        ],
+        [
+          12.0,
+          25.0
+        ],
+        [
+          10.0,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "104-LIV",
+      "source_id": "demo-sp-104-LIV",
+      "name": "Flat 104 Living",
+      "level_id": "L1",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          16.5
+        ],
+        [
+          22.2,
+          16.5
+        ],
+        [
+          22.2,
+          21.0
+        ],
+        [
+          17.7,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "104-KIT",
+      "source_id": "demo-sp-104-KIT",
+      "name": "Flat 104 Kitchen",
+      "level_id": "L1",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          16.5
+        ],
+        [
+          17.7,
+          16.5
+        ],
+        [
+          17.7,
+          19.0
+        ],
+        [
+          13.7,
+          19.0
+        ]
+      ]
+    },
+    {
+      "id": "104-PAS",
+      "source_id": "demo-sp-104-PAS",
+      "name": "Flat 104 Passage",
+      "level_id": "L1",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          19.0
+        ],
+        [
+          17.7,
+          19.0
+        ],
+        [
+          17.7,
+          21.0
+        ],
+        [
+          13.7,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "104-BR",
+      "source_id": "demo-sp-104-BR",
+      "name": "Flat 104 Bedroom",
+      "level_id": "L1",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          21.0
+        ],
+        [
+          22.2,
+          21.0
+        ],
+        [
+          22.2,
+          25.0
+        ],
+        [
+          17.7,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "104-BTH",
+      "source_id": "demo-sp-104-BTH",
+      "name": "Flat 104 Bath",
+      "level_id": "L1",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          15.7,
+          21.0
+        ],
+        [
+          17.7,
+          21.0
+        ],
+        [
+          17.7,
+          25.0
+        ],
+        [
+          15.7,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "104-UTL",
+      "source_id": "demo-sp-104-UTL",
+      "name": "Flat 104 Utility",
+      "level_id": "L1",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          21.0
+        ],
+        [
+          15.7,
+          21.0
+        ],
+        [
+          15.7,
+          25.0
+        ],
+        [
+          13.7,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "105-LIV",
+      "source_id": "demo-sp-105-LIV",
+      "name": "Flat 105 Living",
+      "level_id": "L1",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          25.0
+        ],
+        [
+          8.0,
+          25.0
+        ],
+        [
+          8.0,
+          29.0
+        ],
+        [
+          3.5,
+          29.0
+        ]
+      ]
+    },
+    {
+      "id": "105-KIT",
+      "source_id": "demo-sp-105-KIT",
+      "name": "Flat 105 Kitchen",
+      "level_id": "L1",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 3.75,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          25.0
+        ],
+        [
+          9.5,
+          25.0
+        ],
+        [
+          9.5,
+          27.5
+        ],
+        [
+          8.0,
+          27.5
+        ]
+      ]
+    },
+    {
+      "id": "105-BTH",
+      "source_id": "demo-sp-105-BTH",
+      "name": "Flat 105 Bath",
+      "level_id": "L1",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 2.25,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          8.0,
+          27.5
+        ],
+        [
+          9.5,
+          27.5
+        ],
+        [
+          9.5,
+          29.0
+        ],
+        [
+          8.0,
+          29.0
+        ]
+      ]
+    },
+    {
+      "id": "105-PAS",
+      "source_id": "demo-sp-105-PAS",
+      "name": "Flat 105 Passage",
+      "level_id": "L1",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          9.5,
+          25.0
+        ],
+        [
+          12.0,
+          25.0
+        ],
+        [
+          12.0,
+          29.0
+        ],
+        [
+          9.5,
+          29.0
+        ]
+      ]
+    },
+    {
+      "id": "105-STO",
+      "source_id": "demo-sp-105-STO",
+      "name": "Society Store L1",
+      "level_id": "L1",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 38.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          29.0
+        ],
+        [
+          12.0,
+          29.0
+        ],
+        [
+          12.0,
+          33.5
+        ],
+        [
+          3.5,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "106-LIV",
+      "source_id": "demo-sp-106-LIV",
+      "name": "Flat 106 Living",
+      "level_id": "L1",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          25.0
+        ],
+        [
+          22.2,
+          25.0
+        ],
+        [
+          22.2,
+          29.5
+        ],
+        [
+          17.7,
+          29.5
+        ]
+      ]
+    },
+    {
+      "id": "106-KIT",
+      "source_id": "demo-sp-106-KIT",
+      "name": "Flat 106 Kitchen",
+      "level_id": "L1",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          25.0
+        ],
+        [
+          17.7,
+          25.0
+        ],
+        [
+          17.7,
+          27.5
+        ],
+        [
+          13.7,
+          27.5
+        ]
+      ]
+    },
+    {
+      "id": "106-PAS",
+      "source_id": "demo-sp-106-PAS",
+      "name": "Flat 106 Passage",
+      "level_id": "L1",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          27.5
+        ],
+        [
+          17.7,
+          27.5
+        ],
+        [
+          17.7,
+          29.5
+        ],
+        [
+          13.7,
+          29.5
+        ]
+      ]
+    },
+    {
+      "id": "106-BR",
+      "source_id": "demo-sp-106-BR",
+      "name": "Flat 106 Bedroom",
+      "level_id": "L1",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          29.5
+        ],
+        [
+          22.2,
+          29.5
+        ],
+        [
+          22.2,
+          33.5
+        ],
+        [
+          17.7,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "106-BTH",
+      "source_id": "demo-sp-106-BTH",
+      "name": "Flat 106 Bath",
+      "level_id": "L1",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          15.7,
+          29.5
+        ],
+        [
+          17.7,
+          29.5
+        ],
+        [
+          17.7,
+          33.5
+        ],
+        [
+          15.7,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "106-UTL",
+      "source_id": "demo-sp-106-UTL",
+      "name": "Flat 106 Utility",
+      "level_id": "L1",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          29.5
+        ],
+        [
+          15.7,
+          29.5
+        ],
+        [
+          15.7,
+          33.5
+        ],
+        [
+          13.7,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "L2-COR",
+      "source_id": "demo-sp-L2-COR",
+      "name": "Corridor L2",
+      "level_id": "L2",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 15.3,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          12.0,
+          2.5
+        ],
+        [
+          13.7,
+          2.5
+        ],
+        [
+          13.7,
+          11.5
+        ],
+        [
+          12.0,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "L2-SRV",
+      "source_id": "demo-sp-L2-SRV",
+      "name": "Services L2",
+      "level_id": "L2",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 17.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          11.5
+        ],
+        [
+          7.0,
+          11.5
+        ],
+        [
+          7.0,
+          16.5
+        ],
+        [
+          3.5,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L2-STR",
+      "source_id": "demo-sp-L2-STR",
+      "name": "Staircase L2",
+      "level_id": "L2",
+      "usage": {
+        "value": "stair",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 12.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          7.0,
+          11.5
+        ],
+        [
+          9.5,
+          11.5
+        ],
+        [
+          9.5,
+          16.5
+        ],
+        [
+          7.0,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L2-LOB",
+      "source_id": "demo-sp-L2-LOB",
+      "name": "Lift Lobby L2",
+      "level_id": "L2",
+      "usage": {
+        "value": "lobby",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 33.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          9.5,
+          11.5
+        ],
+        [
+          16.2,
+          11.5
+        ],
+        [
+          16.2,
+          16.5
+        ],
+        [
+          9.5,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L2-LFT",
+      "source_id": "demo-sp-L2-LFT",
+      "name": "Lift L2",
+      "level_id": "L2",
+      "usage": {
+        "value": "utility",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          16.2,
+          11.5
+        ],
+        [
+          18.7,
+          11.5
+        ],
+        [
+          18.7,
+          14.0
+        ],
+        [
+          16.2,
+          14.0
+        ]
+      ]
+    },
+    {
+      "id": "L2-ELE",
+      "source_id": "demo-sp-L2-ELE",
+      "name": "Electrical Room L2",
+      "level_id": "L2",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          16.2,
+          14.0
+        ],
+        [
+          18.7,
+          14.0
+        ],
+        [
+          18.7,
+          16.5
+        ],
+        [
+          16.2,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L2-STO",
+      "source_id": "demo-sp-L2-STO",
+      "name": "Store L2",
+      "level_id": "L2",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 17.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          18.7,
+          11.5
+        ],
+        [
+          22.2,
+          11.5
+        ],
+        [
+          22.2,
+          16.5
+        ],
+        [
+          18.7,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L2-CR2",
+      "source_id": "demo-sp-L2-CR2",
+      "name": "Rear Corridor L2",
+      "level_id": "L2",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 28.9,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          12.0,
+          16.5
+        ],
+        [
+          13.7,
+          16.5
+        ],
+        [
+          13.7,
+          33.5
+        ],
+        [
+          12.0,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "201-LIV",
+      "source_id": "demo-sp-201-LIV",
+      "name": "Flat 201 Living",
+      "level_id": "L2",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 22.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          2.5
+        ],
+        [
+          8.0,
+          2.5
+        ],
+        [
+          8.0,
+          7.5
+        ],
+        [
+          3.5,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "201-BR2",
+      "source_id": "demo-sp-201-BR2",
+      "name": "Flat 201 Bedroom 2",
+      "level_id": "L2",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 14.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          2.5
+        ],
+        [
+          12.0,
+          2.5
+        ],
+        [
+          12.0,
+          6.0
+        ],
+        [
+          8.0,
+          6.0
+        ]
+      ]
+    },
+    {
+      "id": "201-PAS",
+      "source_id": "demo-sp-201-PAS",
+      "name": "Flat 201 Passage",
+      "level_id": "L2",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          6.0
+        ],
+        [
+          12.0,
+          6.0
+        ],
+        [
+          12.0,
+          7.5
+        ],
+        [
+          8.0,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "201-BR1",
+      "source_id": "demo-sp-201-BR1",
+      "name": "Flat 201 Bedroom 1",
+      "level_id": "L2",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 16.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          7.5
+        ],
+        [
+          7.5,
+          7.5
+        ],
+        [
+          7.5,
+          11.5
+        ],
+        [
+          3.5,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "201-BTH",
+      "source_id": "demo-sp-201-BTH",
+      "name": "Flat 201 Bath",
+      "level_id": "L2",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          7.5,
+          7.5
+        ],
+        [
+          9.5,
+          7.5
+        ],
+        [
+          9.5,
+          9.5
+        ],
+        [
+          7.5,
+          9.5
+        ]
+      ]
+    },
+    {
+      "id": "201-WC",
+      "source_id": "demo-sp-201-WC",
+      "name": "Flat 201 WC",
+      "level_id": "L2",
+      "usage": {
+        "value": "wc",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          7.5,
+          9.5
+        ],
+        [
+          9.5,
+          9.5
+        ],
+        [
+          9.5,
+          11.5
+        ],
+        [
+          7.5,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "201-KIT",
+      "source_id": "demo-sp-201-KIT",
+      "name": "Flat 201 Kitchen",
+      "level_id": "L2",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          9.5,
+          7.5
+        ],
+        [
+          12.0,
+          7.5
+        ],
+        [
+          12.0,
+          11.5
+        ],
+        [
+          9.5,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "202-LIV",
+      "source_id": "demo-sp-202-LIV",
+      "name": "Flat 202 Living",
+      "level_id": "L2",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 22.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          2.5
+        ],
+        [
+          22.2,
+          2.5
+        ],
+        [
+          22.2,
+          7.5
+        ],
+        [
+          17.7,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "202-BR2",
+      "source_id": "demo-sp-202-BR2",
+      "name": "Flat 202 Bedroom 2",
+      "level_id": "L2",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 14.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          2.5
+        ],
+        [
+          17.7,
+          2.5
+        ],
+        [
+          17.7,
+          6.0
+        ],
+        [
+          13.7,
+          6.0
+        ]
+      ]
+    },
+    {
+      "id": "202-PAS",
+      "source_id": "demo-sp-202-PAS",
+      "name": "Flat 202 Passage",
+      "level_id": "L2",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          6.0
+        ],
+        [
+          17.7,
+          6.0
+        ],
+        [
+          17.7,
+          7.5
+        ],
+        [
+          13.7,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "202-BR1",
+      "source_id": "demo-sp-202-BR1",
+      "name": "Flat 202 Bedroom 1",
+      "level_id": "L2",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 16.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          18.2,
+          7.5
+        ],
+        [
+          22.2,
+          7.5
+        ],
+        [
+          22.2,
+          11.5
+        ],
+        [
+          18.2,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "202-BTH",
+      "source_id": "demo-sp-202-BTH",
+      "name": "Flat 202 Bath",
+      "level_id": "L2",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          16.2,
+          7.5
+        ],
+        [
+          18.2,
+          7.5
+        ],
+        [
+          18.2,
+          9.5
+        ],
+        [
+          16.2,
+          9.5
+        ]
+      ]
+    },
+    {
+      "id": "202-WC",
+      "source_id": "demo-sp-202-WC",
+      "name": "Flat 202 WC",
+      "level_id": "L2",
+      "usage": {
+        "value": "wc",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          16.2,
+          9.5
+        ],
+        [
+          18.2,
+          9.5
+        ],
+        [
+          18.2,
+          11.5
+        ],
+        [
+          16.2,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "202-KIT",
+      "source_id": "demo-sp-202-KIT",
+      "name": "Flat 202 Kitchen",
+      "level_id": "L2",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          7.5
+        ],
+        [
+          16.2,
+          7.5
+        ],
+        [
+          16.2,
+          11.5
+        ],
+        [
+          13.7,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "203-LIV",
+      "source_id": "demo-sp-203-LIV",
+      "name": "Flat 203 Living",
+      "level_id": "L2",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          16.5
+        ],
+        [
+          8.0,
+          16.5
+        ],
+        [
+          8.0,
+          21.0
+        ],
+        [
+          3.5,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "203-KIT",
+      "source_id": "demo-sp-203-KIT",
+      "name": "Flat 203 Kitchen",
+      "level_id": "L2",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          16.5
+        ],
+        [
+          12.0,
+          16.5
+        ],
+        [
+          12.0,
+          19.0
+        ],
+        [
+          8.0,
+          19.0
+        ]
+      ]
+    },
+    {
+      "id": "203-PAS",
+      "source_id": "demo-sp-203-PAS",
+      "name": "Flat 203 Passage",
+      "level_id": "L2",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          19.0
+        ],
+        [
+          12.0,
+          19.0
+        ],
+        [
+          12.0,
+          21.0
+        ],
+        [
+          8.0,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "203-BR",
+      "source_id": "demo-sp-203-BR",
+      "name": "Flat 203 Bedroom",
+      "level_id": "L2",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          21.0
+        ],
+        [
+          8.0,
+          21.0
+        ],
+        [
+          8.0,
+          25.0
+        ],
+        [
+          3.5,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "203-BTH",
+      "source_id": "demo-sp-203-BTH",
+      "name": "Flat 203 Bath",
+      "level_id": "L2",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          8.0,
+          21.0
+        ],
+        [
+          10.0,
+          21.0
+        ],
+        [
+          10.0,
+          25.0
+        ],
+        [
+          8.0,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "203-UTL",
+      "source_id": "demo-sp-203-UTL",
+      "name": "Flat 203 Utility",
+      "level_id": "L2",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          10.0,
+          21.0
+        ],
+        [
+          12.0,
+          21.0
+        ],
+        [
+          12.0,
+          25.0
+        ],
+        [
+          10.0,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "204-LIV",
+      "source_id": "demo-sp-204-LIV",
+      "name": "Flat 204 Living",
+      "level_id": "L2",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          16.5
+        ],
+        [
+          22.2,
+          16.5
+        ],
+        [
+          22.2,
+          21.0
+        ],
+        [
+          17.7,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "204-KIT",
+      "source_id": "demo-sp-204-KIT",
+      "name": "Flat 204 Kitchen",
+      "level_id": "L2",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          16.5
+        ],
+        [
+          17.7,
+          16.5
+        ],
+        [
+          17.7,
+          19.0
+        ],
+        [
+          13.7,
+          19.0
+        ]
+      ]
+    },
+    {
+      "id": "204-PAS",
+      "source_id": "demo-sp-204-PAS",
+      "name": "Flat 204 Passage",
+      "level_id": "L2",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          19.0
+        ],
+        [
+          17.7,
+          19.0
+        ],
+        [
+          17.7,
+          21.0
+        ],
+        [
+          13.7,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "204-BR",
+      "source_id": "demo-sp-204-BR",
+      "name": "Flat 204 Bedroom",
+      "level_id": "L2",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          21.0
+        ],
+        [
+          22.2,
+          21.0
+        ],
+        [
+          22.2,
+          25.0
+        ],
+        [
+          17.7,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "204-BTH",
+      "source_id": "demo-sp-204-BTH",
+      "name": "Flat 204 Bath",
+      "level_id": "L2",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          15.7,
+          21.0
+        ],
+        [
+          17.7,
+          21.0
+        ],
+        [
+          17.7,
+          25.0
+        ],
+        [
+          15.7,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "204-UTL",
+      "source_id": "demo-sp-204-UTL",
+      "name": "Flat 204 Utility",
+      "level_id": "L2",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          21.0
+        ],
+        [
+          15.7,
+          21.0
+        ],
+        [
+          15.7,
+          25.0
+        ],
+        [
+          13.7,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "205-LIV",
+      "source_id": "demo-sp-205-LIV",
+      "name": "Flat 205 Living",
+      "level_id": "L2",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          25.0
+        ],
+        [
+          8.0,
+          25.0
+        ],
+        [
+          8.0,
+          29.5
+        ],
+        [
+          3.5,
+          29.5
+        ]
+      ]
+    },
+    {
+      "id": "205-KIT",
+      "source_id": "demo-sp-205-KIT",
+      "name": "Flat 205 Kitchen",
+      "level_id": "L2",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          25.0
+        ],
+        [
+          12.0,
+          25.0
+        ],
+        [
+          12.0,
+          27.5
+        ],
+        [
+          8.0,
+          27.5
+        ]
+      ]
+    },
+    {
+      "id": "205-PAS",
+      "source_id": "demo-sp-205-PAS",
+      "name": "Flat 205 Passage",
+      "level_id": "L2",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          27.5
+        ],
+        [
+          12.0,
+          27.5
+        ],
+        [
+          12.0,
+          29.5
+        ],
+        [
+          8.0,
+          29.5
+        ]
+      ]
+    },
+    {
+      "id": "205-BR",
+      "source_id": "demo-sp-205-BR",
+      "name": "Flat 205 Bedroom",
+      "level_id": "L2",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          29.5
+        ],
+        [
+          8.0,
+          29.5
+        ],
+        [
+          8.0,
+          33.5
+        ],
+        [
+          3.5,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "205-BTH",
+      "source_id": "demo-sp-205-BTH",
+      "name": "Flat 205 Bath",
+      "level_id": "L2",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          8.0,
+          29.5
+        ],
+        [
+          10.0,
+          29.5
+        ],
+        [
+          10.0,
+          33.5
+        ],
+        [
+          8.0,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "205-UTL",
+      "source_id": "demo-sp-205-UTL",
+      "name": "Flat 205 Utility",
+      "level_id": "L2",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          10.0,
+          29.5
+        ],
+        [
+          12.0,
+          29.5
+        ],
+        [
+          12.0,
+          33.5
+        ],
+        [
+          10.0,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "206-LIV",
+      "source_id": "demo-sp-206-LIV",
+      "name": "Flat 206 Living",
+      "level_id": "L2",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          25.0
+        ],
+        [
+          22.2,
+          25.0
+        ],
+        [
+          22.2,
+          29.5
+        ],
+        [
+          17.7,
+          29.5
+        ]
+      ]
+    },
+    {
+      "id": "206-KIT",
+      "source_id": "demo-sp-206-KIT",
+      "name": "Flat 206 Kitchen",
+      "level_id": "L2",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          25.0
+        ],
+        [
+          17.7,
+          25.0
+        ],
+        [
+          17.7,
+          27.5
+        ],
+        [
+          13.7,
+          27.5
+        ]
+      ]
+    },
+    {
+      "id": "206-PAS",
+      "source_id": "demo-sp-206-PAS",
+      "name": "Flat 206 Passage",
+      "level_id": "L2",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          27.5
+        ],
+        [
+          17.7,
+          27.5
+        ],
+        [
+          17.7,
+          29.5
+        ],
+        [
+          13.7,
+          29.5
+        ]
+      ]
+    },
+    {
+      "id": "206-BR",
+      "source_id": "demo-sp-206-BR",
+      "name": "Flat 206 Bedroom",
+      "level_id": "L2",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          29.5
+        ],
+        [
+          22.2,
+          29.5
+        ],
+        [
+          22.2,
+          33.5
+        ],
+        [
+          17.7,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "206-BTH",
+      "source_id": "demo-sp-206-BTH",
+      "name": "Flat 206 Bath",
+      "level_id": "L2",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          15.7,
+          29.5
+        ],
+        [
+          17.7,
+          29.5
+        ],
+        [
+          17.7,
+          33.5
+        ],
+        [
+          15.7,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "206-UTL",
+      "source_id": "demo-sp-206-UTL",
+      "name": "Flat 206 Utility",
+      "level_id": "L2",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          29.5
+        ],
+        [
+          15.7,
+          29.5
+        ],
+        [
+          15.7,
+          33.5
+        ],
+        [
+          13.7,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "L3-COR",
+      "source_id": "demo-sp-L3-COR",
+      "name": "Corridor L3",
+      "level_id": "L3",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 15.3,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          12.0,
+          2.5
+        ],
+        [
+          13.7,
+          2.5
+        ],
+        [
+          13.7,
+          11.5
+        ],
+        [
+          12.0,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "L3-SRV",
+      "source_id": "demo-sp-L3-SRV",
+      "name": "Services L3",
+      "level_id": "L3",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 17.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          11.5
+        ],
+        [
+          7.0,
+          11.5
+        ],
+        [
+          7.0,
+          16.5
+        ],
+        [
+          3.5,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L3-STR",
+      "source_id": "demo-sp-L3-STR",
+      "name": "Staircase L3",
+      "level_id": "L3",
+      "usage": {
+        "value": "stair",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 12.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          7.0,
+          11.5
+        ],
+        [
+          9.5,
+          11.5
+        ],
+        [
+          9.5,
+          16.5
+        ],
+        [
+          7.0,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L3-LOB",
+      "source_id": "demo-sp-L3-LOB",
+      "name": "Lift Lobby L3",
+      "level_id": "L3",
+      "usage": {
+        "value": "lobby",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 33.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          9.5,
+          11.5
+        ],
+        [
+          16.2,
+          11.5
+        ],
+        [
+          16.2,
+          16.5
+        ],
+        [
+          9.5,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L3-LFT",
+      "source_id": "demo-sp-L3-LFT",
+      "name": "Lift L3",
+      "level_id": "L3",
+      "usage": {
+        "value": "utility",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          16.2,
+          11.5
+        ],
+        [
+          18.7,
+          11.5
+        ],
+        [
+          18.7,
+          14.0
+        ],
+        [
+          16.2,
+          14.0
+        ]
+      ]
+    },
+    {
+      "id": "L3-ELE",
+      "source_id": "demo-sp-L3-ELE",
+      "name": "Electrical Room L3",
+      "level_id": "L3",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          16.2,
+          14.0
+        ],
+        [
+          18.7,
+          14.0
+        ],
+        [
+          18.7,
+          16.5
+        ],
+        [
+          16.2,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L3-STO",
+      "source_id": "demo-sp-L3-STO",
+      "name": "Store L3",
+      "level_id": "L3",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 17.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          18.7,
+          11.5
+        ],
+        [
+          22.2,
+          11.5
+        ],
+        [
+          22.2,
+          16.5
+        ],
+        [
+          18.7,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L3-CR2",
+      "source_id": "demo-sp-L3-CR2",
+      "name": "Rear Corridor L3",
+      "level_id": "L3",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 28.9,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          12.0,
+          16.5
+        ],
+        [
+          13.7,
+          16.5
+        ],
+        [
+          13.7,
+          33.5
+        ],
+        [
+          12.0,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "301-LIV",
+      "source_id": "demo-sp-301-LIV",
+      "name": "Flat 301 Living",
+      "level_id": "L3",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 22.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          2.5
+        ],
+        [
+          8.0,
+          2.5
+        ],
+        [
+          8.0,
+          7.5
+        ],
+        [
+          3.5,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "301-BR2",
+      "source_id": "demo-sp-301-BR2",
+      "name": "Flat 301 Bedroom 2",
+      "level_id": "L3",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 14.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          2.5
+        ],
+        [
+          12.0,
+          2.5
+        ],
+        [
+          12.0,
+          6.0
+        ],
+        [
+          8.0,
+          6.0
+        ]
+      ]
+    },
+    {
+      "id": "301-PAS",
+      "source_id": "demo-sp-301-PAS",
+      "name": "Flat 301 Passage",
+      "level_id": "L3",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          6.0
+        ],
+        [
+          12.0,
+          6.0
+        ],
+        [
+          12.0,
+          7.5
+        ],
+        [
+          8.0,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "301-BR1",
+      "source_id": "demo-sp-301-BR1",
+      "name": "Flat 301 Bedroom 1",
+      "level_id": "L3",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 16.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          7.5
+        ],
+        [
+          7.5,
+          7.5
+        ],
+        [
+          7.5,
+          11.5
+        ],
+        [
+          3.5,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "301-BTH",
+      "source_id": "demo-sp-301-BTH",
+      "name": "Flat 301 Bath",
+      "level_id": "L3",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          7.5,
+          7.5
+        ],
+        [
+          9.5,
+          7.5
+        ],
+        [
+          9.5,
+          9.5
+        ],
+        [
+          7.5,
+          9.5
+        ]
+      ]
+    },
+    {
+      "id": "301-WC",
+      "source_id": "demo-sp-301-WC",
+      "name": "Flat 301 WC",
+      "level_id": "L3",
+      "usage": {
+        "value": "wc",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          7.5,
+          9.5
+        ],
+        [
+          9.5,
+          9.5
+        ],
+        [
+          9.5,
+          11.5
+        ],
+        [
+          7.5,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "301-KIT",
+      "source_id": "demo-sp-301-KIT",
+      "name": "Flat 301 Kitchen",
+      "level_id": "L3",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          9.5,
+          7.5
+        ],
+        [
+          12.0,
+          7.5
+        ],
+        [
+          12.0,
+          11.5
+        ],
+        [
+          9.5,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "302-LIV",
+      "source_id": "demo-sp-302-LIV",
+      "name": "Flat 302 Living",
+      "level_id": "L3",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 22.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          2.5
+        ],
+        [
+          22.2,
+          2.5
+        ],
+        [
+          22.2,
+          7.5
+        ],
+        [
+          17.7,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "302-BR2",
+      "source_id": "demo-sp-302-BR2",
+      "name": "Flat 302 Bedroom 2",
+      "level_id": "L3",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 14.0,
+      "clear_height_m": 2.6,
+      "polygon": [
+        [
+          13.7,
+          2.5
+        ],
+        [
+          17.7,
+          2.5
+        ],
+        [
+          17.7,
+          6.0
+        ],
+        [
+          13.7,
+          6.0
+        ]
+      ]
+    },
+    {
+      "id": "302-PAS",
+      "source_id": "demo-sp-302-PAS",
+      "name": "Flat 302 Passage",
+      "level_id": "L3",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          6.0
+        ],
+        [
+          17.7,
+          6.0
+        ],
+        [
+          17.7,
+          7.5
+        ],
+        [
+          13.7,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "302-BR1",
+      "source_id": "demo-sp-302-BR1",
+      "name": "Flat 302 Bedroom 1",
+      "level_id": "L3",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 16.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          18.2,
+          7.5
+        ],
+        [
+          22.2,
+          7.5
+        ],
+        [
+          22.2,
+          11.5
+        ],
+        [
+          18.2,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "302-BTH",
+      "source_id": "demo-sp-302-BTH",
+      "name": "Flat 302 Bath",
+      "level_id": "L3",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          16.2,
+          7.5
+        ],
+        [
+          18.2,
+          7.5
+        ],
+        [
+          18.2,
+          9.5
+        ],
+        [
+          16.2,
+          9.5
+        ]
+      ]
+    },
+    {
+      "id": "302-WC",
+      "source_id": "demo-sp-302-WC",
+      "name": "Flat 302 WC",
+      "level_id": "L3",
+      "usage": {
+        "value": "wc",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          16.2,
+          9.5
+        ],
+        [
+          18.2,
+          9.5
+        ],
+        [
+          18.2,
+          11.5
+        ],
+        [
+          16.2,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "302-KIT",
+      "source_id": "demo-sp-302-KIT",
+      "name": "Flat 302 Kitchen",
+      "level_id": "L3",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          7.5
+        ],
+        [
+          16.2,
+          7.5
+        ],
+        [
+          16.2,
+          11.5
+        ],
+        [
+          13.7,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "303-LIV",
+      "source_id": "demo-sp-303-LIV",
+      "name": "Flat 303 Living",
+      "level_id": "L3",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          16.5
+        ],
+        [
+          8.0,
+          16.5
+        ],
+        [
+          8.0,
+          21.0
+        ],
+        [
+          3.5,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "303-KIT",
+      "source_id": "demo-sp-303-KIT",
+      "name": "Flat 303 Kitchen",
+      "level_id": "L3",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          16.5
+        ],
+        [
+          12.0,
+          16.5
+        ],
+        [
+          12.0,
+          19.0
+        ],
+        [
+          8.0,
+          19.0
+        ]
+      ]
+    },
+    {
+      "id": "303-PAS",
+      "source_id": "demo-sp-303-PAS",
+      "name": "Flat 303 Passage",
+      "level_id": "L3",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          19.0
+        ],
+        [
+          12.0,
+          19.0
+        ],
+        [
+          12.0,
+          21.0
+        ],
+        [
+          8.0,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "303-BR",
+      "source_id": "demo-sp-303-BR",
+      "name": "Flat 303 Bedroom",
+      "level_id": "L3",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          21.0
+        ],
+        [
+          8.0,
+          21.0
+        ],
+        [
+          8.0,
+          25.0
+        ],
+        [
+          3.5,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "303-BTH",
+      "source_id": "demo-sp-303-BTH",
+      "name": "Flat 303 Bath",
+      "level_id": "L3",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          8.0,
+          21.0
+        ],
+        [
+          10.0,
+          21.0
+        ],
+        [
+          10.0,
+          25.0
+        ],
+        [
+          8.0,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "303-UTL",
+      "source_id": "demo-sp-303-UTL",
+      "name": "Flat 303 Utility",
+      "level_id": "L3",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          10.0,
+          21.0
+        ],
+        [
+          12.0,
+          21.0
+        ],
+        [
+          12.0,
+          25.0
+        ],
+        [
+          10.0,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "304-LIV",
+      "source_id": "demo-sp-304-LIV",
+      "name": "Flat 304 Living",
+      "level_id": "L3",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          16.5
+        ],
+        [
+          22.2,
+          16.5
+        ],
+        [
+          22.2,
+          21.0
+        ],
+        [
+          17.7,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "304-KIT",
+      "source_id": "demo-sp-304-KIT",
+      "name": "Flat 304 Kitchen",
+      "level_id": "L3",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          16.5
+        ],
+        [
+          17.7,
+          16.5
+        ],
+        [
+          17.7,
+          19.0
+        ],
+        [
+          13.7,
+          19.0
+        ]
+      ]
+    },
+    {
+      "id": "304-PAS",
+      "source_id": "demo-sp-304-PAS",
+      "name": "Flat 304 Passage",
+      "level_id": "L3",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          19.0
+        ],
+        [
+          17.7,
+          19.0
+        ],
+        [
+          17.7,
+          21.0
+        ],
+        [
+          13.7,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "304-BR",
+      "source_id": "demo-sp-304-BR",
+      "name": "Flat 304 Bedroom",
+      "level_id": "L3",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          21.0
+        ],
+        [
+          22.2,
+          21.0
+        ],
+        [
+          22.2,
+          25.0
+        ],
+        [
+          17.7,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "304-BTH",
+      "source_id": "demo-sp-304-BTH",
+      "name": "Flat 304 Bath",
+      "level_id": "L3",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          15.7,
+          21.0
+        ],
+        [
+          17.7,
+          21.0
+        ],
+        [
+          17.7,
+          25.0
+        ],
+        [
+          15.7,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "304-UTL",
+      "source_id": "demo-sp-304-UTL",
+      "name": "Flat 304 Utility",
+      "level_id": "L3",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          21.0
+        ],
+        [
+          15.7,
+          21.0
+        ],
+        [
+          15.7,
+          25.0
+        ],
+        [
+          13.7,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "305-LIV",
+      "source_id": "demo-sp-305-LIV",
+      "name": "Flat 305 Living",
+      "level_id": "L3",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          25.0
+        ],
+        [
+          8.0,
+          25.0
+        ],
+        [
+          8.0,
+          29.5
+        ],
+        [
+          3.5,
+          29.5
+        ]
+      ]
+    },
+    {
+      "id": "305-KIT",
+      "source_id": "demo-sp-305-KIT",
+      "name": "Flat 305 Kitchen",
+      "level_id": "L3",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          25.0
+        ],
+        [
+          12.0,
+          25.0
+        ],
+        [
+          12.0,
+          27.5
+        ],
+        [
+          8.0,
+          27.5
+        ]
+      ]
+    },
+    {
+      "id": "305-PAS",
+      "source_id": "demo-sp-305-PAS",
+      "name": "Flat 305 Passage",
+      "level_id": "L3",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          27.5
+        ],
+        [
+          12.0,
+          27.5
+        ],
+        [
+          12.0,
+          29.5
+        ],
+        [
+          8.0,
+          29.5
+        ]
+      ]
+    },
+    {
+      "id": "305-BR",
+      "source_id": "demo-sp-305-BR",
+      "name": "Flat 305 Bedroom",
+      "level_id": "L3",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          29.5
+        ],
+        [
+          8.0,
+          29.5
+        ],
+        [
+          8.0,
+          33.5
+        ],
+        [
+          3.5,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "305-BTH",
+      "source_id": "demo-sp-305-BTH",
+      "name": "Flat 305 Bath",
+      "level_id": "L3",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          8.0,
+          29.5
+        ],
+        [
+          10.0,
+          29.5
+        ],
+        [
+          10.0,
+          33.5
+        ],
+        [
+          8.0,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "305-UTL",
+      "source_id": "demo-sp-305-UTL",
+      "name": "Flat 305 Utility",
+      "level_id": "L3",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          10.0,
+          29.5
+        ],
+        [
+          12.0,
+          29.5
+        ],
+        [
+          12.0,
+          33.5
+        ],
+        [
+          10.0,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "306-LIV",
+      "source_id": "demo-sp-306-LIV",
+      "name": "Flat 306 Living",
+      "level_id": "L3",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          25.0
+        ],
+        [
+          22.2,
+          25.0
+        ],
+        [
+          22.2,
+          29.5
+        ],
+        [
+          17.7,
+          29.5
+        ]
+      ]
+    },
+    {
+      "id": "306-KIT",
+      "source_id": "demo-sp-306-KIT",
+      "name": "Flat 306 Kitchen",
+      "level_id": "L3",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          25.0
+        ],
+        [
+          17.7,
+          25.0
+        ],
+        [
+          17.7,
+          27.5
+        ],
+        [
+          13.7,
+          27.5
+        ]
+      ]
+    },
+    {
+      "id": "306-PAS",
+      "source_id": "demo-sp-306-PAS",
+      "name": "Flat 306 Passage",
+      "level_id": "L3",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          27.5
+        ],
+        [
+          17.7,
+          27.5
+        ],
+        [
+          17.7,
+          29.5
+        ],
+        [
+          13.7,
+          29.5
+        ]
+      ]
+    },
+    {
+      "id": "306-BR",
+      "source_id": "demo-sp-306-BR",
+      "name": "Flat 306 Bedroom",
+      "level_id": "L3",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          29.5
+        ],
+        [
+          22.2,
+          29.5
+        ],
+        [
+          22.2,
+          33.5
+        ],
+        [
+          17.7,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "306-BTH",
+      "source_id": "demo-sp-306-BTH",
+      "name": "Flat 306 Bath",
+      "level_id": "L3",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          15.7,
+          29.5
+        ],
+        [
+          17.7,
+          29.5
+        ],
+        [
+          17.7,
+          33.5
+        ],
+        [
+          15.7,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "306-UTL",
+      "source_id": "demo-sp-306-UTL",
+      "name": "Flat 306 Utility",
+      "level_id": "L3",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          29.5
+        ],
+        [
+          15.7,
+          29.5
+        ],
+        [
+          15.7,
+          33.5
+        ],
+        [
+          13.7,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "L4-COR",
+      "source_id": "demo-sp-L4-COR",
+      "name": "Corridor L4",
+      "level_id": "L4",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 15.3,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          12.0,
+          2.5
+        ],
+        [
+          13.7,
+          2.5
+        ],
+        [
+          13.7,
+          11.5
+        ],
+        [
+          12.0,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "L4-SRV",
+      "source_id": "demo-sp-L4-SRV",
+      "name": "Services L4",
+      "level_id": "L4",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 17.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          11.5
+        ],
+        [
+          7.0,
+          11.5
+        ],
+        [
+          7.0,
+          16.5
+        ],
+        [
+          3.5,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L4-STR",
+      "source_id": "demo-sp-L4-STR",
+      "name": "Staircase L4",
+      "level_id": "L4",
+      "usage": {
+        "value": "stair",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 12.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          7.0,
+          11.5
+        ],
+        [
+          9.5,
+          11.5
+        ],
+        [
+          9.5,
+          16.5
+        ],
+        [
+          7.0,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L4-LOB",
+      "source_id": "demo-sp-L4-LOB",
+      "name": "Lift Lobby L4",
+      "level_id": "L4",
+      "usage": {
+        "value": "lobby",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 33.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          9.5,
+          11.5
+        ],
+        [
+          16.2,
+          11.5
+        ],
+        [
+          16.2,
+          16.5
+        ],
+        [
+          9.5,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L4-LFT",
+      "source_id": "demo-sp-L4-LFT",
+      "name": "Lift L4",
+      "level_id": "L4",
+      "usage": {
+        "value": "utility",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          16.2,
+          11.5
+        ],
+        [
+          18.7,
+          11.5
+        ],
+        [
+          18.7,
+          14.0
+        ],
+        [
+          16.2,
+          14.0
+        ]
+      ]
+    },
+    {
+      "id": "L4-ELE",
+      "source_id": "demo-sp-L4-ELE",
+      "name": "Electrical Room L4",
+      "level_id": "L4",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          16.2,
+          14.0
+        ],
+        [
+          18.7,
+          14.0
+        ],
+        [
+          18.7,
+          16.5
+        ],
+        [
+          16.2,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L4-STO",
+      "source_id": "demo-sp-L4-STO",
+      "name": "Store L4",
+      "level_id": "L4",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 17.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          18.7,
+          11.5
+        ],
+        [
+          22.2,
+          11.5
+        ],
+        [
+          22.2,
+          16.5
+        ],
+        [
+          18.7,
+          16.5
+        ]
+      ]
+    },
+    {
+      "id": "L4-CR2",
+      "source_id": "demo-sp-L4-CR2",
+      "name": "Rear Corridor L4",
+      "level_id": "L4",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 28.9,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          12.0,
+          16.5
+        ],
+        [
+          13.7,
+          16.5
+        ],
+        [
+          13.7,
+          33.5
+        ],
+        [
+          12.0,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "401-LIV",
+      "source_id": "demo-sp-401-LIV",
+      "name": "Flat 401 Living",
+      "level_id": "L4",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 22.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          2.5
+        ],
+        [
+          8.0,
+          2.5
+        ],
+        [
+          8.0,
+          7.5
+        ],
+        [
+          3.5,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "401-BR2",
+      "source_id": "demo-sp-401-BR2",
+      "name": "Flat 401 Bedroom 2",
+      "level_id": "L4",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 14.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          2.5
+        ],
+        [
+          12.0,
+          2.5
+        ],
+        [
+          12.0,
+          6.0
+        ],
+        [
+          8.0,
+          6.0
+        ]
+      ]
+    },
+    {
+      "id": "401-PAS",
+      "source_id": "demo-sp-401-PAS",
+      "name": "Flat 401 Passage",
+      "level_id": "L4",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          6.0
+        ],
+        [
+          12.0,
+          6.0
+        ],
+        [
+          12.0,
+          7.5
+        ],
+        [
+          8.0,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "401-BR1",
+      "source_id": "demo-sp-401-BR1",
+      "name": "Flat 401 Bedroom 1",
+      "level_id": "L4",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 16.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          7.5
+        ],
+        [
+          7.5,
+          7.5
+        ],
+        [
+          7.5,
+          11.5
+        ],
+        [
+          3.5,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "401-BTH",
+      "source_id": "demo-sp-401-BTH",
+      "name": "Flat 401 Bath",
+      "level_id": "L4",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          7.5,
+          7.5
+        ],
+        [
+          9.5,
+          7.5
+        ],
+        [
+          9.5,
+          9.5
+        ],
+        [
+          7.5,
+          9.5
+        ]
+      ]
+    },
+    {
+      "id": "401-WC",
+      "source_id": "demo-sp-401-WC",
+      "name": "Flat 401 WC",
+      "level_id": "L4",
+      "usage": {
+        "value": "wc",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          7.5,
+          9.5
+        ],
+        [
+          9.5,
+          9.5
+        ],
+        [
+          9.5,
+          11.5
+        ],
+        [
+          7.5,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "401-KIT",
+      "source_id": "demo-sp-401-KIT",
+      "name": "Flat 401 Kitchen",
+      "level_id": "L4",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          9.5,
+          7.5
+        ],
+        [
+          12.0,
+          7.5
+        ],
+        [
+          12.0,
+          11.5
+        ],
+        [
+          9.5,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "402-LIV",
+      "source_id": "demo-sp-402-LIV",
+      "name": "Flat 402 Living",
+      "level_id": "L4",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 22.5,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          2.5
+        ],
+        [
+          22.2,
+          2.5
+        ],
+        [
+          22.2,
+          7.5
+        ],
+        [
+          17.7,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "402-BR2",
+      "source_id": "demo-sp-402-BR2",
+      "name": "Flat 402 Bedroom 2",
+      "level_id": "L4",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 14.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          2.5
+        ],
+        [
+          17.7,
+          2.5
+        ],
+        [
+          17.7,
+          6.0
+        ],
+        [
+          13.7,
+          6.0
+        ]
+      ]
+    },
+    {
+      "id": "402-PAS",
+      "source_id": "demo-sp-402-PAS",
+      "name": "Flat 402 Passage",
+      "level_id": "L4",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          6.0
+        ],
+        [
+          17.7,
+          6.0
+        ],
+        [
+          17.7,
+          7.5
+        ],
+        [
+          13.7,
+          7.5
+        ]
+      ]
+    },
+    {
+      "id": "402-BR1",
+      "source_id": "demo-sp-402-BR1",
+      "name": "Flat 402 Bedroom 1",
+      "level_id": "L4",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 16.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          18.2,
+          7.5
+        ],
+        [
+          22.2,
+          7.5
+        ],
+        [
+          22.2,
+          11.5
+        ],
+        [
+          18.2,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "402-BTH",
+      "source_id": "demo-sp-402-BTH",
+      "name": "Flat 402 Bath",
+      "level_id": "L4",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          16.2,
+          7.5
+        ],
+        [
+          18.2,
+          7.5
+        ],
+        [
+          18.2,
+          9.5
+        ],
+        [
+          16.2,
+          9.5
+        ]
+      ]
+    },
+    {
+      "id": "402-WC",
+      "source_id": "demo-sp-402-WC",
+      "name": "Flat 402 WC",
+      "level_id": "L4",
+      "usage": {
+        "value": "wc",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          16.2,
+          9.5
+        ],
+        [
+          18.2,
+          9.5
+        ],
+        [
+          18.2,
+          11.5
+        ],
+        [
+          16.2,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "402-KIT",
+      "source_id": "demo-sp-402-KIT",
+      "name": "Flat 402 Kitchen",
+      "level_id": "L4",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          7.5
+        ],
+        [
+          16.2,
+          7.5
+        ],
+        [
+          16.2,
+          11.5
+        ],
+        [
+          13.7,
+          11.5
+        ]
+      ]
+    },
+    {
+      "id": "403-LIV",
+      "source_id": "demo-sp-403-LIV",
+      "name": "Flat 403 Living",
+      "level_id": "L4",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          16.5
+        ],
+        [
+          8.0,
+          16.5
+        ],
+        [
+          8.0,
+          21.0
+        ],
+        [
+          3.5,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "403-KIT",
+      "source_id": "demo-sp-403-KIT",
+      "name": "Flat 403 Kitchen",
+      "level_id": "L4",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          16.5
+        ],
+        [
+          12.0,
+          16.5
+        ],
+        [
+          12.0,
+          19.0
+        ],
+        [
+          8.0,
+          19.0
+        ]
+      ]
+    },
+    {
+      "id": "403-PAS",
+      "source_id": "demo-sp-403-PAS",
+      "name": "Flat 403 Passage",
+      "level_id": "L4",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          19.0
+        ],
+        [
+          12.0,
+          19.0
+        ],
+        [
+          12.0,
+          21.0
+        ],
+        [
+          8.0,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "403-BR",
+      "source_id": "demo-sp-403-BR",
+      "name": "Flat 403 Bedroom",
+      "level_id": "L4",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          21.0
+        ],
+        [
+          8.0,
+          21.0
+        ],
+        [
+          8.0,
+          25.0
+        ],
+        [
+          3.5,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "403-BTH",
+      "source_id": "demo-sp-403-BTH",
+      "name": "Flat 403 Bath",
+      "level_id": "L4",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          8.0,
+          21.0
+        ],
+        [
+          10.0,
+          21.0
+        ],
+        [
+          10.0,
+          25.0
+        ],
+        [
+          8.0,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "403-UTL",
+      "source_id": "demo-sp-403-UTL",
+      "name": "Flat 403 Utility",
+      "level_id": "L4",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          10.0,
+          21.0
+        ],
+        [
+          12.0,
+          21.0
+        ],
+        [
+          12.0,
+          25.0
+        ],
+        [
+          10.0,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "404-LIV",
+      "source_id": "demo-sp-404-LIV",
+      "name": "Flat 404 Living",
+      "level_id": "L4",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          16.5
+        ],
+        [
+          22.2,
+          16.5
+        ],
+        [
+          22.2,
+          21.0
+        ],
+        [
+          17.7,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "404-KIT",
+      "source_id": "demo-sp-404-KIT",
+      "name": "Flat 404 Kitchen",
+      "level_id": "L4",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          16.5
+        ],
+        [
+          17.7,
+          16.5
+        ],
+        [
+          17.7,
+          19.0
+        ],
+        [
+          13.7,
+          19.0
+        ]
+      ]
+    },
+    {
+      "id": "404-PAS",
+      "source_id": "demo-sp-404-PAS",
+      "name": "Flat 404 Passage",
+      "level_id": "L4",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          19.0
+        ],
+        [
+          17.7,
+          19.0
+        ],
+        [
+          17.7,
+          21.0
+        ],
+        [
+          13.7,
+          21.0
+        ]
+      ]
+    },
+    {
+      "id": "404-BR",
+      "source_id": "demo-sp-404-BR",
+      "name": "Flat 404 Bedroom",
+      "level_id": "L4",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          21.0
+        ],
+        [
+          22.2,
+          21.0
+        ],
+        [
+          22.2,
+          25.0
+        ],
+        [
+          17.7,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "404-BTH",
+      "source_id": "demo-sp-404-BTH",
+      "name": "Flat 404 Bath",
+      "level_id": "L4",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          15.7,
+          21.0
+        ],
+        [
+          17.7,
+          21.0
+        ],
+        [
+          17.7,
+          25.0
+        ],
+        [
+          15.7,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "404-UTL",
+      "source_id": "demo-sp-404-UTL",
+      "name": "Flat 404 Utility",
+      "level_id": "L4",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          21.0
+        ],
+        [
+          15.7,
+          21.0
+        ],
+        [
+          15.7,
+          25.0
+        ],
+        [
+          13.7,
+          25.0
+        ]
+      ]
+    },
+    {
+      "id": "405-LIV",
+      "source_id": "demo-sp-405-LIV",
+      "name": "Flat 405 Living",
+      "level_id": "L4",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          25.0
+        ],
+        [
+          8.0,
+          25.0
+        ],
+        [
+          8.0,
+          29.5
+        ],
+        [
+          3.5,
+          29.5
+        ]
+      ]
+    },
+    {
+      "id": "405-KIT",
+      "source_id": "demo-sp-405-KIT",
+      "name": "Flat 405 Kitchen",
+      "level_id": "L4",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          25.0
+        ],
+        [
+          12.0,
+          25.0
+        ],
+        [
+          12.0,
+          27.5
+        ],
+        [
+          8.0,
+          27.5
+        ]
+      ]
+    },
+    {
+      "id": "405-PAS",
+      "source_id": "demo-sp-405-PAS",
+      "name": "Flat 405 Passage",
+      "level_id": "L4",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          8.0,
+          27.5
+        ],
+        [
+          12.0,
+          27.5
+        ],
+        [
+          12.0,
+          29.5
+        ],
+        [
+          8.0,
+          29.5
+        ]
+      ]
+    },
+    {
+      "id": "405-BR",
+      "source_id": "demo-sp-405-BR",
+      "name": "Flat 405 Bedroom",
+      "level_id": "L4",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          3.5,
+          29.5
+        ],
+        [
+          8.0,
+          29.5
+        ],
+        [
+          8.0,
+          33.5
+        ],
+        [
+          3.5,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "405-BTH",
+      "source_id": "demo-sp-405-BTH",
+      "name": "Flat 405 Bath",
+      "level_id": "L4",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          8.0,
+          29.5
+        ],
+        [
+          10.0,
+          29.5
+        ],
+        [
+          10.0,
+          33.5
+        ],
+        [
+          8.0,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "405-UTL",
+      "source_id": "demo-sp-405-UTL",
+      "name": "Flat 405 Utility",
+      "level_id": "L4",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          10.0,
+          29.5
+        ],
+        [
+          12.0,
+          29.5
+        ],
+        [
+          12.0,
+          33.5
+        ],
+        [
+          10.0,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "406-LIV",
+      "source_id": "demo-sp-406-LIV",
+      "name": "Flat 406 Living",
+      "level_id": "L4",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.25,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          25.0
+        ],
+        [
+          22.2,
+          25.0
+        ],
+        [
+          22.2,
+          29.5
+        ],
+        [
+          17.7,
+          29.5
+        ]
+      ]
+    },
+    {
+      "id": "406-KIT",
+      "source_id": "demo-sp-406-KIT",
+      "name": "Flat 406 Kitchen",
+      "level_id": "L4",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 10.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          25.0
+        ],
+        [
+          17.7,
+          25.0
+        ],
+        [
+          17.7,
+          27.5
+        ],
+        [
+          13.7,
+          27.5
+        ]
+      ]
+    },
+    {
+      "id": "406-PAS",
+      "source_id": "demo-sp-406-PAS",
+      "name": "Flat 406 Passage",
+      "level_id": "L4",
+      "usage": {
+        "value": "corridor",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          27.5
+        ],
+        [
+          17.7,
+          27.5
+        ],
+        [
+          17.7,
+          29.5
+        ],
+        [
+          13.7,
+          29.5
+        ]
+      ]
+    },
+    {
+      "id": "406-BR",
+      "source_id": "demo-sp-406-BR",
+      "name": "Flat 406 Bedroom",
+      "level_id": "L4",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 18.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          17.7,
+          29.5
+        ],
+        [
+          22.2,
+          29.5
+        ],
+        [
+          22.2,
+          33.5
+        ],
+        [
+          17.7,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "406-BTH",
+      "source_id": "demo-sp-406-BTH",
+      "name": "Flat 406 Bath",
+      "level_id": "L4",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.4,
+      "polygon": [
+        [
+          15.7,
+          29.5
+        ],
+        [
+          17.7,
+          29.5
+        ],
+        [
+          17.7,
+          33.5
+        ],
+        [
+          15.7,
+          33.5
+        ]
+      ]
+    },
+    {
+      "id": "406-UTL",
+      "source_id": "demo-sp-406-UTL",
+      "name": "Flat 406 Utility",
+      "level_id": "L4",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.8,
+      "polygon": [
+        [
+          13.7,
+          29.5
+        ],
+        [
+          15.7,
+          29.5
+        ],
+        [
+          15.7,
+          33.5
+        ],
+        [
+          13.7,
+          33.5
+        ]
+      ]
+    }
+  ],
+  "areas": [
+    {
+      "id": "A0",
+      "source_id": "demo-ar-0",
+      "scheme": "Gross Building",
+      "level_id": "L0",
+      "name": "BUA Ground Floor",
+      "area_m2": 261.8,
+      "counts_to_far": {
+        "value": true,
+        "source": "model"
+      }
+    },
+    {
+      "id": "A1",
+      "source_id": "demo-ar-1",
+      "scheme": "Gross Building",
+      "level_id": "L1",
+      "name": "BUA Floor 1",
+      "area_m2": 579.7,
+      "counts_to_far": {
+        "value": true,
+        "source": "model"
+      }
+    },
+    {
+      "id": "A2",
+      "source_id": "demo-ar-2",
+      "scheme": "Gross Building",
+      "level_id": "L2",
+      "name": "BUA Floor 2",
+      "area_m2": 579.7,
+      "counts_to_far": {
+        "value": true,
+        "source": "model"
+      }
+    },
+    {
+      "id": "A3",
+      "source_id": "demo-ar-3",
+      "scheme": "Gross Building",
+      "level_id": "L3",
+      "name": "BUA Floor 3",
+      "area_m2": 579.7,
+      "counts_to_far": {
+        "value": true,
+        "source": "model"
+      }
+    },
+    {
+      "id": "A4",
+      "source_id": "demo-ar-4",
+      "scheme": "Gross Building",
+      "level_id": "L4",
+      "name": "BUA Floor 4",
+      "area_m2": 579.7,
+      "counts_to_far": {
+        "value": true,
+        "source": "model"
+      }
+    }
+  ],
+  "stairs": [
+    {
+      "id": "ST1",
+      "source_id": "demo-st-1",
+      "base_level_id": "L0",
+      "top_level_id": "L4",
+      "min_run_width_m": 1.0,
+      "riser_m": 0.1875,
+      "tread_m": 0.25,
+      "is_exit": {
+        "value": true,
+        "source": "model",
+        "note": "Pset_StairCommon.FireExit"
+      }
+    }
+  ],
+  "doors": [
+    {
+      "id": "D001",
+      "source_id": "demo-dr-D001",
+      "level_id": "L0",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L0-LOB",
+      "to_space_id": "L0-STR"
+    },
+    {
+      "id": "D002",
+      "source_id": "demo-dr-D002",
+      "level_id": "L0",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L0-STR",
+      "to_space_id": "L0-SRV"
+    },
+    {
+      "id": "D003",
+      "source_id": "demo-dr-D003",
+      "level_id": "L0",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L0-LOB",
+      "to_space_id": "L0-LFT"
+    },
+    {
+      "id": "D004",
+      "source_id": "demo-dr-D004",
+      "level_id": "L0",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L0-LOB",
+      "to_space_id": "L0-ELE"
+    },
+    {
+      "id": "D005",
+      "source_id": "demo-dr-D005",
+      "level_id": "L0",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L0-ELE",
+      "to_space_id": "L0-STO"
+    },
+    {
+      "id": "D006",
+      "source_id": "demo-dr-D006",
+      "level_id": "L0",
+      "width_m": 2.4,
+      "height_m": 2.4,
+      "is_exit": {
+        "value": true,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "G-SH1",
+      "to_space_id": null
+    },
+    {
+      "id": "D007",
+      "source_id": "demo-dr-D007",
+      "level_id": "L0",
+      "width_m": 2.4,
+      "height_m": 2.4,
+      "is_exit": {
+        "value": true,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "G-SH2",
+      "to_space_id": null
+    },
+    {
+      "id": "D008",
+      "source_id": "demo-dr-D008",
+      "level_id": "L0",
+      "width_m": 0.85,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": true,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "G-ENT",
+      "to_space_id": null
+    },
+    {
+      "id": "D009",
+      "source_id": "demo-dr-D009",
+      "level_id": "L0",
+      "width_m": 1.5,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "G-ENT",
+      "to_space_id": "L0-LOB"
+    },
+    {
+      "id": "D010",
+      "source_id": "demo-dr-D010",
+      "level_id": "L0",
+      "width_m": 1.2,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L0-LOB",
+      "to_space_id": "G-PRK"
+    },
+    {
+      "id": "D011",
+      "source_id": "demo-dr-D011",
+      "level_id": "L1",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L1-LOB",
+      "to_space_id": "L1-STR"
+    },
+    {
+      "id": "D012",
+      "source_id": "demo-dr-D012",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L1-STR",
+      "to_space_id": "L1-SRV"
+    },
+    {
+      "id": "D013",
+      "source_id": "demo-dr-D013",
+      "level_id": "L1",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L1-LOB",
+      "to_space_id": "L1-LFT"
+    },
+    {
+      "id": "D014",
+      "source_id": "demo-dr-D014",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L1-LOB",
+      "to_space_id": "L1-ELE"
+    },
+    {
+      "id": "D015",
+      "source_id": "demo-dr-D015",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L1-ELE",
+      "to_space_id": "L1-STO"
+    },
+    {
+      "id": "D016",
+      "source_id": "demo-dr-D016",
+      "level_id": "L1",
+      "width_m": 1.2,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L1-COR",
+      "to_space_id": "L1-LOB"
+    },
+    {
+      "id": "D017",
+      "source_id": "demo-dr-D017",
+      "level_id": "L1",
+      "width_m": 1.2,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L1-LOB",
+      "to_space_id": "L1-CR2"
+    },
+    {
+      "id": "D018",
+      "source_id": "demo-dr-D018",
+      "level_id": "L1",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "101-PAS",
+      "to_space_id": "L1-COR"
+    },
+    {
+      "id": "D019",
+      "source_id": "demo-dr-D019",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "101-PAS",
+      "to_space_id": "101-LIV"
+    },
+    {
+      "id": "D020",
+      "source_id": "demo-dr-D020",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "101-PAS",
+      "to_space_id": "101-BR2"
+    },
+    {
+      "id": "D021",
+      "source_id": "demo-dr-D021",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "101-PAS",
+      "to_space_id": "101-KIT"
+    },
+    {
+      "id": "D022",
+      "source_id": "demo-dr-D022",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "101-PAS",
+      "to_space_id": "101-BTH"
+    },
+    {
+      "id": "D023",
+      "source_id": "demo-dr-D023",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "101-LIV",
+      "to_space_id": "101-BR1"
+    },
+    {
+      "id": "D024",
+      "source_id": "demo-dr-D024",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "101-BR1",
+      "to_space_id": "101-WC"
+    },
+    {
+      "id": "D025",
+      "source_id": "demo-dr-D025",
+      "level_id": "L1",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "102-PAS",
+      "to_space_id": "L1-COR"
+    },
+    {
+      "id": "D026",
+      "source_id": "demo-dr-D026",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "102-PAS",
+      "to_space_id": "102-LIV"
+    },
+    {
+      "id": "D027",
+      "source_id": "demo-dr-D027",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "102-PAS",
+      "to_space_id": "102-BR2"
+    },
+    {
+      "id": "D028",
+      "source_id": "demo-dr-D028",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "102-PAS",
+      "to_space_id": "102-KIT"
+    },
+    {
+      "id": "D029",
+      "source_id": "demo-dr-D029",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "102-PAS",
+      "to_space_id": "102-BTH"
+    },
+    {
+      "id": "D030",
+      "source_id": "demo-dr-D030",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "102-LIV",
+      "to_space_id": "102-BR1"
+    },
+    {
+      "id": "D031",
+      "source_id": "demo-dr-D031",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "102-BR1",
+      "to_space_id": "102-WC"
+    },
+    {
+      "id": "D032",
+      "source_id": "demo-dr-D032",
+      "level_id": "L1",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "103-PAS",
+      "to_space_id": "L1-CR2"
+    },
+    {
+      "id": "D033",
+      "source_id": "demo-dr-D033",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "103-PAS",
+      "to_space_id": "103-LIV"
+    },
+    {
+      "id": "D034",
+      "source_id": "demo-dr-D034",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "103-PAS",
+      "to_space_id": "103-KIT"
+    },
+    {
+      "id": "D035",
+      "source_id": "demo-dr-D035",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "103-PAS",
+      "to_space_id": "103-BTH"
+    },
+    {
+      "id": "D036",
+      "source_id": "demo-dr-D036",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "103-PAS",
+      "to_space_id": "103-UTL"
+    },
+    {
+      "id": "D037",
+      "source_id": "demo-dr-D037",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "103-LIV",
+      "to_space_id": "103-BR"
+    },
+    {
+      "id": "D038",
+      "source_id": "demo-dr-D038",
+      "level_id": "L1",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "104-PAS",
+      "to_space_id": "L1-CR2"
+    },
+    {
+      "id": "D039",
+      "source_id": "demo-dr-D039",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "104-PAS",
+      "to_space_id": "104-LIV"
+    },
+    {
+      "id": "D040",
+      "source_id": "demo-dr-D040",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "104-PAS",
+      "to_space_id": "104-KIT"
+    },
+    {
+      "id": "D041",
+      "source_id": "demo-dr-D041",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "104-PAS",
+      "to_space_id": "104-BTH"
+    },
+    {
+      "id": "D042",
+      "source_id": "demo-dr-D042",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "104-PAS",
+      "to_space_id": "104-UTL"
+    },
+    {
+      "id": "D043",
+      "source_id": "demo-dr-D043",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "104-LIV",
+      "to_space_id": "104-BR"
+    },
+    {
+      "id": "D044",
+      "source_id": "demo-dr-D044",
+      "level_id": "L1",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "105-PAS",
+      "to_space_id": "L1-CR2"
+    },
+    {
+      "id": "D045",
+      "source_id": "demo-dr-D045",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "105-PAS",
+      "to_space_id": "105-KIT"
+    },
+    {
+      "id": "D046",
+      "source_id": "demo-dr-D046",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "105-PAS",
+      "to_space_id": "105-BTH"
+    },
+    {
+      "id": "D047",
+      "source_id": "demo-dr-D047",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "105-KIT",
+      "to_space_id": "105-LIV"
+    },
+    {
+      "id": "D048",
+      "source_id": "demo-dr-D048",
+      "level_id": "L1",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "105-PAS",
+      "to_space_id": "105-STO"
+    },
+    {
+      "id": "D049",
+      "source_id": "demo-dr-D049",
+      "level_id": "L1",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "106-PAS",
+      "to_space_id": "L1-CR2"
+    },
+    {
+      "id": "D050",
+      "source_id": "demo-dr-D050",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "106-PAS",
+      "to_space_id": "106-LIV"
+    },
+    {
+      "id": "D051",
+      "source_id": "demo-dr-D051",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "106-PAS",
+      "to_space_id": "106-KIT"
+    },
+    {
+      "id": "D052",
+      "source_id": "demo-dr-D052",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "106-PAS",
+      "to_space_id": "106-BTH"
+    },
+    {
+      "id": "D053",
+      "source_id": "demo-dr-D053",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "106-PAS",
+      "to_space_id": "106-UTL"
+    },
+    {
+      "id": "D054",
+      "source_id": "demo-dr-D054",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "106-LIV",
+      "to_space_id": "106-BR"
+    },
+    {
+      "id": "D055",
+      "source_id": "demo-dr-D055",
+      "level_id": "L2",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L2-LOB",
+      "to_space_id": "L2-STR"
+    },
+    {
+      "id": "D056",
+      "source_id": "demo-dr-D056",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L2-STR",
+      "to_space_id": "L2-SRV"
+    },
+    {
+      "id": "D057",
+      "source_id": "demo-dr-D057",
+      "level_id": "L2",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L2-LOB",
+      "to_space_id": "L2-LFT"
+    },
+    {
+      "id": "D058",
+      "source_id": "demo-dr-D058",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L2-LOB",
+      "to_space_id": "L2-ELE"
+    },
+    {
+      "id": "D059",
+      "source_id": "demo-dr-D059",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L2-ELE",
+      "to_space_id": "L2-STO"
+    },
+    {
+      "id": "D060",
+      "source_id": "demo-dr-D060",
+      "level_id": "L2",
+      "width_m": 1.2,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L2-COR",
+      "to_space_id": "L2-LOB"
+    },
+    {
+      "id": "D061",
+      "source_id": "demo-dr-D061",
+      "level_id": "L2",
+      "width_m": 1.2,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L2-LOB",
+      "to_space_id": "L2-CR2"
+    },
+    {
+      "id": "D062",
+      "source_id": "demo-dr-D062",
+      "level_id": "L2",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "201-PAS",
+      "to_space_id": "L2-COR"
+    },
+    {
+      "id": "D063",
+      "source_id": "demo-dr-D063",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "201-PAS",
+      "to_space_id": "201-LIV"
+    },
+    {
+      "id": "D064",
+      "source_id": "demo-dr-D064",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "201-PAS",
+      "to_space_id": "201-BR2"
+    },
+    {
+      "id": "D065",
+      "source_id": "demo-dr-D065",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "201-PAS",
+      "to_space_id": "201-KIT"
+    },
+    {
+      "id": "D066",
+      "source_id": "demo-dr-D066",
+      "level_id": "L2",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "201-PAS",
+      "to_space_id": "201-BTH"
+    },
+    {
+      "id": "D067",
+      "source_id": "demo-dr-D067",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "201-LIV",
+      "to_space_id": "201-BR1"
+    },
+    {
+      "id": "D068",
+      "source_id": "demo-dr-D068",
+      "level_id": "L2",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "201-BR1",
+      "to_space_id": "201-WC"
+    },
+    {
+      "id": "D069",
+      "source_id": "demo-dr-D069",
+      "level_id": "L2",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "202-PAS",
+      "to_space_id": "L2-COR"
+    },
+    {
+      "id": "D070",
+      "source_id": "demo-dr-D070",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "202-PAS",
+      "to_space_id": "202-LIV"
+    },
+    {
+      "id": "D071",
+      "source_id": "demo-dr-D071",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "202-PAS",
+      "to_space_id": "202-BR2"
+    },
+    {
+      "id": "D072",
+      "source_id": "demo-dr-D072",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "202-PAS",
+      "to_space_id": "202-KIT"
+    },
+    {
+      "id": "D073",
+      "source_id": "demo-dr-D073",
+      "level_id": "L2",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "202-PAS",
+      "to_space_id": "202-BTH"
+    },
+    {
+      "id": "D074",
+      "source_id": "demo-dr-D074",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "202-LIV",
+      "to_space_id": "202-BR1"
+    },
+    {
+      "id": "D075",
+      "source_id": "demo-dr-D075",
+      "level_id": "L2",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "202-BR1",
+      "to_space_id": "202-WC"
+    },
+    {
+      "id": "D076",
+      "source_id": "demo-dr-D076",
+      "level_id": "L2",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "203-PAS",
+      "to_space_id": "L2-CR2"
+    },
+    {
+      "id": "D077",
+      "source_id": "demo-dr-D077",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "203-PAS",
+      "to_space_id": "203-LIV"
+    },
+    {
+      "id": "D078",
+      "source_id": "demo-dr-D078",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "203-PAS",
+      "to_space_id": "203-KIT"
+    },
+    {
+      "id": "D079",
+      "source_id": "demo-dr-D079",
+      "level_id": "L2",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "203-PAS",
+      "to_space_id": "203-BTH"
+    },
+    {
+      "id": "D080",
+      "source_id": "demo-dr-D080",
+      "level_id": "L2",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "203-PAS",
+      "to_space_id": "203-UTL"
+    },
+    {
+      "id": "D081",
+      "source_id": "demo-dr-D081",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "203-LIV",
+      "to_space_id": "203-BR"
+    },
+    {
+      "id": "D082",
+      "source_id": "demo-dr-D082",
+      "level_id": "L2",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "204-PAS",
+      "to_space_id": "L2-CR2"
+    },
+    {
+      "id": "D083",
+      "source_id": "demo-dr-D083",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "204-PAS",
+      "to_space_id": "204-LIV"
+    },
+    {
+      "id": "D084",
+      "source_id": "demo-dr-D084",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "204-PAS",
+      "to_space_id": "204-KIT"
+    },
+    {
+      "id": "D085",
+      "source_id": "demo-dr-D085",
+      "level_id": "L2",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "204-PAS",
+      "to_space_id": "204-BTH"
+    },
+    {
+      "id": "D086",
+      "source_id": "demo-dr-D086",
+      "level_id": "L2",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "204-PAS",
+      "to_space_id": "204-UTL"
+    },
+    {
+      "id": "D087",
+      "source_id": "demo-dr-D087",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "204-LIV",
+      "to_space_id": "204-BR"
+    },
+    {
+      "id": "D088",
+      "source_id": "demo-dr-D088",
+      "level_id": "L2",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "205-PAS",
+      "to_space_id": "L2-CR2"
+    },
+    {
+      "id": "D089",
+      "source_id": "demo-dr-D089",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "205-PAS",
+      "to_space_id": "205-LIV"
+    },
+    {
+      "id": "D090",
+      "source_id": "demo-dr-D090",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "205-PAS",
+      "to_space_id": "205-KIT"
+    },
+    {
+      "id": "D091",
+      "source_id": "demo-dr-D091",
+      "level_id": "L2",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "205-PAS",
+      "to_space_id": "205-BTH"
+    },
+    {
+      "id": "D092",
+      "source_id": "demo-dr-D092",
+      "level_id": "L2",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "205-PAS",
+      "to_space_id": "205-UTL"
+    },
+    {
+      "id": "D093",
+      "source_id": "demo-dr-D093",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "205-LIV",
+      "to_space_id": "205-BR"
+    },
+    {
+      "id": "D094",
+      "source_id": "demo-dr-D094",
+      "level_id": "L2",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "206-PAS",
+      "to_space_id": "L2-CR2"
+    },
+    {
+      "id": "D095",
+      "source_id": "demo-dr-D095",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "206-PAS",
+      "to_space_id": "206-LIV"
+    },
+    {
+      "id": "D096",
+      "source_id": "demo-dr-D096",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "206-PAS",
+      "to_space_id": "206-KIT"
+    },
+    {
+      "id": "D097",
+      "source_id": "demo-dr-D097",
+      "level_id": "L2",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "206-PAS",
+      "to_space_id": "206-BTH"
+    },
+    {
+      "id": "D098",
+      "source_id": "demo-dr-D098",
+      "level_id": "L2",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "206-PAS",
+      "to_space_id": "206-UTL"
+    },
+    {
+      "id": "D099",
+      "source_id": "demo-dr-D099",
+      "level_id": "L2",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "206-LIV",
+      "to_space_id": "206-BR"
+    },
+    {
+      "id": "D100",
+      "source_id": "demo-dr-D100",
+      "level_id": "L3",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L3-LOB",
+      "to_space_id": "L3-STR"
+    },
+    {
+      "id": "D101",
+      "source_id": "demo-dr-D101",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L3-STR",
+      "to_space_id": "L3-SRV"
+    },
+    {
+      "id": "D102",
+      "source_id": "demo-dr-D102",
+      "level_id": "L3",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L3-LOB",
+      "to_space_id": "L3-LFT"
+    },
+    {
+      "id": "D103",
+      "source_id": "demo-dr-D103",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L3-LOB",
+      "to_space_id": "L3-ELE"
+    },
+    {
+      "id": "D104",
+      "source_id": "demo-dr-D104",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L3-ELE",
+      "to_space_id": "L3-STO"
+    },
+    {
+      "id": "D105",
+      "source_id": "demo-dr-D105",
+      "level_id": "L3",
+      "width_m": 1.2,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L3-COR",
+      "to_space_id": "L3-LOB"
+    },
+    {
+      "id": "D106",
+      "source_id": "demo-dr-D106",
+      "level_id": "L3",
+      "width_m": 1.2,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L3-LOB",
+      "to_space_id": "L3-CR2"
+    },
+    {
+      "id": "D107",
+      "source_id": "demo-dr-D107",
+      "level_id": "L3",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "301-PAS",
+      "to_space_id": "L3-COR"
+    },
+    {
+      "id": "D108",
+      "source_id": "demo-dr-D108",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "301-PAS",
+      "to_space_id": "301-LIV"
+    },
+    {
+      "id": "D109",
+      "source_id": "demo-dr-D109",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "301-PAS",
+      "to_space_id": "301-BR2"
+    },
+    {
+      "id": "D110",
+      "source_id": "demo-dr-D110",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "301-PAS",
+      "to_space_id": "301-KIT"
+    },
+    {
+      "id": "D111",
+      "source_id": "demo-dr-D111",
+      "level_id": "L3",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "301-PAS",
+      "to_space_id": "301-BTH"
+    },
+    {
+      "id": "D112",
+      "source_id": "demo-dr-D112",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "301-LIV",
+      "to_space_id": "301-BR1"
+    },
+    {
+      "id": "D113",
+      "source_id": "demo-dr-D113",
+      "level_id": "L3",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "301-BR1",
+      "to_space_id": "301-WC"
+    },
+    {
+      "id": "D114",
+      "source_id": "demo-dr-D114",
+      "level_id": "L3",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "302-PAS",
+      "to_space_id": "L3-COR"
+    },
+    {
+      "id": "D115",
+      "source_id": "demo-dr-D115",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "302-PAS",
+      "to_space_id": "302-LIV"
+    },
+    {
+      "id": "D116",
+      "source_id": "demo-dr-D116",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "302-PAS",
+      "to_space_id": "302-BR2"
+    },
+    {
+      "id": "D117",
+      "source_id": "demo-dr-D117",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "302-PAS",
+      "to_space_id": "302-KIT"
+    },
+    {
+      "id": "D118",
+      "source_id": "demo-dr-D118",
+      "level_id": "L3",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "302-PAS",
+      "to_space_id": "302-BTH"
+    },
+    {
+      "id": "D119",
+      "source_id": "demo-dr-D119",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "302-LIV",
+      "to_space_id": "302-BR1"
+    },
+    {
+      "id": "D120",
+      "source_id": "demo-dr-D120",
+      "level_id": "L3",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "302-BR1",
+      "to_space_id": "302-WC"
+    },
+    {
+      "id": "D121",
+      "source_id": "demo-dr-D121",
+      "level_id": "L3",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "303-PAS",
+      "to_space_id": "L3-CR2"
+    },
+    {
+      "id": "D122",
+      "source_id": "demo-dr-D122",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "303-PAS",
+      "to_space_id": "303-LIV"
+    },
+    {
+      "id": "D123",
+      "source_id": "demo-dr-D123",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "303-PAS",
+      "to_space_id": "303-KIT"
+    },
+    {
+      "id": "D124",
+      "source_id": "demo-dr-D124",
+      "level_id": "L3",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "303-PAS",
+      "to_space_id": "303-BTH"
+    },
+    {
+      "id": "D125",
+      "source_id": "demo-dr-D125",
+      "level_id": "L3",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "303-PAS",
+      "to_space_id": "303-UTL"
+    },
+    {
+      "id": "D126",
+      "source_id": "demo-dr-D126",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "303-LIV",
+      "to_space_id": "303-BR"
+    },
+    {
+      "id": "D127",
+      "source_id": "demo-dr-D127",
+      "level_id": "L3",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "304-PAS",
+      "to_space_id": "L3-CR2"
+    },
+    {
+      "id": "D128",
+      "source_id": "demo-dr-D128",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "304-PAS",
+      "to_space_id": "304-LIV"
+    },
+    {
+      "id": "D129",
+      "source_id": "demo-dr-D129",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "304-PAS",
+      "to_space_id": "304-KIT"
+    },
+    {
+      "id": "D130",
+      "source_id": "demo-dr-D130",
+      "level_id": "L3",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "304-PAS",
+      "to_space_id": "304-BTH"
+    },
+    {
+      "id": "D131",
+      "source_id": "demo-dr-D131",
+      "level_id": "L3",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "304-PAS",
+      "to_space_id": "304-UTL"
+    },
+    {
+      "id": "D132",
+      "source_id": "demo-dr-D132",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "304-LIV",
+      "to_space_id": "304-BR"
+    },
+    {
+      "id": "D133",
+      "source_id": "demo-dr-D133",
+      "level_id": "L3",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "305-PAS",
+      "to_space_id": "L3-CR2"
+    },
+    {
+      "id": "D134",
+      "source_id": "demo-dr-D134",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "305-PAS",
+      "to_space_id": "305-LIV"
+    },
+    {
+      "id": "D135",
+      "source_id": "demo-dr-D135",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "305-PAS",
+      "to_space_id": "305-KIT"
+    },
+    {
+      "id": "D136",
+      "source_id": "demo-dr-D136",
+      "level_id": "L3",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "305-PAS",
+      "to_space_id": "305-BTH"
+    },
+    {
+      "id": "D137",
+      "source_id": "demo-dr-D137",
+      "level_id": "L3",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "305-PAS",
+      "to_space_id": "305-UTL"
+    },
+    {
+      "id": "D138",
+      "source_id": "demo-dr-D138",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "305-LIV",
+      "to_space_id": "305-BR"
+    },
+    {
+      "id": "D139",
+      "source_id": "demo-dr-D139",
+      "level_id": "L3",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "306-PAS",
+      "to_space_id": "L3-CR2"
+    },
+    {
+      "id": "D140",
+      "source_id": "demo-dr-D140",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "306-PAS",
+      "to_space_id": "306-LIV"
+    },
+    {
+      "id": "D141",
+      "source_id": "demo-dr-D141",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "306-PAS",
+      "to_space_id": "306-KIT"
+    },
+    {
+      "id": "D142",
+      "source_id": "demo-dr-D142",
+      "level_id": "L3",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "306-PAS",
+      "to_space_id": "306-BTH"
+    },
+    {
+      "id": "D143",
+      "source_id": "demo-dr-D143",
+      "level_id": "L3",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "306-PAS",
+      "to_space_id": "306-UTL"
+    },
+    {
+      "id": "D144",
+      "source_id": "demo-dr-D144",
+      "level_id": "L3",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "306-LIV",
+      "to_space_id": "306-BR"
+    },
+    {
+      "id": "D145",
+      "source_id": "demo-dr-D145",
+      "level_id": "L4",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L4-LOB",
+      "to_space_id": "L4-STR"
+    },
+    {
+      "id": "D146",
+      "source_id": "demo-dr-D146",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L4-STR",
+      "to_space_id": "L4-SRV"
+    },
+    {
+      "id": "D147",
+      "source_id": "demo-dr-D147",
+      "level_id": "L4",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L4-LOB",
+      "to_space_id": "L4-LFT"
+    },
+    {
+      "id": "D148",
+      "source_id": "demo-dr-D148",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L4-LOB",
+      "to_space_id": "L4-ELE"
+    },
+    {
+      "id": "D149",
+      "source_id": "demo-dr-D149",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L4-ELE",
+      "to_space_id": "L4-STO"
+    },
+    {
+      "id": "D150",
+      "source_id": "demo-dr-D150",
+      "level_id": "L4",
+      "width_m": 1.2,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L4-COR",
+      "to_space_id": "L4-LOB"
+    },
+    {
+      "id": "D151",
+      "source_id": "demo-dr-D151",
+      "level_id": "L4",
+      "width_m": 1.2,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "L4-LOB",
+      "to_space_id": "L4-CR2"
+    },
+    {
+      "id": "D152",
+      "source_id": "demo-dr-D152",
+      "level_id": "L4",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "401-PAS",
+      "to_space_id": "L4-COR"
+    },
+    {
+      "id": "D153",
+      "source_id": "demo-dr-D153",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "401-PAS",
+      "to_space_id": "401-LIV"
+    },
+    {
+      "id": "D154",
+      "source_id": "demo-dr-D154",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "401-PAS",
+      "to_space_id": "401-BR2"
+    },
+    {
+      "id": "D155",
+      "source_id": "demo-dr-D155",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "401-PAS",
+      "to_space_id": "401-KIT"
+    },
+    {
+      "id": "D156",
+      "source_id": "demo-dr-D156",
+      "level_id": "L4",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "401-PAS",
+      "to_space_id": "401-BTH"
+    },
+    {
+      "id": "D157",
+      "source_id": "demo-dr-D157",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "401-LIV",
+      "to_space_id": "401-BR1"
+    },
+    {
+      "id": "D158",
+      "source_id": "demo-dr-D158",
+      "level_id": "L4",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "401-BR1",
+      "to_space_id": "401-WC"
+    },
+    {
+      "id": "D159",
+      "source_id": "demo-dr-D159",
+      "level_id": "L4",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "402-PAS",
+      "to_space_id": "L4-COR"
+    },
+    {
+      "id": "D160",
+      "source_id": "demo-dr-D160",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "402-PAS",
+      "to_space_id": "402-LIV"
+    },
+    {
+      "id": "D161",
+      "source_id": "demo-dr-D161",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "402-PAS",
+      "to_space_id": "402-BR2"
+    },
+    {
+      "id": "D162",
+      "source_id": "demo-dr-D162",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "402-PAS",
+      "to_space_id": "402-KIT"
+    },
+    {
+      "id": "D163",
+      "source_id": "demo-dr-D163",
+      "level_id": "L4",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "402-PAS",
+      "to_space_id": "402-BTH"
+    },
+    {
+      "id": "D164",
+      "source_id": "demo-dr-D164",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "402-LIV",
+      "to_space_id": "402-BR1"
+    },
+    {
+      "id": "D165",
+      "source_id": "demo-dr-D165",
+      "level_id": "L4",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "402-BR1",
+      "to_space_id": "402-WC"
+    },
+    {
+      "id": "D166",
+      "source_id": "demo-dr-D166",
+      "level_id": "L4",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "403-PAS",
+      "to_space_id": "L4-CR2"
+    },
+    {
+      "id": "D167",
+      "source_id": "demo-dr-D167",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "403-PAS",
+      "to_space_id": "403-LIV"
+    },
+    {
+      "id": "D168",
+      "source_id": "demo-dr-D168",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "403-PAS",
+      "to_space_id": "403-KIT"
+    },
+    {
+      "id": "D169",
+      "source_id": "demo-dr-D169",
+      "level_id": "L4",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "403-PAS",
+      "to_space_id": "403-BTH"
+    },
+    {
+      "id": "D170",
+      "source_id": "demo-dr-D170",
+      "level_id": "L4",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "403-PAS",
+      "to_space_id": "403-UTL"
+    },
+    {
+      "id": "D171",
+      "source_id": "demo-dr-D171",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "403-LIV",
+      "to_space_id": "403-BR"
+    },
+    {
+      "id": "D172",
+      "source_id": "demo-dr-D172",
+      "level_id": "L4",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "404-PAS",
+      "to_space_id": "L4-CR2"
+    },
+    {
+      "id": "D173",
+      "source_id": "demo-dr-D173",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "404-PAS",
+      "to_space_id": "404-LIV"
+    },
+    {
+      "id": "D174",
+      "source_id": "demo-dr-D174",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "404-PAS",
+      "to_space_id": "404-KIT"
+    },
+    {
+      "id": "D175",
+      "source_id": "demo-dr-D175",
+      "level_id": "L4",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "404-PAS",
+      "to_space_id": "404-BTH"
+    },
+    {
+      "id": "D176",
+      "source_id": "demo-dr-D176",
+      "level_id": "L4",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "404-PAS",
+      "to_space_id": "404-UTL"
+    },
+    {
+      "id": "D177",
+      "source_id": "demo-dr-D177",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "404-LIV",
+      "to_space_id": "404-BR"
+    },
+    {
+      "id": "D178",
+      "source_id": "demo-dr-D178",
+      "level_id": "L4",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "405-PAS",
+      "to_space_id": "L4-CR2"
+    },
+    {
+      "id": "D179",
+      "source_id": "demo-dr-D179",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "405-PAS",
+      "to_space_id": "405-LIV"
+    },
+    {
+      "id": "D180",
+      "source_id": "demo-dr-D180",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "405-PAS",
+      "to_space_id": "405-KIT"
+    },
+    {
+      "id": "D181",
+      "source_id": "demo-dr-D181",
+      "level_id": "L4",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "405-PAS",
+      "to_space_id": "405-BTH"
+    },
+    {
+      "id": "D182",
+      "source_id": "demo-dr-D182",
+      "level_id": "L4",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "405-PAS",
+      "to_space_id": "405-UTL"
+    },
+    {
+      "id": "D183",
+      "source_id": "demo-dr-D183",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "405-LIV",
+      "to_space_id": "405-BR"
+    },
+    {
+      "id": "D184",
+      "source_id": "demo-dr-D184",
+      "level_id": "L4",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "406-PAS",
+      "to_space_id": "L4-CR2"
+    },
+    {
+      "id": "D185",
+      "source_id": "demo-dr-D185",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "406-PAS",
+      "to_space_id": "406-LIV"
+    },
+    {
+      "id": "D186",
+      "source_id": "demo-dr-D186",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "406-PAS",
+      "to_space_id": "406-KIT"
+    },
+    {
+      "id": "D187",
+      "source_id": "demo-dr-D187",
+      "level_id": "L4",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "406-PAS",
+      "to_space_id": "406-BTH"
+    },
+    {
+      "id": "D188",
+      "source_id": "demo-dr-D188",
+      "level_id": "L4",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "406-PAS",
+      "to_space_id": "406-UTL"
+    },
+    {
+      "id": "D189",
+      "source_id": "demo-dr-D189",
+      "level_id": "L4",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "406-LIV",
+      "to_space_id": "406-BR"
+    }
+  ],
+  "units": [
+    {
+      "id": "SH1",
+      "source_id": "demo-un-SH1",
+      "name": "Shop 1",
+      "level_id": "L0",
+      "carpet_area_m2": 72.0,
+      "use": {
+        "value": "commercial",
+        "source": "model"
+      }
+    },
+    {
+      "id": "SH2",
+      "source_id": "demo-un-SH2",
+      "name": "Shop 2",
+      "level_id": "L0",
+      "carpet_area_m2": 72.0,
+      "use": {
+        "value": "commercial",
+        "source": "model"
+      }
+    },
+    {
+      "id": "101",
+      "source_id": "demo-un-101",
+      "name": "Flat 101",
+      "level_id": "L1",
+      "carpet_area_m2": 66.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "102",
+      "source_id": "demo-un-102",
+      "name": "Flat 102",
+      "level_id": "L1",
+      "carpet_area_m2": 66.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "103",
+      "source_id": "demo-un-103",
+      "name": "Flat 103",
+      "level_id": "L1",
+      "carpet_area_m2": 59.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "104",
+      "source_id": "demo-un-104",
+      "name": "Flat 104",
+      "level_id": "L1",
+      "carpet_area_m2": 59.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "105",
+      "source_id": "demo-un-105",
+      "name": "Flat 105 (studio)",
+      "level_id": "L1",
+      "carpet_area_m2": 24.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "106",
+      "source_id": "demo-un-106",
+      "name": "Flat 106",
+      "level_id": "L1",
+      "carpet_area_m2": 59.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "201",
+      "source_id": "demo-un-201",
+      "name": "Flat 201",
+      "level_id": "L2",
+      "carpet_area_m2": 66.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "202",
+      "source_id": "demo-un-202",
+      "name": "Flat 202",
+      "level_id": "L2",
+      "carpet_area_m2": 66.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "203",
+      "source_id": "demo-un-203",
+      "name": "Flat 203",
+      "level_id": "L2",
+      "carpet_area_m2": 59.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "204",
+      "source_id": "demo-un-204",
+      "name": "Flat 204",
+      "level_id": "L2",
+      "carpet_area_m2": 59.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "205",
+      "source_id": "demo-un-205",
+      "name": "Flat 205",
+      "level_id": "L2",
+      "carpet_area_m2": 59.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "206",
+      "source_id": "demo-un-206",
+      "name": "Flat 206",
+      "level_id": "L2",
+      "carpet_area_m2": 59.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "301",
+      "source_id": "demo-un-301",
+      "name": "Flat 301",
+      "level_id": "L3",
+      "carpet_area_m2": 66.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "302",
+      "source_id": "demo-un-302",
+      "name": "Flat 302",
+      "level_id": "L3",
+      "carpet_area_m2": 66.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "303",
+      "source_id": "demo-un-303",
+      "name": "Flat 303",
+      "level_id": "L3",
+      "carpet_area_m2": 59.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "304",
+      "source_id": "demo-un-304",
+      "name": "Flat 304",
+      "level_id": "L3",
+      "carpet_area_m2": 59.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "305",
+      "source_id": "demo-un-305",
+      "name": "Flat 305",
+      "level_id": "L3",
+      "carpet_area_m2": 59.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "306",
+      "source_id": "demo-un-306",
+      "name": "Flat 306",
+      "level_id": "L3",
+      "carpet_area_m2": 59.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "401",
+      "source_id": "demo-un-401",
+      "name": "Flat 401",
+      "level_id": "L4",
+      "carpet_area_m2": 66.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "402",
+      "source_id": "demo-un-402",
+      "name": "Flat 402",
+      "level_id": "L4",
+      "carpet_area_m2": 66.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "403",
+      "source_id": "demo-un-403",
+      "name": "Flat 403",
+      "level_id": "L4",
+      "carpet_area_m2": 59.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "404",
+      "source_id": "demo-un-404",
+      "name": "Flat 404",
+      "level_id": "L4",
+      "carpet_area_m2": 59.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "405",
+      "source_id": "demo-un-405",
+      "name": "Flat 405",
+      "level_id": "L4",
+      "carpet_area_m2": 59.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    },
+    {
+      "id": "406",
+      "source_id": "demo-un-406",
+      "name": "Flat 406",
+      "level_id": "L4",
+      "carpet_area_m2": 59.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    }
+  ]
+}

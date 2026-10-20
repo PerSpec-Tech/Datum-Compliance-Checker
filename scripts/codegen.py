@@ -3,7 +3,7 @@
 Outputs (never edit by hand; re-run this instead):
   backend/src/compliance/models/generated/   pydantic v2 (datamodel-codegen)
   web/src/generated/contracts.ts             TypeScript (quicktype)
-  revit-addin/src/ComplianceChecker/Generated/Contracts.cs   C# System.Text.Json (quicktype)
+  revit-addin/src/ComplianceChecker.Core/Generated/Contracts.cs   C# System.Text.Json (quicktype)
 """
 
 import shutil
@@ -23,7 +23,7 @@ TOP_LEVEL = [
 ]
 PY_OUT = REPO_ROOT / "backend" / "src" / "compliance" / "models" / "generated"
 TS_OUT = REPO_ROOT / "web" / "src" / "generated" / "contracts.ts"
-CS_OUT = REPO_ROOT / "revit-addin" / "src" / "ComplianceChecker" / "Generated" / "Contracts.cs"
+CS_OUT = REPO_ROOT / "revit-addin" / "src" / "ComplianceChecker.Core" / "Generated" / "Contracts.cs"
 HEADER = "GENERATED — DO NOT EDIT. Source: schemas/*.schema.json. Regenerate with `just codegen`."
 
 
@@ -62,14 +62,14 @@ def python() -> None:
     )
 
 
-def quicktype(lang_args: list[str], out) -> None:
+def quicktype(lang_args: list[str], out, prelude: str = "") -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     # quicktype misreads absolute Windows paths ("D:\...") as URLs, so pass repo-relative paths.
     rel = lambda p: p.relative_to(REPO_ROOT).as_posix()  # noqa: E731
     srcs = [rel(SCHEMAS / name) for name in TOP_LEVEL]
     run(["npx", "--yes", QUICKTYPE, "--src-lang", "schema", *lang_args, "-o", rel(out), *srcs])
     body = out.read_text(encoding="utf-8")
-    out.write_text(f"// {HEADER}\n{body}", encoding="utf-8", newline="\n")
+    out.write_text(f"// {HEADER}\n{prelude}{body}", encoding="utf-8", newline="\n")
 
 
 def main() -> int:
@@ -89,6 +89,9 @@ def main() -> int:
             "6",
         ],
         CS_OUT,
+        # quicktype turns nullable on itself but dereferences maybe-null strings; pragmas are
+        # file-scoped, so this only affects the generated file.
+        prelude="#pragma warning disable CS8602\n",
     )
     for f in [*sorted(PY_OUT.glob("*.py")), TS_OUT, CS_OUT]:
         print(f"wrote {f.relative_to(REPO_ROOT).as_posix()}")

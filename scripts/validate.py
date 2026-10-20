@@ -30,7 +30,7 @@ def schema_for(path: Path) -> str | None:
     p = path.resolve().as_posix()
     if p.endswith(".report.json"):
         return "check-report.schema.json"
-    if "/fixtures/models/" in p and path.suffix == ".json":
+    if ("/fixtures/models/" in p or "/revit-addin/tests/out/" in p) and path.suffix == ".json":
         return "building-model.schema.json"
     if "/rules/" in p and path.suffix in (".yaml", ".yml"):
         if "/data/" in p or path.name == "authority.yaml":

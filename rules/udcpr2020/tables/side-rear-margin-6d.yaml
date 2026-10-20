@@ -1,0 +1,27 @@
+name: udcpr2020.side_rear_margin_6d
+authority: udcpr2020
+description: 'Minimum side / rear margin by road width (Table 6-D columns 6–7), valid up to the height
+  in the Remarks column: 15 m (roads 30 m+), 10 m (18–30 m), G+2 / stilt+3 (below 18 m).'
+unit: m
+source:
+  ref: Table No. 6-D (Regulation 6.2.1)
+  excerpt: 'Min. setback from road side / Min. side margins / Min. rear margins: roads of width 30.0 m.
+    and above 6.0 (A, B, C class Municipal Corporations) / 3.0 / 3.0; 18.0 m. and above but below 30.0
+    m. 4.5 / 2.0 / 2.0; 15.0 m. and above but below 18.0 m. 3.0 / 1.5 / 1.5; less than 15.0 m. 3.0 / 1.5
+    / 1.5.'
+  source: udcpr2020 p.108
+  retrieved: '2026-10-19'
+kind: bands
+bands:
+- min: 0
+  max: 15
+  value: 1.5
+- min: 15
+  max: 18
+  value: 1.5
+- min: 18
+  max: 30
+  value: 2.0
+- min: 30
+  max: null
+  value: 3.0

@@ -26,6 +26,7 @@ INPUTS: dict[str, list[str]] = {
     "road_edges": ["site.edges[*].kind"],
     "front_road_width_m": ["site.edges[*].kind", "site.edges[*].road_width_m"],
     "space_min_width_m": ["spaces[*].polygon"],
+    "space_min_length_m": ["spaces[*].polygon"],
     "residential_carpet_m2": ["units[*].carpet_area_m2", "units[*].use"],
     "small_unit_carpet_share": ["units[*].carpet_area_m2", "units[*].use"],
 }
@@ -39,6 +40,15 @@ class Derived:
     # derived name → facts it was computed from ({path, value, source}), so results can show
     # e.g. the declared road width behind `derived.front_road_width_m`.
     facts: dict[str, list[dict[str, Any]]] = field(default_factory=dict)
+    # derived name → the exact model inputs that are missing (empty when the value is known).
+    missing: dict[str, list[str]] = field(default_factory=dict)
+
+    def inputs_for(self, path: str) -> list[str]:
+        """Inputs behind a missing 'derived.x…' path: the precise gaps if known, else INPUTS."""
+        if not path.startswith("derived."):
+            return [path]
+        name = path[len("derived.") :].split(".", 1)[0].split("[", 1)[0]
+        return self.missing.get(name) or INPUTS.get(name, [path])
 
     def as_ctx(self) -> dict[str, Any]:
         return self.values
@@ -84,19 +94,20 @@ def compute(model: Mapping[str, Any]) -> Derived:
     footprint = _poly(building.get("footprint"))
     footprint_area = round(footprint.area, 4) if footprint is not None else None
 
+    plot_missing = [] if plot is not None else ["site.plot_area_declared_m2", "site.boundary"]
+
     # Built-up area for FSI: every area must say whether it counts and have an area value.
     built_up: float | None = None
     areas = model.get("areas") or []
-    if areas:
-        total, known = 0.0, True
-        for a in areas:
-            counts, area = _fact_value(a["counts_to_far"]), a["area_m2"]
-            if counts is None or (counts and area is None):
-                known = False
-                break
-            if counts:
-                total += area
-        built_up = round(total, 4) if known else None
+    area_missing: list[str] = [] if areas else ["areas"]
+    for a in areas:
+        counts, area = _fact_value(a["counts_to_far"]), a["area_m2"]
+        if counts is None:
+            area_missing.append(f"areas[{a['id']}].counts_to_far")
+        elif counts and area is None:
+            area_missing.append(f"areas[{a['id']}].area_m2")
+    if areas and not area_missing:
+        built_up = round(sum(a["area_m2"] for a in areas if _fact_value(a["counts_to_far"])), 4)
 
     ground, roof = site.get("ground_level_m"), building.get("roof_top_m")
     height = round(roof - ground, 4) if roof is not None and ground is not None else None
@@ -111,12 +122,22 @@ def compute(model: Mapping[str, Any]) -> Derived:
     # Front road: the widest road edge. Unknown if any road edge's width is unknown.
     edges = site.get("edges") or []
     road_edges = [e["id"] for e in edges if _fact_value(e["kind"]) == "road"]
+    road_missing = [f"site.edges[{e['id']}].kind" for e in edges if _fact_value(e["kind"]) is None]
+    road_missing += [
+        f"site.edges[{e['id']}].road_width_m"
+        for e in edges
+        if e["id"] in road_edges and _fact_value(e["road_width_m"]) is None
+    ]
+    if not edges:
+        road_missing = ["site.edges"]
+    elif not road_edges and not road_missing:
+        road_missing = ["site.edges"]  # every edge tagged, but none is a road
     front_road: float | None = None
-    if road_edges and all(_fact_value(e["kind"]) is not None for e in edges):
-        widths = [_fact_value(e["road_width_m"]) for e in edges if e["id"] in road_edges]
-        front_road = None if any(w is None for w in widths) else max(widths)
+    if not road_missing:
+        front_road = max(_fact_value(e["road_width_m"]) for e in edges if e["id"] in road_edges)
 
     min_widths: dict[str, float] = {}
+    min_lengths: dict[str, float] = {}
     for sp in model.get("spaces") or []:
         poly = _poly(sp.get("polygon"))
         if poly is None:
@@ -125,12 +146,23 @@ def compute(model: Mapping[str, Any]) -> Derived:
         xs = list(rect.exterior.coords)
         sides = [LineString([xs[i], xs[i + 1]]).length for i in range(len(xs) - 1)]
         min_widths[sp["id"]] = round(min(sides), 4)
+        min_lengths[sp["id"]] = round(max(sides), 4)
 
     # Tenement mix (TOD 14.2.1.3): share of residential carpet area in units ≤ 60 sq.m.
     residential_carpet: float | None = None
     small_share: float | None = None
     units = model.get("units") or []
     uses = [_fact_value(u["use"]) for u in units]
+    unit_missing = [
+        f"units[{u['id']}].use" for u, use in zip(units, uses, strict=True) if use is None
+    ]
+    unit_missing += [
+        f"units[{u['id']}].carpet_area_m2"
+        for u, use in zip(units, uses, strict=True)
+        if use == "residential" and u["carpet_area_m2"] is None
+    ]
+    if not units:
+        unit_missing = ["units"]
     if units and None not in uses:
         res = [u for u, use in zip(units, uses, strict=True) if use == "residential"]
         if res and all(u["carpet_area_m2"] is not None for u in res):
@@ -164,8 +196,26 @@ def compute(model: Mapping[str, Any]) -> Derived:
             "road_edges": road_edges,
             "front_road_width_m": front_road,
             "space_min_width_m": min_widths,
+            "space_min_length_m": min_lengths,
             "residential_carpet_m2": residential_carpet,
             "small_unit_carpet_share": small_share,
+        },
+        missing={
+            "plot_area_m2": plot_missing,
+            "footprint_area_m2": [] if footprint is not None else ["building.footprint"],
+            "ground_coverage": ([] if footprint is not None else ["building.footprint"])
+            + plot_missing,
+            "built_up_m2": area_missing,
+            "far": area_missing + plot_missing,
+            "building_height_m": ([] if roof is not None else ["building.roof_top_m"])
+            + ([] if ground is not None else ["site.ground_level_m"]),
+            "setback_m": ["building.footprint"]
+            if footprint is None
+            else ([] if edges else ["site.edges"]),
+            "road_edges": road_missing,
+            "front_road_width_m": road_missing,
+            "residential_carpet_m2": unit_missing,
+            "small_unit_carpet_share": unit_missing,
         },
         facts={
             "ground_coverage": plot_facts,

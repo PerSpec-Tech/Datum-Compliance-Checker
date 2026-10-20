@@ -1,0 +1,26 @@
+id: udcpr2020.ch6.basic-fsi
+title: FSI above basic FSI needs premium FSI / TDR
+authority: udcpr2020
+clause:
+  ref: Table 6-G (Regulation 6.3)
+  excerpt: Permissible basic FSI, additional FSI on payment of premium, Permissible TDR Loading on a plot
+    in non-congested area for Residential and Residential with mixed uses and other buildings in developable
+    zones like residential, commercial, public-semi-public etc. shall be as given in Table 6-G below.
+  source: udcpr2020 p.115
+  retrieved: '2026-10-19'
+status: draft
+severity: minor
+kind: advisory
+limit: table('udcpr2020.basic_fsi_6a', derived.front_road_width_m) if project.congested_area else table('udcpr2020.basic_fsi_6g',
+  derived.front_road_width_m)
+measured: derived.far
+check: measured > limit
+message: FSI {measured:.2f} is above the basic FSI of {limit:.2f}; the difference must come from premium
+  FSI and/or TDR.
+metric: fsi_base
+fix_unit: FSI
+compiled_by: agent:claude-opus-5-5@p2.6-batch2
+freshness:
+  status: unchecked
+  url: null
+  checked: null

@@ -77,6 +77,7 @@ def load_rulebase(root: Path | None = None, *, include_drafts: bool = False) -> 
         table_files += sorted((folder / "tables").glob("*.yaml"))
     if include_drafts:
         rule_files += [(None, p) for p in sorted((root / "drafts").glob("*.yaml"))]
+        table_files += sorted((root / "drafts" / "tables").glob("*.yaml"))
 
     tables: dict[str, dict[str, Any]] = {}
     for path in table_files:

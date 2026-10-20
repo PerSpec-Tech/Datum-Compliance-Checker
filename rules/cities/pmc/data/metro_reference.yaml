@@ -57,3 +57,13 @@ depots:
 
 # Stations on under-construction and proposed lines are taken from OSM in P3.10 and checked by hand against the
 # map in the screenshot. They aren't transcribed here because the map labels are too dense to read reliably.
+
+# Reference name → name used in OpenStreetMap (checked 2026-10-20 against the Overpass results).
+osm_aliases:
+  "Bhosari [Nashik Phata]": "Nashik Phata"
+  "PCMC": "Pimpri Chinchwad Municipal Corporation (PCMC)"
+  "PMC": "PMC Bhavan"
+  "Pune Rly. Station": "Pune Railway Station"
+  "R.T.O Pune": "Mangalwar Peth"
+  "S.N.D.T College": "SNDT College"
+  "Yerawada": "Yerwada"

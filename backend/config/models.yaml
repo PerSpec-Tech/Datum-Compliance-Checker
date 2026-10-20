@@ -3,26 +3,32 @@
 # base_url: the regional endpoint that serves the model (null = NEBIUS_BASE_URL from .env).
 # verified: false means the ID hasn't been checked with a live call yet.
 
-checked: null
+checked: '2026-10-20'
 roles:
   agent:
     model: nvidia/nemotron-3-super-120b-a12b
-    base_url: https://api.tokenfactory.us-central1.nebius.com/v1/
-    verified: false
-    tools: null
-    json_schema: null
-    reasoning: { method: null, default: on }
+    base_url: null
+    verified: true
+    tools: true
+    json_schema: true
+    reasoning:
+      method: chat_template_kwargs
+      default: true
   fast:
     model: nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B
     base_url: null
-    verified: false
-    tools: null
-    json_schema: null
-    reasoning: { method: null, default: off }
+    verified: true
+    tools: true
+    json_schema: true
+    reasoning:
+      method: chat_template_kwargs
+      default: false
   reviewer:
     model: nvidia/Nemotron-3-Ultra-550b-a55b
-    base_url: https://api.tokenfactory.us-central1.nebius.com/v1/
-    verified: false
-    tools: null
-    json_schema: null
-    reasoning: { method: null, default: on }
+    base_url: null
+    verified: true
+    tools: true
+    json_schema: true
+    reasoning:
+      method: chat_template_kwargs
+      default: true

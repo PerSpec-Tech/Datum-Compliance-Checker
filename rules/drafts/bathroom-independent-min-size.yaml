@@ -1,0 +1,29 @@
+id: udcpr2020.draft.bathroom-independent-min-size
+title: Independent bathroom minimum size
+authority: udcpr2020
+clause:
+  ref: 9.4.1 (i)
+  excerpt: 9.4.1 Size of bath room and water closet Minimum size shall be as under - i) Independent Bath
+    room 1.00 m. x 1.20 m.
+  source: udcpr2020 p.154
+  retrieved: '2026-10-20'
+status: draft
+severity: major
+kind: check
+for_each: spaces
+applies_when: item.usage == 'bathroom'
+limit: '1.0'
+measured: derived.space_min_width_m[item.id]
+check: measured >= limit and derived.space_min_length_m[item.id] >= 1.2
+message: Bathroom width {measured:.2f} m (min {limit:.2f} m); length also checked >= 1.20 m
+fix_unit: m
+compiled_by: agent:nvidia/nemotron-3-super-120b-a12b@compiler-v2
+freshness:
+  status: unchecked
+  url: null
+  checked: null
+review_notes: 'issues: applies_when selects all bathrooms (item.usage == ''bathroom''), but clause only
+  covers *independent* bath rooms — need to add independence qualifier (e.g., item.type == ''independent'')
+  | Length minimum (1.20 m) is hard-coded in check expression rather than exposed as a named limit; consider
+  adding a second limit for symmetry | Clause excerpt in rule matches source text, but the rule''s scope
+  is wider than the clause | Comparison direction (>=) correctly implements minimum-size requirement'

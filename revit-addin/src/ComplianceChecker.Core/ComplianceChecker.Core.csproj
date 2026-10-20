@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Everything that doesn't need Revit: contracts, API client, model assembly, result grouping.
+       Kept separate so it can be unit-tested without Revit (tests/ComplianceChecker.Core.Tests). -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>ComplianceChecker.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="ComplianceChecker.Core.Tests" />
+  </ItemGroup>
+
+</Project>

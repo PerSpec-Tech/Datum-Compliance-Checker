@@ -1,0 +1,18 @@
+name: udcpr2020.basic_fsi_6a
+authority: udcpr2020
+description: Basic FSI, Table 6-A column 3 (congested area).
+unit: fsi
+source:
+  ref: Table No. 6-A (Regulation 6.1.1)
+  excerpt: The maximum permissible basic floor space index, FSI on payment of premium, permissible TDR
+    loading shall be as per the following Table No.6-A.
+  source: udcpr2020 p.105
+  retrieved: '2026-10-19'
+kind: bands
+bands:
+- min: 0
+  max: 9
+  value: 1.5
+- min: 9
+  max: null
+  value: 2.0

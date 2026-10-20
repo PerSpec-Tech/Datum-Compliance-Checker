@@ -1,0 +1,30 @@
+id: udcpr2020.ch6.side-rear-margin
+title: Side and rear marginal distance (non-congested area)
+authority: udcpr2020
+clause:
+  ref: 6.2.3 (b)
+  excerpt: For height more than stipulated in Table No.6-D / Table No.6-E, the marginal distance on all
+    sides, except the front side of a building, shall be minimum H / 5 (Where H = Height of the building
+    above ground level). Provided that, such marginal distance shall be subject to a maximum of 12.0 m.
+    from the plot boundary.
+  source: udcpr2020 p.114
+  retrieved: '2026-10-19'
+status: draft
+severity: critical
+kind: check
+for_each: site.edges
+applies_when: project.occupancy.group == 'A' and item.kind != 'road' and (project.congested_area == False
+  or derived.plot_area_m2 > 4000 or derived.building_height_m >= 24)
+limit: table('udcpr2020.side_rear_margin_6d', derived.front_road_width_m) if (derived.building_height_m
+  <= 15 if derived.front_road_width_m >= 30 else (derived.building_height_m <= 10 if derived.front_road_width_m
+  >= 18 else derived.floors_above_ground <= 3)) else min(derived.building_height_m / 5, 12)
+measured: derived.setback_m[item.id]
+check: measured >= limit
+message: Margin on this side is {measured:.2f} m; minimum is {limit:.2f} m (Table 6-D, or H/5 above its
+  height limit).
+fix_unit: m
+compiled_by: agent:claude-opus-5-5@p2.6-batch2
+freshness:
+  status: unchecked
+  url: null
+  checked: null

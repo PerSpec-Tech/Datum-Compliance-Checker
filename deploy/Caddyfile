@@ -1,0 +1,10 @@
+# Automatic HTTPS for $DOMAIN (Let's Encrypt). SSE progress streams pass through unbuffered.
+{$DOMAIN:localhost} {
+	encode gzip
+	request_body {
+		max_size 64MB
+	}
+	reverse_proxy app:8000 {
+		flush_interval -1
+	}
+}

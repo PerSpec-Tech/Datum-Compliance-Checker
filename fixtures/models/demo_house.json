@@ -1,0 +1,983 @@
+{
+  "schema_version": "1.0",
+  "_notes": [
+    "Two-storey bungalow on a 9 m road; passes every rule that applies."
+  ],
+  "meta": {
+    "source_kind": "manual",
+    "source_file": "demo_house.json",
+    "exported_at": "2026-10-20T10:00:00Z",
+    "tool_version": "demo-1"
+  },
+  "project": {
+    "name": "Demo — two-storey bungalow",
+    "location": {
+      "value": {
+        "lat": 18.4655,
+        "lon": 73.896
+      },
+      "source": "declared"
+    },
+    "authority_id": {
+      "value": "pmc",
+      "source": "inferred"
+    },
+    "rulesets": {
+      "value": [
+        "nbc2016",
+        "udcpr2020",
+        "pmc"
+      ],
+      "source": "inferred"
+    },
+    "occupancy": {
+      "value": {
+        "group": "A",
+        "subdivision": "A-2"
+      },
+      "source": "declared"
+    },
+    "zone": {
+      "value": "residential",
+      "source": "declared"
+    },
+    "congested_area": {
+      "value": false,
+      "source": "declared"
+    },
+    "special": {
+      "heritage": {
+        "value": false,
+        "source": "declared"
+      },
+      "coastal": {
+        "value": false,
+        "source": "declared"
+      },
+      "airport_zone": {
+        "value": false,
+        "source": "declared"
+      },
+      "ht_line": {
+        "value": false,
+        "source": "declared"
+      },
+      "railway": {
+        "value": false,
+        "source": "declared"
+      },
+      "river_flood_line": {
+        "value": false,
+        "source": "declared"
+      },
+      "hill_slope_bdp": {
+        "value": false,
+        "source": "declared"
+      },
+      "defence_vicinity": {
+        "value": false,
+        "source": "declared"
+      },
+      "metro_rail_within_20m": {
+        "value": false,
+        "source": "declared"
+      }
+    },
+    "building_type": {
+      "value": "bungalow_self_use",
+      "source": "declared"
+    },
+    "overlays": {
+      "nearest_metro_station": {
+        "value": null,
+        "source": "default"
+      },
+      "metro_tod": {
+        "value": false,
+        "source": "declared"
+      },
+      "plot_share_in_tod": {
+        "value": 0.0,
+        "source": "declared"
+      }
+    }
+  },
+  "site": {
+    "boundary": [
+      [
+        0,
+        0
+      ],
+      [
+        15,
+        0
+      ],
+      [
+        15,
+        20
+      ],
+      [
+        0,
+        20
+      ]
+    ],
+    "plot_area_declared_m2": {
+      "value": 300.0,
+      "source": "declared"
+    },
+    "is_corner_plot": {
+      "value": false,
+      "source": "declared"
+    },
+    "ground_level_m": 0.0,
+    "edges": [
+      {
+        "id": "e1",
+        "a": [
+          0,
+          0
+        ],
+        "b": [
+          15,
+          0
+        ],
+        "kind": {
+          "value": "road",
+          "source": "declared"
+        },
+        "road_width_m": {
+          "value": 9.0,
+          "source": "declared"
+        },
+        "road_width_basis": {
+          "value": "development_plan",
+          "source": "declared"
+        }
+      },
+      {
+        "id": "e2",
+        "a": [
+          15,
+          0
+        ],
+        "b": [
+          15,
+          20
+        ],
+        "kind": {
+          "value": "neighbour",
+          "source": "declared"
+        },
+        "road_width_m": {
+          "value": null,
+          "source": "default"
+        },
+        "road_width_basis": {
+          "value": null,
+          "source": "default"
+        }
+      },
+      {
+        "id": "e3",
+        "a": [
+          15,
+          20
+        ],
+        "b": [
+          0,
+          20
+        ],
+        "kind": {
+          "value": "neighbour",
+          "source": "declared"
+        },
+        "road_width_m": {
+          "value": null,
+          "source": "default"
+        },
+        "road_width_basis": {
+          "value": null,
+          "source": "default"
+        }
+      },
+      {
+        "id": "e4",
+        "a": [
+          0,
+          20
+        ],
+        "b": [
+          0,
+          0
+        ],
+        "kind": {
+          "value": "neighbour",
+          "source": "declared"
+        },
+        "road_width_m": {
+          "value": null,
+          "source": "default"
+        },
+        "road_width_basis": {
+          "value": null,
+          "source": "default"
+        }
+      }
+    ]
+  },
+  "levels": [
+    {
+      "id": "L0",
+      "source_id": "demo-lvl-L0",
+      "name": "Ground Floor",
+      "elevation_m": 0.0,
+      "is_basement": false
+    },
+    {
+      "id": "L1",
+      "source_id": "demo-lvl-L1",
+      "name": "First Floor",
+      "elevation_m": 3.3,
+      "is_basement": false
+    }
+  ],
+  "building": {
+    "footprint": [
+      [
+        2.5,
+        4
+      ],
+      [
+        12.5,
+        4
+      ],
+      [
+        12.5,
+        16
+      ],
+      [
+        2.5,
+        16
+      ]
+    ],
+    "roof_top_m": 6.6,
+    "highest_point_m": 6.6
+  },
+  "spaces": [
+    {
+      "id": "G-LIV",
+      "source_id": "demo-sp-G-LIV",
+      "name": "Living",
+      "level_id": "L0",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 34.1,
+      "clear_height_m": 3.0,
+      "polygon": [
+        [
+          2.5,
+          4
+        ],
+        [
+          8.7,
+          4
+        ],
+        [
+          8.7,
+          9.5
+        ],
+        [
+          2.5,
+          9.5
+        ]
+      ]
+    },
+    {
+      "id": "G-DIN",
+      "source_id": "demo-sp-G-DIN",
+      "name": "Dining",
+      "level_id": "L0",
+      "usage": {
+        "value": "habitable",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.9,
+      "clear_height_m": 3.0,
+      "polygon": [
+        [
+          8.7,
+          4
+        ],
+        [
+          12.5,
+          4
+        ],
+        [
+          12.5,
+          9.5
+        ],
+        [
+          8.7,
+          9.5
+        ]
+      ]
+    },
+    {
+      "id": "G-BR",
+      "source_id": "demo-sp-G-BR",
+      "name": "Guest Bedroom",
+      "level_id": "L0",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 26.0,
+      "clear_height_m": 3.0,
+      "polygon": [
+        [
+          2.5,
+          9.5
+        ],
+        [
+          6.5,
+          9.5
+        ],
+        [
+          6.5,
+          16
+        ],
+        [
+          2.5,
+          16
+        ]
+      ]
+    },
+    {
+      "id": "G-STR",
+      "source_id": "demo-sp-G-STR",
+      "name": "Staircase",
+      "level_id": "L0",
+      "usage": {
+        "value": "stair",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 14.3,
+      "clear_height_m": 3.0,
+      "polygon": [
+        [
+          6.5,
+          9.5
+        ],
+        [
+          8.7,
+          9.5
+        ],
+        [
+          8.7,
+          16
+        ],
+        [
+          6.5,
+          16
+        ]
+      ]
+    },
+    {
+      "id": "G-KIT",
+      "source_id": "demo-sp-G-KIT",
+      "name": "Kitchen",
+      "level_id": "L0",
+      "usage": {
+        "value": "kitchen",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 13.3,
+      "clear_height_m": 3.0,
+      "polygon": [
+        [
+          8.7,
+          9.5
+        ],
+        [
+          12.5,
+          9.5
+        ],
+        [
+          12.5,
+          13
+        ],
+        [
+          8.7,
+          13
+        ]
+      ]
+    },
+    {
+      "id": "G-WC",
+      "source_id": "demo-sp-G-WC",
+      "name": "Toilet",
+      "level_id": "L0",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 5.7,
+      "clear_height_m": 2.7,
+      "polygon": [
+        [
+          8.7,
+          13
+        ],
+        [
+          10.6,
+          13
+        ],
+        [
+          10.6,
+          16
+        ],
+        [
+          8.7,
+          16
+        ]
+      ]
+    },
+    {
+      "id": "G-UTL",
+      "source_id": "demo-sp-G-UTL",
+      "name": "Utility",
+      "level_id": "L0",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 5.7,
+      "clear_height_m": 2.7,
+      "polygon": [
+        [
+          10.6,
+          13
+        ],
+        [
+          12.5,
+          13
+        ],
+        [
+          12.5,
+          16
+        ],
+        [
+          10.6,
+          16
+        ]
+      ]
+    },
+    {
+      "id": "F-MBR",
+      "source_id": "demo-sp-F-MBR",
+      "name": "Master Bedroom",
+      "level_id": "L1",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 34.1,
+      "clear_height_m": 3.0,
+      "polygon": [
+        [
+          2.5,
+          4
+        ],
+        [
+          8.7,
+          4
+        ],
+        [
+          8.7,
+          9.5
+        ],
+        [
+          2.5,
+          9.5
+        ]
+      ]
+    },
+    {
+      "id": "F-BR2",
+      "source_id": "demo-sp-F-BR2",
+      "name": "Bedroom 2",
+      "level_id": "L1",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 20.9,
+      "clear_height_m": 3.0,
+      "polygon": [
+        [
+          8.7,
+          4
+        ],
+        [
+          12.5,
+          4
+        ],
+        [
+          12.5,
+          9.5
+        ],
+        [
+          8.7,
+          9.5
+        ]
+      ]
+    },
+    {
+      "id": "F-BR3",
+      "source_id": "demo-sp-F-BR3",
+      "name": "Bedroom 3",
+      "level_id": "L1",
+      "usage": {
+        "value": "bedroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 26.0,
+      "clear_height_m": 3.0,
+      "polygon": [
+        [
+          2.5,
+          9.5
+        ],
+        [
+          6.5,
+          9.5
+        ],
+        [
+          6.5,
+          16
+        ],
+        [
+          2.5,
+          16
+        ]
+      ]
+    },
+    {
+      "id": "F-STR",
+      "source_id": "demo-sp-F-STR",
+      "name": "Staircase",
+      "level_id": "L1",
+      "usage": {
+        "value": "stair",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 14.3,
+      "clear_height_m": 3.0,
+      "polygon": [
+        [
+          6.5,
+          9.5
+        ],
+        [
+          8.7,
+          9.5
+        ],
+        [
+          8.7,
+          16
+        ],
+        [
+          6.5,
+          16
+        ]
+      ]
+    },
+    {
+      "id": "F-LNG",
+      "source_id": "demo-sp-F-LNG",
+      "name": "Family Lounge",
+      "level_id": "L1",
+      "usage": {
+        "value": "living",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 13.3,
+      "clear_height_m": 3.0,
+      "polygon": [
+        [
+          8.7,
+          9.5
+        ],
+        [
+          12.5,
+          9.5
+        ],
+        [
+          12.5,
+          13
+        ],
+        [
+          8.7,
+          13
+        ]
+      ]
+    },
+    {
+      "id": "F-BTH",
+      "source_id": "demo-sp-F-BTH",
+      "name": "Bath",
+      "level_id": "L1",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 5.7,
+      "clear_height_m": 2.7,
+      "polygon": [
+        [
+          8.7,
+          13
+        ],
+        [
+          10.6,
+          13
+        ],
+        [
+          10.6,
+          16
+        ],
+        [
+          8.7,
+          16
+        ]
+      ]
+    },
+    {
+      "id": "F-BT2",
+      "source_id": "demo-sp-F-BT2",
+      "name": "Bath 2",
+      "level_id": "L1",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 5.7,
+      "clear_height_m": 2.7,
+      "polygon": [
+        [
+          10.6,
+          13
+        ],
+        [
+          12.5,
+          13
+        ],
+        [
+          12.5,
+          16
+        ],
+        [
+          10.6,
+          16
+        ]
+      ]
+    }
+  ],
+  "areas": [
+    {
+      "id": "A0",
+      "source_id": "demo-ar-0",
+      "scheme": "Gross Building",
+      "level_id": "L0",
+      "name": "BUA Ground Floor",
+      "area_m2": 120.0,
+      "counts_to_far": {
+        "value": true,
+        "source": "model"
+      }
+    },
+    {
+      "id": "A1",
+      "source_id": "demo-ar-1",
+      "scheme": "Gross Building",
+      "level_id": "L1",
+      "name": "BUA First Floor",
+      "area_m2": 120.0,
+      "counts_to_far": {
+        "value": true,
+        "source": "model"
+      }
+    }
+  ],
+  "stairs": [
+    {
+      "id": "ST1",
+      "source_id": "demo-st-1",
+      "base_level_id": "L0",
+      "top_level_id": "L1",
+      "min_run_width_m": 1.0,
+      "riser_m": 0.165,
+      "tread_m": 0.28,
+      "is_exit": {
+        "value": false,
+        "source": "model",
+        "note": "Pset_StairCommon.FireExit"
+      }
+    }
+  ],
+  "doors": [
+    {
+      "id": "D001",
+      "source_id": "demo-dr-D001",
+      "level_id": "L0",
+      "width_m": 1.0,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": true,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "G-LIV",
+      "to_space_id": null
+    },
+    {
+      "id": "D002",
+      "source_id": "demo-dr-D002",
+      "level_id": "L0",
+      "width_m": 1.5,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "G-LIV",
+      "to_space_id": "G-DIN"
+    },
+    {
+      "id": "D003",
+      "source_id": "demo-dr-D003",
+      "level_id": "L0",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "G-LIV",
+      "to_space_id": "G-STR"
+    },
+    {
+      "id": "D004",
+      "source_id": "demo-dr-D004",
+      "level_id": "L0",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "G-STR",
+      "to_space_id": "G-BR"
+    },
+    {
+      "id": "D005",
+      "source_id": "demo-dr-D005",
+      "level_id": "L0",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "G-STR",
+      "to_space_id": "G-KIT"
+    },
+    {
+      "id": "D006",
+      "source_id": "demo-dr-D006",
+      "level_id": "L0",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "G-STR",
+      "to_space_id": "G-WC"
+    },
+    {
+      "id": "D007",
+      "source_id": "demo-dr-D007",
+      "level_id": "L0",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "G-DIN",
+      "to_space_id": "G-KIT"
+    },
+    {
+      "id": "D008",
+      "source_id": "demo-dr-D008",
+      "level_id": "L0",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "G-KIT",
+      "to_space_id": "G-UTL"
+    },
+    {
+      "id": "D009",
+      "source_id": "demo-dr-D009",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "F-STR",
+      "to_space_id": "F-MBR"
+    },
+    {
+      "id": "D010",
+      "source_id": "demo-dr-D010",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "F-STR",
+      "to_space_id": "F-BR3"
+    },
+    {
+      "id": "D011",
+      "source_id": "demo-dr-D011",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "F-STR",
+      "to_space_id": "F-LNG"
+    },
+    {
+      "id": "D012",
+      "source_id": "demo-dr-D012",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "F-LNG",
+      "to_space_id": "F-BR2"
+    },
+    {
+      "id": "D013",
+      "source_id": "demo-dr-D013",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "F-LNG",
+      "to_space_id": "F-BTH"
+    },
+    {
+      "id": "D014",
+      "source_id": "demo-dr-D014",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "F-LNG",
+      "to_space_id": "F-BT2"
+    }
+  ],
+  "units": [
+    {
+      "id": "H1",
+      "source_id": "demo-un-H1",
+      "name": "House",
+      "level_id": "L0",
+      "carpet_area_m2": 200.0,
+      "use": {
+        "value": "residential",
+        "source": "model"
+      }
+    }
+  ]
+}

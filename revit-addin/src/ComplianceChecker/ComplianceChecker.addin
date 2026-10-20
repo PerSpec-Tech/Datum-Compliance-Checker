@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Installed as %AppData%\Autodesk\Revit\Addins\2026\ComplianceChecker.addin, with the DLLs in the
+     ComplianceChecker\ folder next to it (see install\install.ps1). -->
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>Compliance Checker</Name>
+    <Assembly>ComplianceChecker\ComplianceChecker.dll</Assembly>
+    <FullClassName>ComplianceChecker.App</FullClassName>
+    <ClientId>7d1c3f0e-5a2b-4c8e-9f41-2b6d8a0c4e17</ClientId>
+    <VendorId>PERSPEC</VendorId>
+    <VendorDescription>PERSPEC — bylaw compliance checker (Pune UDCPR)</VendorDescription>
+  </AddIn>
+</RevitAddIns>

@@ -31,6 +31,8 @@ web/dist/
 *.tsbuildinfo
 
 # .NET
+revit-addin/tests/out/
+TestResults/
 bin/
 obj/
 *.user

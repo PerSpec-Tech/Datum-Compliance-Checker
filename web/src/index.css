@@ -1,0 +1,166 @@
+/* PerSpec design tokens (UI-UX-guidelines.md §20, as used on the PerSpec site). Dark only. */
+:root {
+  --bg-canvas: #000000;
+  --bg-surface-low: #0c0c0e;
+  --bg-surface: #141416;
+  --bg-surface-raised: #1c1c1f;
+  --bg-overlay: #202023;
+
+  --border-subtle: #2a2a2e;
+  --border-default: #38383d;
+  --border-strong: #505057;
+
+  --text-primary: #f2f2f3;
+  --text-secondary: #9a9aa1;
+  --text-tertiary: #7a7a80;
+  --text-disabled: #4a4a4e;
+
+  /* Corazon: the full stop after the wordmark and headings, the one primary action per
+     screen, the active nav line, the lead data series. Nothing else. */
+  --accent: #d22b10;
+  --accent-ink: #ff7a62;
+
+  /* Data categorisation only. Never on buttons, links, focus rings or chrome. */
+  --data-cyan-400: #00d3f2;
+  --data-cyan-700: #0a5b68;
+  --data-cyan-800: #0a3f48;
+  --data-magenta-400: #f038c7;
+  --data-magenta-700: #5c1749;
+  --data-magenta-800: #3f1032;
+
+  --danger: #f5455c;
+  --success: #3ed598;
+
+  --font-ui: "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
+
+  --texture-line: rgba(242, 242, 243, 0.04);
+  --texture-dot: rgba(242, 242, 243, 0.03);
+  --sidebar: 248px;
+  color-scheme: dark;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background: var(--bg-canvas);
+  }
+  body {
+    margin: 0;
+    color: var(--text-primary);
+    background-color: var(--bg-canvas);
+    /* Drafting-paper texture: 135° hairlines on a 48px pitch over a 10px dot grid. */
+    background-image:
+      radial-gradient(circle, var(--texture-dot) 1px, transparent 1px),
+      repeating-linear-gradient(135deg, var(--texture-line) 0 1px, transparent 1px 48px);
+    background-size: 10px 10px, auto;
+    background-attachment: fixed;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    line-height: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--border-strong);
+  }
+  :focus-visible {
+    outline: 2px solid var(--border-strong);
+    outline-offset: 2px;
+  }
+  em,
+  i {
+    font-style: normal;
+    color: var(--text-primary);
+  }
+}
+
+@layer components {
+  .stop {
+    color: var(--accent);
+  }
+  .display {
+    @apply text-[20px] font-semibold leading-7 tracking-[-0.01em];
+  }
+  .h1 {
+    @apply text-base font-semibold leading-6;
+  }
+  .h2 {
+    @apply text-sm font-semibold leading-5;
+  }
+  .meta {
+    @apply text-xs leading-4 text-fg-3;
+  }
+  .label {
+    @apply mb-1.5 block text-xs leading-4 text-fg-2;
+  }
+  .num {
+    @apply font-mono text-[13px] font-medium leading-[18px] tabular-nums;
+  }
+
+  .btn {
+    @apply inline-flex h-9 items-center justify-center gap-2 rounded-sm border border-transparent px-4 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  /* One per screen. */
+  .btn-primary {
+    @apply btn bg-accent text-white hover:bg-[#bd2710];
+  }
+  .btn-secondary {
+    @apply btn border-line bg-transparent text-fg hover:border-line-strong hover:bg-surface;
+  }
+  .btn-ghost {
+    @apply btn h-8 px-2.5 text-fg-2 hover:bg-surface-raised hover:text-fg;
+  }
+
+  .panel {
+    @apply rounded-md border border-line-subtle bg-surface;
+  }
+  .input {
+    @apply h-9 w-full rounded-sm border border-line bg-surface px-3 text-sm text-fg placeholder:text-fg-3 focus:border-line-strong focus:outline-none;
+  }
+  textarea.input {
+    @apply h-auto py-2;
+  }
+  .chip {
+    @apply inline-flex h-5 items-center gap-1.5 whitespace-nowrap rounded-sm border border-line px-1.5 text-2xs text-fg-2;
+  }
+  /* Model-generated or assumed: dashed, never colour alone (§10). */
+  .chip-predicted {
+    @apply chip border-dashed text-fg-3;
+  }
+  .code {
+    @apply rounded-sm border border-line-subtle bg-surface-low px-3 py-2 font-mono text-xs leading-relaxed text-fg-2;
+  }
+  .readout {
+    @apply rounded-sm border border-line-subtle bg-surface px-2 py-1 font-mono text-2xs text-fg-2 tabular-nums;
+  }
+}
+
+.leaflet-container {
+  font: inherit;
+  background: var(--bg-surface-low);
+}
+.map-dark {
+  filter: grayscale(1) invert(1) brightness(0.82) contrast(1.15);
+}
+.leaflet-control-attribution {
+  background: rgba(20, 20, 22, 0.92) !important;
+  color: var(--text-tertiary) !important;
+  font-size: 10px;
+}
+.leaflet-control-attribution a {
+  color: var(--text-secondary) !important;
+}
+.leaflet-bar a {
+  background: var(--bg-surface) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-default) !important;
+  border-radius: 2px !important;
+}
+.leaflet-bar {
+  border: 1px solid var(--border-default) !important;
+  border-radius: 2px !important;
+  box-shadow: none !important;
+}

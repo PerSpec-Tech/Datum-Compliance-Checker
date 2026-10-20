@@ -1,0 +1,1707 @@
+{
+  "id": "volatile",
+  "project_id": "fixture-missing_site",
+  "model_version": "fixture",
+  "ruleset_version": "volatile",
+  "created_at": "2000-01-01T00:00:00+00:00",
+  "summary": {
+    "pass": 13,
+    "fail": 0,
+    "unverifiable": 10,
+    "not_applicable": 21,
+    "advisory": 0
+  },
+  "results": [
+    {
+      "rule_id": "pmc.tod.max-fsi",
+      "title": "Maximum total FSI in the TOD zone",
+      "severity": "critical",
+      "element": null,
+      "status": "unverifiable",
+      "measured": null,
+      "limit": null,
+      "message": "Cannot verify: needs site.edges, project.overlays.metro_tod",
+      "missing_inputs": [
+        "site.edges",
+        "project.overlays.metro_tod"
+      ],
+      "facts_used": [
+        {
+          "path": "project.overlays.metro_tod",
+          "value": null,
+          "source": "default"
+        }
+      ],
+      "clause": {
+        "ref": "14.2.1.2",
+        "excerpt": "The maximum permissible total FSI in TOD zone shall be 4.00 including the base permissible FSI, subject to condition that, the additional FSI over and above the base permissible FSI shall be allowed within the overall limit of maximum permissible FSI, as given in the Table below.",
+        "source": "udcpr2020 p.266",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch6.congested-front-setback",
+      "title": "Front setback from each road (congested area)",
+      "severity": "critical",
+      "element": null,
+      "status": "unverifiable",
+      "measured": null,
+      "limit": null,
+      "message": "Cannot verify: needs site.boundary, site.edges",
+      "missing_inputs": [
+        "site.boundary",
+        "site.edges"
+      ],
+      "facts_used": [],
+      "clause": {
+        "ref": "Table No. 6-B (Regulation 6.1.1 ii)",
+        "excerpt": "The minimum front setback from the existing or proposed road / roads shall be as per the following Table No.6-B. Streets 4.5 m. to less than 6.0 m.: NIL (mixed use 1.50 m.); 6.0 m. to less than 12.0 m.: 1.00 m. (2.00 m.); 12.0 m. and above: 2.00 m. (2.50 m.).",
+        "source": "udcpr2020 p.106",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch6.front-margin",
+      "title": "Front setback from each road (non-congested area)",
+      "severity": "critical",
+      "element": null,
+      "status": "unverifiable",
+      "measured": null,
+      "limit": null,
+      "message": "Cannot verify: needs site.boundary, site.edges",
+      "missing_inputs": [
+        "site.boundary",
+        "site.edges"
+      ],
+      "facts_used": [],
+      "clause": {
+        "ref": "Table No. 6-D (Regulation 6.2.1)",
+        "excerpt": "Min. setback from road side / Min. side margins / Min. rear margins: roads of width 30.0 m. and above 6.0 (A, B, C class Municipal Corporations) / 3.0 / 3.0; 18.0 m. and above but below 30.0 m. 4.5 / 2.0 / 2.0; 15.0 m. and above but below 18.0 m. 3.0 / 1.5 / 1.5; less than 15.0 m. 3.0 / 1.5 / 1.5.",
+        "source": "udcpr2020 p.108",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch6.max-fsi-congested",
+      "title": "Maximum building potential (FSI) — congested area",
+      "severity": "critical",
+      "element": null,
+      "status": "unverifiable",
+      "measured": null,
+      "limit": null,
+      "message": "Cannot verify: needs site.edges, project.congested_area, project.overlays.metro_tod",
+      "missing_inputs": [
+        "site.edges",
+        "project.congested_area",
+        "project.overlays.metro_tod"
+      ],
+      "facts_used": [
+        {
+          "path": "project.congested_area",
+          "value": null,
+          "source": "default"
+        },
+        {
+          "path": "project.occupancy",
+          "value": {
+            "group": "A",
+            "subdivision": "A-2"
+          },
+          "source": "declared"
+        },
+        {
+          "path": "project.overlays.metro_tod",
+          "value": null,
+          "source": "default"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 6-A (Regulation 6.1.1)",
+        "excerpt": "The maximum permissible basic floor space index, FSI on payment of premium, permissible TDR loading shall be as per the following Table No.6-A.",
+        "source": "udcpr2020 p.105",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch6.max-fsi-noncongested",
+      "title": "Maximum building potential (FSI) — non-congested area",
+      "severity": "critical",
+      "element": null,
+      "status": "unverifiable",
+      "measured": null,
+      "limit": null,
+      "message": "Cannot verify: needs site.edges, project.congested_area, project.overlays.metro_tod",
+      "missing_inputs": [
+        "site.edges",
+        "project.congested_area",
+        "project.overlays.metro_tod"
+      ],
+      "facts_used": [
+        {
+          "path": "project.congested_area",
+          "value": null,
+          "source": "default"
+        },
+        {
+          "path": "project.overlays.metro_tod",
+          "value": null,
+          "source": "default"
+        }
+      ],
+      "clause": {
+        "ref": "Table 6-G (Regulation 6.3)",
+        "excerpt": "Permissible basic FSI, additional FSI on payment of premium, Permissible TDR Loading on a plot in non-congested area for Residential and Residential with mixed uses and other buildings in developable zones like residential, commercial, public-semi-public etc. shall be as given in Table 6-G below.",
+        "source": "udcpr2020 p.115",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch6.side-rear-margin",
+      "title": "Side and rear marginal distance (non-congested area)",
+      "severity": "critical",
+      "element": null,
+      "status": "unverifiable",
+      "measured": null,
+      "limit": null,
+      "message": "Cannot verify: needs site.boundary, site.edges",
+      "missing_inputs": [
+        "site.boundary",
+        "site.edges"
+      ],
+      "facts_used": [],
+      "clause": {
+        "ref": "6.2.3 (b)",
+        "excerpt": "For height more than stipulated in Table No.6-D / Table No.6-E, the marginal distance on all sides, except the front side of a building, shall be minimum H / 5 (Where H = Height of the building above ground level). Provided that, such marginal distance shall be subject to a maximum of 12.0 m. from the plot boundary.",
+        "source": "udcpr2020 p.114",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.exit-door-width",
+      "title": "Minimum exit door width",
+      "severity": "critical",
+      "element": {
+        "kind": "doors",
+        "id": "D1",
+        "source_id": "fx-dr-1"
+      },
+      "status": "pass",
+      "measured": 1.0,
+      "limit": 0.9,
+      "message": "Exit door is 1.00 m wide; minimum is 0.90 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "doors[D1].is_exit",
+          "value": true,
+          "source": "declared"
+        },
+        {
+          "path": "project.occupancy",
+          "value": {
+            "group": "A",
+            "subdivision": "A-2"
+          },
+          "source": "declared"
+        }
+      ],
+      "clause": {
+        "ref": "9.29.1 (ii)",
+        "excerpt": "No exit doorway shall be less than 90 cm. in width except assembly buildings where door width shall be not less than 200 cm. Doorway shall be not less than 200 cm. in height.",
+        "source": "udcpr2020 p.165",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.exit-door-width",
+      "title": "Minimum exit door width",
+      "severity": "critical",
+      "element": {
+        "kind": "doors",
+        "id": "D2",
+        "source_id": "fx-dr-2"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "doors[D2].is_exit",
+          "value": false,
+          "source": "inferred"
+        }
+      ],
+      "clause": {
+        "ref": "9.29.1 (ii)",
+        "excerpt": "No exit doorway shall be less than 90 cm. in width except assembly buildings where door width shall be not less than 200 cm. Doorway shall be not less than 200 cm. in height.",
+        "source": "udcpr2020 p.165",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.stair-width-residential",
+      "title": "Minimum staircase width (residential)",
+      "severity": "critical",
+      "element": {
+        "kind": "stairs",
+        "id": "ST1",
+        "source_id": "fx-st-1"
+      },
+      "status": "pass",
+      "measured": 0.9,
+      "limit": 0.75,
+      "message": "Stair is 0.90 m wide; minimum is 0.75 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "project.occupancy",
+          "value": {
+            "group": "A",
+            "subdivision": "A-2"
+          },
+          "source": "declared"
+        },
+        {
+          "path": "project.building_type",
+          "value": "bungalow_self_use",
+          "source": "declared"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-G (Regulation 9.28.8)",
+        "excerpt": "The minimum width of staircases / corridors for various buildings shall be as below. Residential Buildings: a) Individual Housing upto G + 2 storeys 0.75; b) Multi-storied Residential Building upto 15 m. height 1.00; c) above 15 m. & upto 24 m. height 1.20; d) above 24 m. height 1.50.",
+        "source": "udcpr2020 p.165",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "pmc.tod.mixed-use-road-width",
+      "title": "Mixed use in TOD zone needs a 12 m road",
+      "severity": "major",
+      "element": null,
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "project.overlays.metro_tod",
+          "value": null,
+          "source": "default"
+        },
+        {
+          "path": "project.building_type",
+          "value": "bungalow_self_use",
+          "source": "declared"
+        }
+      ],
+      "clause": {
+        "ref": "14.2.1.4",
+        "excerpt": "Mixed use in the form of residential and commercial may be permissible on the residential plot in TOD zone fronting on the road width of 12 m., and above.",
+        "source": "udcpr2020 p.268",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "pmc.tod.small-tenement-share",
+      "title": "At least half the residential FSI in tenements of 60 sq.m or less",
+      "severity": "major",
+      "element": null,
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "project.overlays.metro_tod",
+          "value": null,
+          "source": "default"
+        },
+        {
+          "path": "project.building_type",
+          "value": "bungalow_self_use",
+          "source": "declared"
+        }
+      ],
+      "clause": {
+        "ref": "14.2.1.3",
+        "excerpt": "Out of total proposed tenements, the tenements equivalent to at least 50% of total FSI shall be of a size equal to or less than 60 sq.m. carpet area except the projects in which rehabilitation of existing tenements is undertaken.",
+        "source": "udcpr2020 p.268",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "pmc.tod.tenement-max-carpet",
+      "title": "Maximum tenement size in TOD zone",
+      "severity": "major",
+      "element": {
+        "kind": "units",
+        "id": "U1",
+        "source_id": "fx-un-1"
+      },
+      "status": "unverifiable",
+      "measured": null,
+      "limit": null,
+      "message": "Cannot verify: needs project.overlays.metro_tod",
+      "missing_inputs": [
+        "project.overlays.metro_tod"
+      ],
+      "facts_used": [
+        {
+          "path": "project.overlays.metro_tod",
+          "value": null,
+          "source": "default"
+        },
+        {
+          "path": "units[U1].use",
+          "value": "residential",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "14.2.1.3",
+        "excerpt": "For any development or redevelopment within TOD zone, size of tenement shall be minimum 25 sq.m. and maximum 120 sq.m. of carpet area.",
+        "source": "udcpr2020 p.268",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "pmc.tod.tenement-min-carpet",
+      "title": "Minimum tenement size in TOD zone",
+      "severity": "major",
+      "element": {
+        "kind": "units",
+        "id": "U1",
+        "source_id": "fx-un-1"
+      },
+      "status": "unverifiable",
+      "measured": null,
+      "limit": null,
+      "message": "Cannot verify: needs project.overlays.metro_tod",
+      "missing_inputs": [
+        "project.overlays.metro_tod"
+      ],
+      "facts_used": [
+        {
+          "path": "project.overlays.metro_tod",
+          "value": null,
+          "source": "default"
+        },
+        {
+          "path": "units[U1].use",
+          "value": "residential",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "14.2.1.3",
+        "excerpt": "For any development or redevelopment within TOD zone, size of tenement shall be minimum 25 sq.m. and maximum 120 sq.m. of carpet area.",
+        "source": "udcpr2020 p.268",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch6.congested-side-rear",
+      "title": "Side and rear marginal distance (congested area)",
+      "severity": "major",
+      "element": null,
+      "status": "unverifiable",
+      "measured": null,
+      "limit": null,
+      "message": "Cannot verify: needs site.boundary, site.edges",
+      "missing_inputs": [
+        "site.boundary",
+        "site.edges"
+      ],
+      "facts_used": [],
+      "clause": {
+        "ref": "Table No. 6-C and 6.1.1 (vi)",
+        "excerpt": "Side and rear: up to 1000 sq.m. 0.00; above 1000 & upto 4000 sq.m. 1.00 m.; above 4000 sq.m. as per Regulation for non-congested area. Marginal distances shall be increased by 1.0 m. for buildings having height 15.0 m. and more but less than 24.0 m.",
+        "source": "udcpr2020 p.107",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.exit-door-height",
+      "title": "Minimum exit door height",
+      "severity": "major",
+      "element": {
+        "kind": "doors",
+        "id": "D1",
+        "source_id": "fx-dr-1"
+      },
+      "status": "pass",
+      "measured": 2.1,
+      "limit": 2.0,
+      "message": "Exit door is 2.10 m high; minimum is 2.00 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "doors[D1].is_exit",
+          "value": true,
+          "source": "declared"
+        }
+      ],
+      "clause": {
+        "ref": "9.29.1 (ii)",
+        "excerpt": "No exit doorway shall be less than 90 cm. in width except assembly buildings where door width shall be not less than 200 cm. Doorway shall be not less than 200 cm. in height.",
+        "source": "udcpr2020 p.165",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.exit-door-height",
+      "title": "Minimum exit door height",
+      "severity": "major",
+      "element": {
+        "kind": "doors",
+        "id": "D2",
+        "source_id": "fx-dr-2"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "doors[D2].is_exit",
+          "value": false,
+          "source": "inferred"
+        }
+      ],
+      "clause": {
+        "ref": "9.29.1 (ii)",
+        "excerpt": "No exit doorway shall be less than 90 cm. in width except assembly buildings where door width shall be not less than 200 cm. Doorway shall be not less than 200 cm. in height.",
+        "source": "udcpr2020 p.165",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.habitable-height-min",
+      "title": "Minimum height of habitable rooms",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "S1",
+        "source_id": "fx-sp-1"
+      },
+      "status": "pass",
+      "measured": 3.0,
+      "limit": 2.75,
+      "message": "Clear height is 3.00 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S1].usage",
+          "value": "living",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.habitable-height-min",
+      "title": "Minimum height of habitable rooms",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "S2",
+        "source_id": "fx-sp-2"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S2].usage",
+          "value": "kitchen",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.habitable-height-min",
+      "title": "Minimum height of habitable rooms",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "S3",
+        "source_id": "fx-sp-3"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S3].usage",
+          "value": "bathroom",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.habitable-height-min",
+      "title": "Minimum height of habitable rooms",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "S4",
+        "source_id": "fx-sp-4"
+      },
+      "status": "pass",
+      "measured": 3.0,
+      "limit": 2.75,
+      "message": "Clear height is 3.00 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S4].usage",
+          "value": "bedroom",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.habitable-height-min",
+      "title": "Minimum height of habitable rooms",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "S5",
+        "source_id": "fx-sp-5"
+      },
+      "status": "pass",
+      "measured": 3.0,
+      "limit": 2.75,
+      "message": "Clear height is 3.00 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S5].usage",
+          "value": "bedroom",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.kitchen-height-min",
+      "title": "Minimum kitchen height",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "S1",
+        "source_id": "fx-sp-1"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S1].usage",
+          "value": "living",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "9.3.2",
+        "excerpt": "The height of a kitchen measured from the surface of the floor, to the lowest point in the ceiling (bottom of slab) shall not be less than 2.75 m. except for the portion to accommodate floor trap of the upper floor.",
+        "source": "udcpr2020 p.154",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.kitchen-height-min",
+      "title": "Minimum kitchen height",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "S2",
+        "source_id": "fx-sp-2"
+      },
+      "status": "pass",
+      "measured": 3.0,
+      "limit": 2.75,
+      "message": "Kitchen height is 3.00 m; minimum is 2.75 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S2].usage",
+          "value": "kitchen",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "9.3.2",
+        "excerpt": "The height of a kitchen measured from the surface of the floor, to the lowest point in the ceiling (bottom of slab) shall not be less than 2.75 m. except for the portion to accommodate floor trap of the upper floor.",
+        "source": "udcpr2020 p.154",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.kitchen-height-min",
+      "title": "Minimum kitchen height",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "S3",
+        "source_id": "fx-sp-3"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S3].usage",
+          "value": "bathroom",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "9.3.2",
+        "excerpt": "The height of a kitchen measured from the surface of the floor, to the lowest point in the ceiling (bottom of slab) shall not be less than 2.75 m. except for the portion to accommodate floor trap of the upper floor.",
+        "source": "udcpr2020 p.154",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.kitchen-height-min",
+      "title": "Minimum kitchen height",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "S4",
+        "source_id": "fx-sp-4"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S4].usage",
+          "value": "bedroom",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "9.3.2",
+        "excerpt": "The height of a kitchen measured from the surface of the floor, to the lowest point in the ceiling (bottom of slab) shall not be less than 2.75 m. except for the portion to accommodate floor trap of the upper floor.",
+        "source": "udcpr2020 p.154",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.kitchen-height-min",
+      "title": "Minimum kitchen height",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "S5",
+        "source_id": "fx-sp-5"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S5].usage",
+          "value": "bedroom",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "9.3.2",
+        "excerpt": "The height of a kitchen measured from the surface of the floor, to the lowest point in the ceiling (bottom of slab) shall not be less than 2.75 m. except for the portion to accommodate floor trap of the upper floor.",
+        "source": "udcpr2020 p.154",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.shop-height-min",
+      "title": "Minimum shop height",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "S1",
+        "source_id": "fx-sp-1"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S1].usage",
+          "value": "living",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.shop-height-min",
+      "title": "Minimum shop height",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "S2",
+        "source_id": "fx-sp-2"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S2].usage",
+          "value": "kitchen",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.shop-height-min",
+      "title": "Minimum shop height",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "S3",
+        "source_id": "fx-sp-3"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S3].usage",
+          "value": "bathroom",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.shop-height-min",
+      "title": "Minimum shop height",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "S4",
+        "source_id": "fx-sp-4"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S4].usage",
+          "value": "bedroom",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.shop-height-min",
+      "title": "Minimum shop height",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "S5",
+        "source_id": "fx-sp-5"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S5].usage",
+          "value": "bedroom",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.stair-riser-max",
+      "title": "Maximum riser height",
+      "severity": "major",
+      "element": {
+        "kind": "stairs",
+        "id": "ST1",
+        "source_id": "fx-st-1"
+      },
+      "status": "pass",
+      "measured": 0.16,
+      "limit": 0.19,
+      "message": "Riser is 0.160 m; maximum is 0.19 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "project.occupancy",
+          "value": {
+            "group": "A",
+            "subdivision": "A-2"
+          },
+          "source": "declared"
+        }
+      ],
+      "clause": {
+        "ref": "9.29.3 (v)",
+        "excerpt": "The maximum height of riser shall be 19 cm. in the case of residential buildings and 15 cm. in the case of other buildings. They shall be limited to 15 per flight.",
+        "source": "udcpr2020 p.166",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.stair-tread-min",
+      "title": "Minimum tread width",
+      "severity": "major",
+      "element": {
+        "kind": "stairs",
+        "id": "ST1",
+        "source_id": "fx-st-1"
+      },
+      "status": "pass",
+      "measured": 0.28,
+      "limit": 0.25,
+      "message": "Tread is 0.280 m; minimum is 0.25 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "project.occupancy",
+          "value": {
+            "group": "A",
+            "subdivision": "A-2"
+          },
+          "source": "declared"
+        }
+      ],
+      "clause": {
+        "ref": "9.29.3 (iv)",
+        "excerpt": "The minimum width of tread without nosing shall be 25 cm. for an internal staircase for residential buildings. In the case of other buildings, the minimum tread shall be 30 cm.",
+        "source": "udcpr2020 p.166",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch6.basic-fsi",
+      "title": "FSI above basic FSI needs premium FSI / TDR",
+      "severity": "minor",
+      "element": null,
+      "status": "unverifiable",
+      "measured": null,
+      "limit": null,
+      "message": "Cannot verify: needs site.plot_area_declared_m2, site.boundary, project.congested_area",
+      "missing_inputs": [
+        "site.plot_area_declared_m2",
+        "site.boundary",
+        "project.congested_area"
+      ],
+      "facts_used": [
+        {
+          "path": "project.congested_area",
+          "value": null,
+          "source": "default"
+        }
+      ],
+      "clause": {
+        "ref": "Table 6-G (Regulation 6.3)",
+        "excerpt": "Permissible basic FSI, additional FSI on payment of premium, Permissible TDR Loading on a plot in non-congested area for Residential and Residential with mixed uses and other buildings in developable zones like residential, commercial, public-semi-public etc. shall be as given in Table 6-G below.",
+        "source": "udcpr2020 p.115",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.bath-wc-height-min",
+      "title": "Minimum bathroom / WC height",
+      "severity": "minor",
+      "element": {
+        "kind": "spaces",
+        "id": "S1",
+        "source_id": "fx-sp-1"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S1].usage",
+          "value": "living",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "9.4.2",
+        "excerpt": "The height of a bathroom or water closet measured from the surface of the floor to the lowest point in the ceiling (bottom of slab) shall be not less than 2.1 m.",
+        "source": "udcpr2020 p.154",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.bath-wc-height-min",
+      "title": "Minimum bathroom / WC height",
+      "severity": "minor",
+      "element": {
+        "kind": "spaces",
+        "id": "S2",
+        "source_id": "fx-sp-2"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S2].usage",
+          "value": "kitchen",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "9.4.2",
+        "excerpt": "The height of a bathroom or water closet measured from the surface of the floor to the lowest point in the ceiling (bottom of slab) shall be not less than 2.1 m.",
+        "source": "udcpr2020 p.154",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.bath-wc-height-min",
+      "title": "Minimum bathroom / WC height",
+      "severity": "minor",
+      "element": {
+        "kind": "spaces",
+        "id": "S3",
+        "source_id": "fx-sp-3"
+      },
+      "status": "pass",
+      "measured": 2.4,
+      "limit": 2.1,
+      "message": "Height is 2.40 m; minimum is 2.10 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S3].usage",
+          "value": "bathroom",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "9.4.2",
+        "excerpt": "The height of a bathroom or water closet measured from the surface of the floor to the lowest point in the ceiling (bottom of slab) shall be not less than 2.1 m.",
+        "source": "udcpr2020 p.154",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.bath-wc-height-min",
+      "title": "Minimum bathroom / WC height",
+      "severity": "minor",
+      "element": {
+        "kind": "spaces",
+        "id": "S4",
+        "source_id": "fx-sp-4"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S4].usage",
+          "value": "bedroom",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "9.4.2",
+        "excerpt": "The height of a bathroom or water closet measured from the surface of the floor to the lowest point in the ceiling (bottom of slab) shall be not less than 2.1 m.",
+        "source": "udcpr2020 p.154",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.bath-wc-height-min",
+      "title": "Minimum bathroom / WC height",
+      "severity": "minor",
+      "element": {
+        "kind": "spaces",
+        "id": "S5",
+        "source_id": "fx-sp-5"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S5].usage",
+          "value": "bedroom",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "9.4.2",
+        "excerpt": "The height of a bathroom or water closet measured from the surface of the floor to the lowest point in the ceiling (bottom of slab) shall be not less than 2.1 m.",
+        "source": "udcpr2020 p.154",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.habitable-height-max",
+      "title": "Maximum height of habitable rooms",
+      "severity": "minor",
+      "element": {
+        "kind": "spaces",
+        "id": "S1",
+        "source_id": "fx-sp-1"
+      },
+      "status": "pass",
+      "measured": 3.0,
+      "limit": 4.5,
+      "message": "Clear height is 3.00 m; maximum is 4.50 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S1].usage",
+          "value": "living",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.habitable-height-max",
+      "title": "Maximum height of habitable rooms",
+      "severity": "minor",
+      "element": {
+        "kind": "spaces",
+        "id": "S2",
+        "source_id": "fx-sp-2"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S2].usage",
+          "value": "kitchen",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.habitable-height-max",
+      "title": "Maximum height of habitable rooms",
+      "severity": "minor",
+      "element": {
+        "kind": "spaces",
+        "id": "S3",
+        "source_id": "fx-sp-3"
+      },
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S3].usage",
+          "value": "bathroom",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.habitable-height-max",
+      "title": "Maximum height of habitable rooms",
+      "severity": "minor",
+      "element": {
+        "kind": "spaces",
+        "id": "S4",
+        "source_id": "fx-sp-4"
+      },
+      "status": "pass",
+      "measured": 3.0,
+      "limit": 4.5,
+      "message": "Clear height is 3.00 m; maximum is 4.50 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S4].usage",
+          "value": "bedroom",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.habitable-height-max",
+      "title": "Maximum height of habitable rooms",
+      "severity": "minor",
+      "element": {
+        "kind": "spaces",
+        "id": "S5",
+        "source_id": "fx-sp-5"
+      },
+      "status": "pass",
+      "measured": 3.0,
+      "limit": 4.5,
+      "message": "Clear height is 3.00 m; maximum is 4.50 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[S5].usage",
+          "value": "bedroom",
+          "source": "model"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    }
+  ],
+  "questions": [
+    {
+      "path": "site.edges",
+      "prompt": "Which sides of the plot face a road, and how wide is each road (as per the Development Plan)?",
+      "unlocks": 7,
+      "rule_ids": [
+        "pmc.tod.max-fsi",
+        "udcpr2020.ch6.congested-front-setback",
+        "udcpr2020.ch6.congested-side-rear",
+        "udcpr2020.ch6.front-margin",
+        "udcpr2020.ch6.max-fsi-congested",
+        "udcpr2020.ch6.max-fsi-noncongested",
+        "udcpr2020.ch6.side-rear-margin"
+      ],
+      "input_type": "edge_tags",
+      "options": null
+    },
+    {
+      "path": "project.overlays.metro_tod",
+      "prompt": "Is the plot inside the notified metro TOD zone (500 m around a metro station)?",
+      "unlocks": 5,
+      "rule_ids": [
+        "pmc.tod.max-fsi",
+        "pmc.tod.tenement-max-carpet",
+        "pmc.tod.tenement-min-carpet",
+        "udcpr2020.ch6.max-fsi-congested",
+        "udcpr2020.ch6.max-fsi-noncongested"
+      ],
+      "input_type": "bool",
+      "options": null
+    },
+    {
+      "path": "site.boundary",
+      "prompt": "The plot boundary is missing. Add property lines in Revit (or a site in the IFC).",
+      "unlocks": 4,
+      "rule_ids": [
+        "udcpr2020.ch6.congested-front-setback",
+        "udcpr2020.ch6.congested-side-rear",
+        "udcpr2020.ch6.front-margin",
+        "udcpr2020.ch6.side-rear-margin"
+      ],
+      "input_type": "text",
+      "options": null
+    },
+    {
+      "path": "project.congested_area",
+      "prompt": "Is the plot in a congested area / Gaothan as shown in the Development Plan?",
+      "unlocks": 2,
+      "rule_ids": [
+        "udcpr2020.ch6.max-fsi-congested",
+        "udcpr2020.ch6.max-fsi-noncongested"
+      ],
+      "input_type": "bool",
+      "options": null
+    }
+  ],
+  "explanation": null,
+  "fsi": {
+    "plot_area_m2": null,
+    "built_up_m2": 189.0,
+    "used": null,
+    "base_permissible": null,
+    "max_permissible": null,
+    "basis": [],
+    "headroom_base_m2": null,
+    "headroom_max_m2": null,
+    "rule_ids": [
+      "pmc.tod.max-fsi",
+      "udcpr2020.ch6.basic-fsi",
+      "udcpr2020.ch6.max-fsi-congested",
+      "udcpr2020.ch6.max-fsi-noncongested"
+    ],
+    "missing_inputs": [
+      "site.plot_area_declared_m2",
+      "site.boundary",
+      "project.congested_area",
+      "site.edges",
+      "project.overlays.metro_tod"
+    ]
+  }
+}

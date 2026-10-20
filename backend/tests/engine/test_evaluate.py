@@ -173,3 +173,17 @@ def test_fix_by_only_for_plain_comparisons(tmp_path):
     assert r["status"] == "fail" and r["fix_by"] is None
     [r] = _rule(tmp_path, limit="1.0", measured="derived.far", check="limit <= measured")
     assert r["fix_by"] == {"amount": 0.37, "unit": None, "direction": "increase"}
+
+
+def test_no_site_edges_means_unverifiable_not_silently_skipped(rulebase):
+    results = run("missing_site", rulebase)
+    margin = [r for r in results if r["rule_id"] == "udcpr2020.ch6.front-margin"]
+    assert len(margin) == 1 and margin[0]["status"] == "unverifiable"
+    assert margin[0]["missing_inputs"] == ["site.boundary", "site.edges"]
+
+
+def test_apartment_basic_fsi_advisory(rulebase):
+    [r] = [
+        x for x in run("violating_apartment", rulebase) if x["rule_id"] == "udcpr2020.ch6.basic-fsi"
+    ]
+    assert r["status"] == "advisory" and r["limit"] == 1.1

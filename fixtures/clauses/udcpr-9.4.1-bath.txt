@@ -1,0 +1,8 @@
+---
+authority: udcpr2020
+clause_ref: "9.4.1 (i)"
+source: "udcpr2020 p.154"
+---
+9.4.1 Size of bath room and water closet
+Minimum size shall be as under -
+i) Independent Bath room 1.00 m. x 1.20 m.

@@ -1,0 +1,1592 @@
+{
+ "type": "FeatureCollection",
+ "attribution": "© OpenStreetMap contributors, ODbL 1.0 (https://www.openstreetmap.org/copyright)",
+ "fetched": "2026-10-20",
+ "source": "Overpass API; checked against metro_reference.yaml (punemetrorail.org route map)",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.841487,
+     18.533006
+    ]
+   },
+   "properties": {
+    "name": "Agriculture College",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/7944597695"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.784747,
+     18.65116
+    ]
+   },
+   "properties": {
+    "name": "Akurdi",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/13647412354"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.809433,
+     18.508219
+    ]
+   },
+   "properties": {
+    "name": "Anand Nagar Station",
+    "line": "2",
+    "status": "under_construction",
+    "osm_id": "node/7944584972"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.814075,
+     18.509572
+    ]
+   },
+   "properties": {
+    "name": "Anandnagar",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/9599243854"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.997801,
+     18.590216
+    ]
+   },
+   "properties": {
+    "name": "Bakori Phata",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13650652440"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.858379,
+     18.453227
+    ]
+   },
+   "properties": {
+    "name": "Balaji Nagar",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13659087397"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.779766,
+     18.564186
+    ]
+   },
+   "properties": {
+    "name": "Balewadi Phata",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/13647113367"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.761542,
+     18.579709
+    ]
+   },
+   "properties": {
+    "name": "Balewadi Stadium",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/7944584964"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.797938,
+     18.554964
+    ]
+   },
+   "properties": {
+    "name": "Baner",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/13647113365"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.790598,
+     18.559196
+    ]
+   },
+   "properties": {
+    "name": "Baner Gaon",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/13647113366"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.774574,
+     18.662561
+    ]
+   },
+   "properties": {
+    "name": "Bhakti Shakti",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/13647412351"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.856249,
+     18.475233
+    ]
+   },
+   "properties": {
+    "name": "Bibwewadi",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13659087365"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.838103,
+     18.569661
+    ]
+   },
+   "properties": {
+    "name": "Bopodi",
+    "line": "1",
+    "status": "operational",
+    "osm_id": "node/7944597711"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.859367,
+     18.51931
+    ]
+   },
+   "properties": {
+    "name": "Budhwar Peth Station",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/7944597698"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.883439,
+     18.540593
+    ]
+   },
+   "properties": {
+    "name": "Bund Garden",
+    "line": "2",
+    "status": "operational",
+    "osm_id": "node/11699340649"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.786698,
+     18.507636
+    ]
+   },
+   "properties": {
+    "name": "Chandani Chowk",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13654973659"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.847383,
+     18.520081
+    ]
+   },
+   "properties": {
+    "name": "Chhatrapati Sambhaji Udyan",
+    "line": "2",
+    "status": "operational",
+    "osm_id": "node/11097527718"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.794931,
+     18.639173
+    ]
+   },
+   "properties": {
+    "name": "Chinchwad",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/13647412355"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.81348,
+     18.495987
+    ]
+   },
+   "properties": {
+    "name": "Dahanukar Colony",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13652090836"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.797143,
+     18.454999
+    ]
+   },
+   "properties": {
+    "name": "Dalvewadi",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13654853657"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.84518,
+     18.50084
+    ]
+   },
+   "properties": {
+    "name": "Dandekar Pul",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13654857891"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.832686,
+     18.581447
+    ]
+   },
+   "properties": {
+    "name": "Dapodi",
+    "line": "1",
+    "status": "operational",
+    "osm_id": "node/2432308147"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.811385,
+     18.472616
+    ]
+   },
+   "properties": {
+    "name": "Daulat Nagar",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13652090927"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.844446,
+     18.516448
+    ]
+   },
+   "properties": {
+    "name": "Deccan Gymkhana",
+    "line": "2",
+    "status": "operational",
+    "osm_id": "node/11097527725"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.837048,
+     18.494875
+    ]
+   },
+   "properties": {
+    "name": "Deshpande Udyan",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13654857874"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.809396,
+     18.45892
+    ]
+   },
+   "properties": {
+    "name": "Dhayari Phata",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13654853683"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.856899,
+     18.526786
+    ]
+   },
+   "properties": {
+    "name": "District Court",
+    "line": "2",
+    "status": "operational",
+    "osm_id": "node/11097510274"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.857748,
+     18.52672
+    ]
+   },
+   "properties": {
+    "name": "District Court (Aqua Line)",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/7944597685"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.856089,
+     18.528328
+    ]
+   },
+   "properties": {
+    "name": "District Court (Pink Line)",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/13570390374"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.702895,
+     18.588102
+    ]
+   },
+   "properties": {
+    "name": "Doehler India",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/7944584965"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.900526,
+     18.506547
+    ]
+   },
+   "properties": {
+    "name": "Fatima Nagar",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13661267070"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.835045,
+     18.510576
+    ]
+   },
+   "properties": {
+    "name": "Garware College Station",
+    "line": "2",
+    "status": "under_construction",
+    "osm_id": "node/7944584970"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.922775,
+     18.50367
+    ]
+   },
+   "properties": {
+    "name": "Hadapsar",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/13661267088"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.774838,
+     18.570512
+    ]
+   },
+   "properties": {
+    "name": "High Street",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/13647113368"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.825802,
+     18.481056
+    ]
+   },
+   "properties": {
+    "name": "Hingane Chowk",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13654857836"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.737357,
+     18.592395
+    ]
+   },
+   "properties": {
+    "name": "Hinjawadi",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/13647113374"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.709223,
+     18.594195
+    ]
+   },
+   "properties": {
+    "name": "Infosys",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/7944584983"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.7463,
+     18.590967
+    ]
+   },
+   "properties": {
+    "name": "Jakat Naka",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/13647113373"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.905698,
+     18.544481
+    ]
+   },
+   "properties": {
+    "name": "Kalyani Nagar",
+    "line": "2",
+    "status": "operational",
+    "osm_id": "node/11699340655"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.813461,
+     18.488076
+    ]
+   },
+   "properties": {
+    "name": "Karve Nagar",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13652090882"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.817815,
+     18.502603
+    ]
+   },
+   "properties": {
+    "name": "Karve Putala",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13652090804"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.827264,
+     18.59962
+    ]
+   },
+   "properties": {
+    "name": "Kasarwadi",
+    "line": "1",
+    "status": "operational",
+    "osm_id": "node/7944597699"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.859623,
+     18.521375
+    ]
+   },
+   "properties": {
+    "name": "Kasba Peth",
+    "line": "1",
+    "status": "operational",
+    "osm_id": "node/12211880200"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.859009,
+     18.446573
+    ]
+   },
+   "properties": {
+    "name": "Katraj",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13659088612"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.842083,
+     18.562262
+    ]
+   },
+   "properties": {
+    "name": "Khadki",
+    "line": "1",
+    "status": "operational",
+    "osm_id": "node/13644302877"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.937809,
+     18.562359
+    ]
+   },
+   "properties": {
+    "name": "Kharadi Bypass",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13650679304"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.807673,
+     18.503889
+    ]
+   },
+   "properties": {
+    "name": "Kothrud",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/2194045720"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.808227,
+     18.550269
+    ]
+   },
+   "properties": {
+    "name": "Krushi Anusandhan",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/13647113364"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.85701,
+     18.512898
+    ]
+   },
+   "properties": {
+    "name": "Mahatma Phule Mandai",
+    "line": "1",
+    "status": "operational",
+    "osm_id": "node/7944597694"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.857039,
+     18.512311
+    ]
+   },
+   "properties": {
+    "name": "Mandai",
+    "line": null,
+    "status": "operational",
+    "osm_id": "way/1503654104"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.865104,
+     18.530069
+    ]
+   },
+   "properties": {
+    "name": "Mangalwar Peth",
+    "line": "2",
+    "status": "operational",
+    "osm_id": "way/1532296305"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.817952,
+     18.467138
+    ]
+   },
+   "properties": {
+    "name": "Manik Baug",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13652090944"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.857518,
+     18.487786
+    ]
+   },
+   "properties": {
+    "name": "Market Yard",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13659087340"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.688,
+     18.57922
+    ]
+   },
+   "properties": {
+    "name": "Megapolis Circle",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/7944584973"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.766062,
+     18.575034
+    ]
+   },
+   "properties": {
+    "name": "NICMAR",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/13647113369"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.824285,
+     18.505488
+    ]
+   },
+   "properties": {
+    "name": "Nal Stop",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13652090805"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.802869,
+     18.457185
+    ]
+   },
+   "properties": {
+    "name": "Nanded City",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13654853672"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.820097,
+     18.609303
+    ]
+   },
+   "properties": {
+    "name": "Nashik Phata",
+    "line": "1",
+    "status": "operational",
+    "osm_id": "node/7944597706"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.778398,
+     18.658399
+    ]
+   },
+   "properties": {
+    "name": "Nigdi",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/13647412352"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.85335,
+     18.522744
+    ]
+   },
+   "properties": {
+    "name": "PMC Bhavan",
+    "line": "2",
+    "status": "operational",
+    "osm_id": "node/7944584980"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.858097,
+     18.461007
+    ]
+   },
+   "properties": {
+    "name": "Padmavati",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13659087385"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.727811,
+     18.594496
+    ]
+   },
+   "properties": {
+    "name": "Pall India",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "way/1483339707"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.822144,
+     18.508885
+    ]
+   },
+   "properties": {
+    "name": "Paud Phata",
+    "line": "2",
+    "status": "operational",
+    "osm_id": "node/9599243855"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.831147,
+     18.591106
+    ]
+   },
+   "properties": {
+    "name": "Phugewadi",
+    "line": "1",
+    "status": "operational",
+    "osm_id": "node/7944584963"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.803286,
+     18.629319
+    ]
+   },
+   "properties": {
+    "name": "Pimpri Chinchwad Municipal Corporation (PCMC)",
+    "line": "1",
+    "status": "operational",
+    "osm_id": "node/10214268972"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.878369,
+     18.502756
+    ]
+   },
+   "properties": {
+    "name": "Pune Cantonment Board",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13661267008"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.872409,
+     18.529759
+    ]
+   },
+   "properties": {
+    "name": "Pune Railway Station",
+    "line": "2",
+    "status": "operational",
+    "osm_id": "way/1494691943"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.694818,
+     18.584018
+    ]
+   },
+   "properties": {
+    "name": "Quadron",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/7944597688"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.836692,
+     18.536371
+    ]
+   },
+   "properties": {
+    "name": "RBI",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/7944597700"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.889388,
+     18.506465
+    ]
+   },
+   "properties": {
+    "name": "Race Course",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13661267047"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.829398,
+     18.488103
+    ]
+   },
+   "properties": {
+    "name": "Rajaram Pul",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13654857857"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.911628,
+     18.506308
+    ]
+   },
+   "properties": {
+    "name": "Ramtekadi",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13661267081"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.908563,
+     18.557028
+    ]
+   },
+   "properties": {
+    "name": "Ramwadi",
+    "line": "2",
+    "status": "operational",
+    "osm_id": "node/11699340657"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.845807,
+     18.550287
+    ]
+   },
+   "properties": {
+    "name": "Range Hills",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/7944584969"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.877749,
+     18.532718
+    ]
+   },
+   "properties": {
+    "name": "Ruby Hall Clinic",
+    "line": "2",
+    "status": "operational",
+    "osm_id": "node/7944584984"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.828782,
+     18.507357
+    ]
+   },
+   "properties": {
+    "name": "SNDT College",
+    "line": "2",
+    "status": "operational",
+    "osm_id": "node/9599243856"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.815746,
+     18.614525
+    ]
+   },
+   "properties": {
+    "name": "Sant Tukaram Nagar",
+    "line": "1",
+    "status": "operational",
+    "osm_id": "node/7944597690"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.827173,
+     18.542347
+    ]
+   },
+   "properties": {
+    "name": "Savitribal Phule Pune University",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/13647113362"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.869616,
+     18.501458
+    ]
+   },
+   "properties": {
+    "name": "Seven Loves Chowk",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13661246197"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.84966,
+     18.532172
+    ]
+   },
+   "properties": {
+    "name": "Shivaji Nagar",
+    "line": "1",
+    "status": "operational",
+    "osm_id": "node/11097510271"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.851385,
+     18.532398
+    ]
+   },
+   "properties": {
+    "name": "Shivaji Nagar Railway Station",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/13640060834"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.848571,
+     18.530475
+    ]
+   },
+   "properties": {
+    "name": "Shivajinagar",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/7944584959"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.988709,
+     18.582664
+    ]
+   },
+   "properties": {
+    "name": "Siddharth Nagar",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13650652498"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.928401,
+     18.562864
+    ]
+   },
+   "properties": {
+    "name": "Somnath Nagar",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13651468960"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.85746,
+     18.499745
+    ]
+   },
+   "properties": {
+    "name": "Swargate",
+    "line": "1",
+    "status": "operational",
+    "osm_id": "node/7944597710"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.856872,
+     18.500704
+    ]
+   },
+   "properties": {
+    "name": "Swargate North",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13654857952"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.946837,
+     18.567097
+    ]
+   },
+   "properties": {
+    "name": "Tuljabhavani Nagar",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13650679303"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.95594,
+     18.572609
+    ]
+   },
+   "properties": {
+    "name": "Ubale Nagar",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13650679302"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.962641,
+     18.575658
+    ]
+   },
+   "properties": {
+    "name": "Upper Kharadi Rd",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13650679301"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.805195,
+     18.507185
+    ]
+   },
+   "properties": {
+    "name": "Vanaz",
+    "line": "2",
+    "status": "operational",
+    "osm_id": "node/9599243853"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.920388,
+     18.561482
+    ]
+   },
+   "properties": {
+    "name": "Viman Nagar",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13651468961"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     74.004574,
+     18.598036
+    ]
+   },
+   "properties": {
+    "name": "Vitthalwadi",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13650652439"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.978999,
+     18.580696
+    ]
+   },
+   "properties": {
+    "name": "Wagheshwar Temple",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13650652500"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.983649,
+     18.58061
+    ]
+   },
+   "properties": {
+    "name": "Wagholi",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13650652499"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.757559,
+     18.590299
+    ]
+   },
+   "properties": {
+    "name": "Wakad Chowk metro Station",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/7944597702"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.805508,
+     18.47996
+    ]
+   },
+   "properties": {
+    "name": "Warje",
+    "line": null,
+    "status": "proposed",
+    "osm_id": "node/13652090903"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.717161,
+     18.59659
+    ]
+   },
+   "properties": {
+    "name": "Wipro",
+    "line": null,
+    "status": "under_construction",
+    "osm_id": "node/7944597696"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.819665,
+     18.546325
+    ]
+   },
+   "properties": {
+    "name": "YASHADA",
+    "line": null,
+    "status": "operational",
+    "osm_id": "node/13647113363"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     73.886688,
+     18.545317
+    ]
+   },
+   "properties": {
+    "name": "Yerwada",
+    "line": "2",
+    "status": "operational",
+    "osm_id": "node/11699340652"
+   }
+  }
+ ]
+}

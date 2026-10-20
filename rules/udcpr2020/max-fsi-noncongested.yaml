@@ -1,0 +1,27 @@
+id: udcpr2020.ch6.max-fsi-noncongested
+title: Maximum building potential (FSI) — non-congested area
+authority: udcpr2020
+clause:
+  ref: Table 6-G (Regulation 6.3)
+  excerpt: Permissible basic FSI, additional FSI on payment of premium, Permissible TDR Loading on a plot
+    in non-congested area for Residential and Residential with mixed uses and other buildings in developable
+    zones like residential, commercial, public-semi-public etc. shall be as given in Table 6-G below.
+  source: udcpr2020 p.115
+  retrieved: '2026-10-19'
+status: draft
+severity: critical
+kind: check
+applies_when: project.congested_area == False and (project.overlays.metro_tod == False or derived.front_road_width_m
+  < 9)
+limit: table('udcpr2020.max_fsi_6g_mc', derived.front_road_width_m)
+measured: derived.far
+check: measured <= limit
+message: FSI is {measured:.2f}; the maximum building potential for this road width is {limit:.2f} (basic
+  + premium + TDR, excluding ancillary area FSI).
+metric: fsi_max
+fix_unit: FSI
+compiled_by: agent:claude-opus-5-5@p2.6-batch2
+freshness:
+  status: unchecked
+  url: null
+  checked: null

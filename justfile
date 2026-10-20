@@ -16,7 +16,8 @@ codegen:
 
 # Export OpenAPI and generate the web API client (P4.5)
 codegen-api:
-    @just _todo P4.5
+    {{py}} scripts/export_openapi.py
+    cd web; npx openapi-typescript ../schemas/openapi.json -o src/generated/api.ts
 
 # Validate one JSON file against its schema (P1.6)
 validate file:
@@ -38,19 +39,36 @@ lint:
 
 # Run the API locally (P4.2)
 dev-backend:
-    @just _todo P4.2
+    uv run --project backend uvicorn --factory compliance.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir backend/src
+
+# Print a 6-digit pairing code from the running backend (until the web app shows one, P6)
+pair-code url="http://127.0.0.1:8000":
+    {{py}} -c "import httpx; print('Pairing code:', httpx.post('{{url}}/api/pair/start').json()['code'], '(valid 10 minutes)')"
 
 # Run the web app locally (P6.3)
 dev-web:
-    @just _todo P6.3
+    cd web; npm run dev
 
 # Build the web app (P6.3)
 build-web:
-    @just _todo P6.3
+    cd web; npm ci --no-audit --no-fund; npm run build
 
 # Build the Revit add-in (P5.1)
 build-addin:
-    @just _todo P5.1
+    dotnet build revit-addin/ComplianceChecker.sln -c Release -nologo -v q
+
+# Run the add-in's Core unit tests (no Revit needed)
+test-addin:
+    dotnet test revit-addin/tests/ComplianceChecker.Core.Tests -nologo -v q
+    {{py}} scripts/validate.py revit-addin/tests/out/sample_export.json
+
+# Build the release zip dist/ComplianceChecker-<version>.zip (P5.10)
+package-addin: build-addin
+    powershell -NoProfile -ExecutionPolicy Bypass -File revit-addin/install/package.ps1
+
+# Build and install the add-in into %AppData%/Autodesk/Revit/Addins/2026 (close Revit first)
+install-addin: build-addin
+    powershell -NoProfile -ExecutionPolicy Bypass -File revit-addin/install/install.ps1
 
 # Check the Nemotron models on Nebius; add --write to update backend/config/models.yaml (P0.5)
 smoke-llm *args:
@@ -61,8 +79,8 @@ smoke-tavily:
     {{py}} scripts/smoke_tavily.py
 
 # Compile a clause text file into a draft rule (P3.5)
-compile-rule file:
-    @just _todo P3.5
+compile-rule file *args:
+    {{py}} scripts/compile_rule.py "{{file}}" {{args}}
 
 # Extract source PDFs page by page and build the clause search index (P0.9)
 extract-sources *args:
@@ -72,9 +90,13 @@ extract-sources *args:
 find-clause query:
     {{py}} scripts/extract_sources.py find "{{query}}"
 
+# Generate the sample IFC files from the fixture buildings (P6.1)
+make-samples:
+    {{py}} scripts/make_sample_ifc.py
+
 # Fetch Pune metro stations from OpenStreetMap (P3.10)
-fetch-stations:
-    @just _todo P3.10
+fetch-stations *args:
+    {{py}} scripts/fetch_metro_stations.py {{args}}
 
 _todo task:
     @echo "not yet implemented ({{task}})"

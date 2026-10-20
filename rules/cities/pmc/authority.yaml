@@ -17,3 +17,6 @@ tavily_domains:
   - lj.maharashtra.gov.in
   - punemetrorail.org
   - mahafireservice.gov.in
+# Offline fallback only (used if the address lookup fails): a rough box around PMC limits.
+# It also covers some PCMC/PMRDA land, so results from it are marked as approximate.
+bbox: { south: 18.42, north: 18.64, west: 73.74, east: 73.98 }

@@ -1,0 +1,28 @@
+id: udcpr2020.ch6.congested-front-setback
+title: Front setback from each road (congested area)
+authority: udcpr2020
+clause:
+  ref: Table No. 6-B (Regulation 6.1.1 ii)
+  excerpt: 'The minimum front setback from the existing or proposed road / roads shall be as per the following
+    Table No.6-B. Streets 4.5 m. to less than 6.0 m.: NIL (mixed use 1.50 m.); 6.0 m. to less than 12.0
+    m.: 1.00 m. (2.00 m.); 12.0 m. and above: 2.00 m. (2.50 m.).'
+  source: udcpr2020 p.106
+  retrieved: '2026-10-19'
+status: draft
+severity: critical
+kind: check
+for_each: site.edges
+applies_when: project.occupancy.group == 'A' and item.kind == 'road' and (project.congested_area == True
+  and derived.plot_area_m2 <= 4000 and derived.building_height_m < 24)
+limit: (table('udcpr2020.congested_front_6b_mixed', item.road_width_m) if project.building_type == 'mixed_use'
+  else table('udcpr2020.congested_front_6b', item.road_width_m)) + (1.0 if derived.building_height_m >=
+  15 else 0.0)
+measured: derived.setback_m[item.id]
+check: measured >= limit
+message: Setback from this road is {measured:.2f} m; minimum is {limit:.2f} m.
+fix_unit: m
+compiled_by: agent:claude-opus-5-5@p2.6-batch2
+freshness:
+  status: unchecked
+  url: null
+  checked: null

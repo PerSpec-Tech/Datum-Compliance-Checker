@@ -64,7 +64,7 @@ def test_question_keys():
     assert question_key("table:x[1]") is None
 
 
-def test_missing_site_fixture_asks_about_tod_and_road_edges():
+def test_missing_site_fixture_asks_about_road_edges_first():
     rb = load_rulebase()
     model = json.loads((REPO_ROOT / "fixtures/models/missing_site.json").read_text("utf-8"))
     results = evaluate(model, rb.select(["nbc2016", "udcpr2020", "pmc"]), rb.tables)
@@ -72,11 +72,7 @@ def test_missing_site_fixture_asks_about_tod_and_road_edges():
     qs = plan(results, advisory)
     for q in qs:
         QUESTION_SCHEMA.validate(q)
-    paths = [q["path"] for q in qs]
-    # With batch-1 rules, every TOD rule waits on the TOD answer, so it ranks first; the road
-    # edges question unlocks the TOD FSI rule. Margin/FSI rules (P2.6 batch 2) will add to it.
-    assert paths[0] == "project.overlays.metro_tod"
-    assert "site.edges" in paths
-    # 3, not 5: mixed-use and small-tenement rules are already not_applicable for a bungalow
-    # ("False and <missing>" is False), so the TOD answer can't change them.
-    assert qs[0]["unlocks"] == 3
+    # Road edges unlock the margin rules and every FSI rule, so they lead; TOD comes next.
+    assert [q["path"] for q in qs[:2]] == ["site.edges", "project.overlays.metro_tod"]
+    assert qs[0]["unlocks"] > qs[1]["unlocks"]
+    assert qs[0]["input_type"] == "edge_tags"

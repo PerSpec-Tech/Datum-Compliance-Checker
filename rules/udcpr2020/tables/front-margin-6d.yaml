@@ -1,0 +1,27 @@
+name: udcpr2020.front_margin_6d
+authority: udcpr2020
+description: Minimum front setback by road width (Table 6-D column 5, residential). The 30 m+ value 6.0
+  m is the 'A, B, C class Municipal Corporations' figure, which applies to Pune Municipal Corporation.
+unit: m
+source:
+  ref: Table No. 6-D (Regulation 6.2.1)
+  excerpt: 'Min. setback from road side / Min. side margins / Min. rear margins: roads of width 30.0 m.
+    and above 6.0 (A, B, C class Municipal Corporations) / 3.0 / 3.0; 18.0 m. and above but below 30.0
+    m. 4.5 / 2.0 / 2.0; 15.0 m. and above but below 18.0 m. 3.0 / 1.5 / 1.5; less than 15.0 m. 3.0 / 1.5
+    / 1.5.'
+  source: udcpr2020 p.108
+  retrieved: '2026-10-19'
+kind: bands
+bands:
+- min: 0
+  max: 15
+  value: 3.0
+- min: 15
+  max: 18
+  value: 3.0
+- min: 18
+  max: 30
+  value: 4.5
+- min: 30
+  max: null
+  value: 6.0

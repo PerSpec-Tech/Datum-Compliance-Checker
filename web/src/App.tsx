@@ -1,0 +1,92 @@
+import { lazy, Suspense } from "react";
+import { NavLink, Route, Routes } from "react-router-dom";
+import { Icon, Skeleton, type IconName } from "./components/ui";
+import NewCheckPage from "./features/upload/NewCheckPage";
+import ProgressPage from "./features/progress/ProgressPage";
+
+const BriefPage = lazy(() => import("./features/brief/BriefPage"));
+const ReportPage = lazy(() => import("./features/report/ReportPage"));
+const RulesPage = lazy(() => import("./features/rules/RulesPage"));
+const AboutPage = lazy(() => import("./features/about/AboutPage"));
+const PairPage = lazy(() => import("./features/about/PairPage"));
+
+const NAV: { to: string; label: string; icon: IconName; end?: boolean }[] = [
+  { to: "/", label: "new check", icon: "upload", end: true },
+  { to: "/revit", label: "pair revit", icon: "plug" },
+  { to: "/rules", label: "rules", icon: "book" },
+  { to: "/about", label: "usage & about", icon: "gauge" },
+];
+
+// The tool's glyph: a checklist with a tick (§16). Monochrome; used for the favicon too.
+function Glyph() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+      <path d="M3 4h9M3 8h6M3 12h4" />
+      <path d="M10 13l2.5 2.5L17 10" />
+    </svg>
+  );
+}
+
+export default function App() {
+  return (
+    <div className="min-h-screen lg:pl-[var(--sidebar)]">
+      <aside className="z-[1000] flex flex-col border-b border-line-subtle bg-canvas lg:fixed lg:inset-y-0 lg:left-0 lg:w-[var(--sidebar)] lg:border-b-0 lg:border-r">
+        <NavLink to="/" className="flex h-14 items-center gap-2.5 px-5 text-fg">
+          <Glyph />
+          <span className="text-[15px] font-semibold tracking-[-0.02em]">
+            compliance check<span className="stop">.</span>
+          </span>
+        </NavLink>
+        <nav className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col lg:gap-0.5 lg:pb-0 lg:pt-2" aria-label="Primary">
+          {NAV.map((n) => (
+            <NavLink
+              key={n.to}
+              to={n.to}
+              end={n.end}
+              className={({ isActive }) =>
+                `relative flex h-8 shrink-0 items-center gap-2.5 rounded-sm px-2.5 text-sm transition-colors ${
+                  isActive ? "bg-surface text-fg" : "text-fg-2 hover:bg-surface hover:text-fg"
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  {isActive && <span className="absolute inset-y-1.5 left-0 w-[2px] bg-accent" aria-hidden />}
+                  <Icon name={n.icon} />
+                  {n.label}
+                </>
+              )}
+            </NavLink>
+          ))}
+        </nav>
+        <div className="mt-auto hidden border-t border-line-subtle px-5 py-4 lg:block">
+          <p className="meta">rulebook</p>
+          <p className="mt-1 font-mono text-2xs leading-5 text-fg-2">
+            PMC · Pune
+            <br />
+            UDCPR 2020 → NBC 2016
+          </p>
+          <p className="meta mt-3">a design aid, not a permit. every result cites its clause.</p>
+          <p className="mt-3 text-xs font-semibold tracking-[-0.02em] text-fg-2">
+            perspec<span className="stop">.</span>
+          </p>
+        </div>
+      </aside>
+      <main className="mx-auto w-full max-w-[1440px] px-5 py-8 lg:px-10">
+        <Suspense fallback={<Skeleton />}>
+          <Routes>
+            <Route path="/" element={<NewCheckPage />} />
+            <Route path="/p/:projectId/brief" element={<BriefPage />} />
+            <Route path="/p/:projectId/jobs/:jobId" element={<ProgressPage />} />
+            <Route path="/reports/:reportId" element={<ReportPage />} />
+            <Route path="/rules" element={<RulesPage />} />
+            <Route path="/rules/:ruleId" element={<RulesPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/revit" element={<PairPage />} />
+            <Route path="*" element={<p className="text-fg-2">page not found.</p>} />
+          </Routes>
+        </Suspense>
+      </main>
+    </div>
+  );
+}

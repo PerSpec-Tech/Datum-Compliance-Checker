@@ -1,0 +1,31 @@
+id: udcpr2020.draft.doorway-width-height
+title: Doorway width and height requirements
+authority: udcpr2020
+clause:
+  ref: 9.29.1 (ii)
+  excerpt: 9.29.1 Doorways ii) No exit doorway shall be less than 90 cm. in width except assembly buildings
+    where door width shall be not less than 200 cm. Doorway shall be not less than 200 cm. in height.
+    Doorways for the bathrooms, water-closets or stores shall be not less than 75 cm. wide.
+  source: udcpr2020 p.165
+  retrieved: '2026-10-20'
+status: draft
+severity: critical
+kind: check
+for_each: doors
+limit: (2.0 if item.is_exit and project.occupancy.group == 'D' else 0.9 if item.is_exit else 0.75 if (spaces[item.from_space_id].usage
+  in ['bathroom','wc','storage'] or spaces[item.to_space_id].usage in ['bathroom','wc','storage']) else
+  0.0)
+measured: item.width_m
+check: (item.height_m >= 2.0) and (measured >= limit)
+message: Door width is {measured:.2f} m; minimum required is {limit:.2f} m.
+fix_unit: m
+compiled_by: agent:nvidia/nemotron-3-super-120b-a12b@compiler-v2
+freshness:
+  status: unchecked
+  url: null
+  checked: null
+review_notes: 'faithful: Verify that occupancy group ''D'' correctly maps to ''assembly buildings'' per
+  the code; document the mapping. | Confirm space usage codes ''bathroom'', ''wc'', ''storage'' align
+  with clause terms ''bathrooms, water-closets or stores''. | Consider splitting height and width checks
+  for clearer violation messages. | Ensure ''doors'' collection in the model corresponds exactly to ''doorways''
+  in the clause.'

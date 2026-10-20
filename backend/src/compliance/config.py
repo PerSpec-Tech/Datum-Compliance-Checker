@@ -19,7 +19,9 @@ class Settings(BaseSettings):
     app_db_path: Path = REPO_ROOT / "data" / "app.sqlite"
     app_public_url: str = "http://localhost:8000"
     app_secret: str = "change-me"
-    nominatim_user_agent: str = "compliance-checker/0.1"
+    nominatim_user_agent: str = (
+        "PERSPEC-ComplianceChecker/0.1 (hackathon demo; Revit bylaw checker)"
+    )
 
     models_file: Path = BACKEND_ROOT / "config" / "models.yaml"
     rules_dir: Path = REPO_ROOT / "rules"
@@ -29,4 +31,10 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()
+    s = Settings()
+    # Relative paths in .env are relative to the repo, not to the folder the server started in.
+    for field in ("app_db_path", "cache_dir"):
+        path = getattr(s, field)
+        if not path.is_absolute():
+            setattr(s, field, (REPO_ROOT / path).resolve())
+    return s

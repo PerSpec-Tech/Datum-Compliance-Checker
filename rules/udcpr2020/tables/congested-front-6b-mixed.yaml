@@ -1,0 +1,25 @@
+name: udcpr2020.congested_front_6b_mixed
+authority: udcpr2020
+description: Congested area front setback, residential building with mixed use (Table 6-B).
+unit: m
+source:
+  ref: Table No. 6-B (Regulation 6.1.1 ii)
+  excerpt: 'The minimum front setback from the existing or proposed road / roads shall be as per the following
+    Table No.6-B. Streets 4.5 m. to less than 6.0 m.: NIL (mixed use 1.50 m.); 6.0 m. to less than 12.0
+    m.: 1.00 m. (2.00 m.); 12.0 m. and above: 2.00 m. (2.50 m.).'
+  source: udcpr2020 p.106
+  retrieved: '2026-10-19'
+kind: bands
+bands:
+- min: 0
+  max: 4.5
+  value: null
+- min: 4.5
+  max: 6
+  value: 1.5
+- min: 6
+  max: 12
+  value: 2.0
+- min: 12
+  max: null
+  value: 2.5

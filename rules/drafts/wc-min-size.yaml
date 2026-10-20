@@ -1,0 +1,31 @@
+id: udcpr2020.draft.wc-min-size
+title: Minimum size of independent water closet
+authority: udcpr2020
+clause:
+  ref: 9.4.1 (ii)
+  excerpt: 9.4.1 Size of bath room and water closet Minimum size shall be as under - ii) Independent Water
+    closet 0.9 m. x 0.9 m.
+  source: udcpr2020 p.154
+  retrieved: '2026-10-20'
+status: draft
+severity: major
+kind: check
+for_each: spaces
+applies_when: item.usage == 'wc'
+limit: '0.9'
+measured: min(derived.space_min_width_m[item.id], derived.space_min_length_m[item.id])
+check: measured >= limit
+message: Water closet minimum dimension is {measured:.2f} m; required minimum is {limit:.2f} m.
+fix_unit: m
+compiled_by: agent:nvidia/nemotron-3-super-120b-a12b@compiler-v2
+freshness:
+  status: unchecked
+  url: null
+  checked: null
+review_notes: 'issues: applies_when selects all spaces with usage==''wc'', but clause 9.4.1(ii) only covers
+  *independent* water closets; add a condition such as item.independent==true or item.type==''independent_wc''
+  to match the clause scope. | limit is given as a string ''0.9''; ensure it is parsed as a number (0.9)
+  for the >= comparison. | The rule correctly encodes the 0.9 m × 0.9 m requirement by checking that the
+  smaller of the two derived dimensions (width, length) is ≥ 0.9 m, which implies both dimensions meet
+  the minimum. | Confirm that derived.space_min_width_m and derived.space_min_length_m are defined and
+  populated for wc spaces; otherwise the check cannot be evaluated.'

@@ -14,12 +14,14 @@ import ast
 from collections.abc import Mapping
 from typing import Any
 
-from compliance.engine.derived import Derived, compute, inputs_for
+from compliance.engine.derived import Derived, compute
 from compliance.engine.expr import EvalResult, ExprError
 from compliance.engine.rules import LoadedRule
 
 SEVERITY_ORDER = {"critical": 0, "major": 1, "minor": 2}
 STATUSES = ("pass", "fail", "unverifiable", "not_applicable", "advisory")
+# Collections that can never really be empty; if they are, the rule can't be verified.
+ALWAYS_PRESENT = {"site.edges": ["site.boundary", "site.edges"]}
 # `measured OP limit` → which way the measured value must move to pass
 _FIX_DIRECTION = {
     ("measured", ast.GtE): "increase",
@@ -57,7 +59,12 @@ def evaluate(
         if rule.for_each is None:
             results.append(_evaluate_one(rule, ctx, tables, None, None, derived))
             continue
-        for el in _collection(model, rule.for_each):
+        elements = _collection(model, rule.for_each)
+        if not elements and rule.for_each in ALWAYS_PRESENT:
+            # Every plot has edges: an empty list means the site wasn't modelled, not "no edges".
+            results.append(_unknown_collection(rule, ALWAYS_PRESENT[rule.for_each]))
+            continue
+        for el in elements:
             label = f"{rule.for_each}[{el['id']}]"
             element = {"kind": rule.for_each, "id": el["id"], "source_id": el.get("source_id")}
             results.append(
@@ -101,7 +108,7 @@ def _evaluate_one(rule, ctx, tables, label, element, derived: Derived) -> dict[s
     base = _result_shell(rule, element)
 
     def finish(status: str, **kw: Any) -> dict[str, Any]:
-        out = _finish(base, status, reads, template=rule.doc["message"], **kw)
+        out = _finish(base, status, reads, template=rule.doc["message"], derived=derived, **kw)
         _add_derived_facts(out, reads, derived)
         return out
 
@@ -148,6 +155,13 @@ def _evaluate_one(rule, ctx, tables, label, element, derived: Derived) -> dict[s
     return out
 
 
+def _unknown_collection(rule: LoadedRule, inputs: list[str]) -> dict[str, Any]:
+    out = _result_shell(rule, None)
+    out["missing_inputs"] = list(inputs)
+    out["message"] = "Cannot verify: needs " + ", ".join(inputs)
+    return out
+
+
 def _result_shell(rule: LoadedRule, element) -> dict[str, Any]:
     doc = rule.doc
     return {
@@ -170,7 +184,7 @@ def _result_shell(rule: LoadedRule, element) -> dict[str, Any]:
 
 
 def _finish(
-    base, status, reads, *, template, missing=frozenset(), error=None, named=None
+    base, status, reads, *, template, derived, missing=frozenset(), error=None, named=None
 ) -> dict[str, Any]:
     base["status"] = status
     facts: dict[str, dict[str, Any]] = {}
@@ -180,7 +194,7 @@ def _finish(
     base["facts_used"] = list(facts.values())
     inputs: list[str] = []
     for p in sorted(missing):
-        for q in inputs_for(p):
+        for q in derived.inputs_for(p):
             if q not in inputs:
                 inputs.append(q)
     base["missing_inputs"] = inputs
