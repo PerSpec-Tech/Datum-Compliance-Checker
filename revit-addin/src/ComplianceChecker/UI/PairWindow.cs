@@ -31,7 +31,7 @@ namespace ComplianceChecker.UI
             buttons.Children.Add(cancel);
 
             var panel = new StackPanel { Margin = new Thickness(16) };
-            panel.Children.Add(new TextBlock { Text = "Open the compliance web app, choose “Pair Revit”, and type the 6-digit code it shows.", TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 12) });
+            panel.Children.Add(new TextBlock { Text = "Open the compliance web app, choose “Pair Revit · AutoCAD”, and type the 6-digit code it shows. One pairing covers Revit and AutoCAD.", TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 12) });
             panel.Children.Add(new TextBlock { Text = "Server URL" });
             panel.Children.Add(_url);
             panel.Children.Add(new TextBlock { Text = "Pairing code" });

@@ -20,6 +20,8 @@ const STROKE: Record<string, { color: string; width: number; dash?: string }> = 
   anno: { color: "var(--draw-line)", width: 0.6 },
 };
 const ORDER = ["room", "furniture", "dim", "anno", "stair", "window", "door", "wall"];
+// Distinct hues for the floors overlay only (everything else stays monochrome).
+const FLOOR_COLOURS = ["#5aa9e6", "#e6b35a", "#a78bfa", "#4fd1a5", "#f07ba0", "#c6d35a"];
 const hex = (n: number) => `#${n.toString(16).padStart(6, "0")}`;
 
 export default function PlanViewer({
@@ -43,6 +45,7 @@ export default function PlanViewer({
   const shown = selectedLevel ?? level;
   const pack = useQuery({ queryKey: ["live-pack", projectId], queryFn: () => api.livePack(projectId), retry: false, staleTime: 60_000 });
   const [setbacks, setSetbacks] = useState(true);
+  const [stack, setStack] = useState(false); // every floor overlaid, to see how they line up
   const [hover, setHover] = useState<string | null>(null);
   const [cursor, setCursor] = useState<[number, number] | null>(null);
   // View: a viewBox in svg units; null = fitted. Scroll zooms at the cursor, drag pans.
@@ -80,6 +83,20 @@ export default function PlanViewer({
     for (let i = 0; i < a.length; i += 2) d += `${i ? "L" : "M"}${X(a[i]).toFixed(3)} ${Y(a[i + 1]).toFixed(3)}`;
     return d;
   };
+  // Floors overlay: each floor's walls (drawing) or room outlines (model), one colour per floor.
+  const stacked = !stack
+    ? []
+    : levels.map((l, i) => {
+        const n = Number(/^L(-?\d+)$/.exec(l.id)?.[1] ?? NaN);
+        const sh = drawing.data?.floors.find((f) => f.nums.includes(n));
+        const d = sh
+          ? (sh.paths.wall ?? []).map(flat).join("") + sh.fills.map((f) => flat(f) + "Z").join("")
+          : model.spaces
+              .filter((x) => x.level_id === l.id && x.polygon)
+              .map((x) => "M" + x.polygon!.map((p) => `${X(p[0]).toFixed(3)} ${Y(p[1]).toFixed(3)}`).join("L") + "Z")
+              .join("");
+        return { id: l.id, name: l.name, d, colour: FLOOR_COLOURS[i % FLOOR_COLOURS.length] };
+      });
   // Fit: the drawing of this floor and the plot (plus a margin) when there is a drawing, else the plot.
   let fit: [number, number, number, number] = [0, 0, W, H];
   if (sheet) {
@@ -145,11 +162,23 @@ export default function PlanViewer({
             </button>
           );
         })}
+        {levels.length > 1 && (
+          <button
+            onClick={() => setStack((v) => !v)}
+            aria-pressed={stack}
+            className={`ml-auto flex h-7 shrink-0 items-center rounded-sm border px-2 text-xs ${
+              stack ? "border-fg bg-surface-raised text-fg" : "border-line-subtle text-fg-2 hover:text-fg"
+            }`}
+            title="Overlay every floor's walls, each in its own colour, to check they line up"
+          >
+            <Icon name="layers" size={12} className="mr-1.5" /> floors
+          </button>
+        )}
         {pack.data?.edges.some((e) => e.margin_m != null) && (
           <button
             onClick={() => setSetbacks((v) => !v)}
             aria-pressed={setbacks}
-            className={`ml-auto flex h-7 shrink-0 items-center rounded-sm border px-2 text-xs ${
+            className={`${levels.length > 1 ? "" : "ml-auto "}flex h-7 shrink-0 items-center rounded-sm border px-2 text-xs ${
               setbacks ? "border-fg bg-surface-raised text-fg" : "border-line-subtle text-fg-2 hover:text-fg"
             }`}
             title="Required margins from each side, the buildable line, and the gap the design gives"
@@ -272,6 +301,14 @@ export default function PlanViewer({
           spaces.map((s) => <polygon key={`o${s.id}`} points={s.polygon!.map(P).join(" ")} fill="none" stroke="var(--draw-line)" strokeWidth={px} pointerEvents="none" />)
         )}
 
+        {stack && (
+          <g pointerEvents="none" fill="none" strokeLinejoin="round">
+            {stacked.map((f) => (
+              <path key={f.id} d={f.d} stroke={f.colour} strokeOpacity={0.85} strokeWidth={px * 1.6} />
+            ))}
+          </g>
+        )}
+
         {setbacks && pack.data && <SetbackLayer pack={pack.data} footprint={model.building.footprint} X={X} Y={Y} px={px} />}
 
         {model.building.footprint && !sheet && (
@@ -289,6 +326,16 @@ export default function PlanViewer({
         </svg>
         <span className="font-mono text-2xs leading-3">N</span>
       </div>
+      {stack && (
+        <div className="pointer-events-none absolute bottom-3 left-3 flex flex-col gap-1 rounded-sm border border-line-subtle bg-surface px-2 py-1.5 text-xs">
+          {stacked.map((f) => (
+            <span key={f.id} className="flex items-center gap-2">
+              <span className="h-0.5 w-4" style={{ background: f.colour }} />
+              {f.name}
+            </span>
+          ))}
+        </div>
+      )}
       <div className="pointer-events-none absolute bottom-3 right-3 flex flex-col gap-1 rounded-sm border border-line-subtle bg-surface px-2 py-1.5">
         {(["fail", "unverifiable", "pass"] as Status[]).map((s) => (
           <StatusMark key={s} status={s} />

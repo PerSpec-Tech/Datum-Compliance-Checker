@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AutoCAD loads every .bundle in %AppData%\Autodesk\ApplicationPlugins at start-up (P11). -->
+<ApplicationPackage SchemaVersion="1.0" AppVersion="0.1.0" Name="Compliance Checker"
+                    Description="Checks a 2D drawing against UDCPR 2020 / NBC 2016 (Pune) with the PERSPEC compliance server."
+                    Author="PERSPEC" ProductType="Application"
+                    ProductCode="{8E3C5D21-7A44-4F0B-9C6E-2B1F0D9A4C11}"
+                    UpgradeCode="{1B7F2E90-4D3A-4C8B-A5E2-6F0C9D3B7A42}">
+  <CompanyDetails Name="PERSPEC" />
+  <RuntimeRequirements OS="Win64" Platform="AutoCAD*" SeriesMin="R25.1" SeriesMax="R25.1" />
+  <Components Description="Compliance Checker">
+    <RuntimeRequirements OS="Win64" Platform="AutoCAD*" SeriesMin="R25.1" SeriesMax="R25.1" />
+    <ComponentEntry AppName="ComplianceChecker" ModuleName="./Contents/ComplianceChecker.AutoCAD.dll"
+                    AppDescription="Compliance ribbon tab, CCPAIR / CCLAYERS / CCSITE / CCCHECK commands"
+                    LoadOnAutoCADStartup="True" />
+  </Components>
+</ApplicationPackage>

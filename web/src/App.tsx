@@ -13,7 +13,7 @@ const WorkspacePage = lazy(() => import("./features/workspace/WorkspacePage"));
 
 const NAV: { to: string; label: string; icon: IconName; end?: boolean }[] = [
   { to: "/", label: "new check", icon: "upload", end: true },
-  { to: "/revit", label: "pair revit", icon: "plug" },
+  { to: "/revit", label: "pair Revit · AutoCAD", icon: "plug" },
   { to: "/rules", label: "rules", icon: "book" },
   { to: "/about", label: "usage & about", icon: "gauge" },
 ];

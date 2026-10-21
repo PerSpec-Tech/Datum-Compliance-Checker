@@ -50,6 +50,20 @@ public sealed class ApiClient
         return (await ReadAsync<ModelVersionResponse>(await _http.SendAsync(req, ct), ct)).ModelVersion;
     }
 
+    /// <summary>Upload a 2D drawing as DXF (AutoCAD plug-in, P11): the server reads it with the same
+    /// reader as the web app. Returns what was read and every layer's role.</summary>
+    public async Task<DrawingUpload> UploadDxfAsync(string projectId, byte[] dxf, CancellationToken ct = default)
+    {
+        using var req = Request(HttpMethod.Post, $"api/projects/{Uri.EscapeDataString(projectId)}/dxf");
+        req.Content = new ByteArrayContent(dxf);
+        req.Content.Headers.ContentType = new MediaTypeHeaderValue("application/dxf");
+        return await ReadAsync<DrawingUpload>(await _http.SendAsync(req, ct), ct);
+    }
+
+    /// <summary>Set layer → role for the drawing ("ignore" to leave a layer out); re-reads it.</summary>
+    public Task<DrawingUpload> SetLayerRolesAsync(string projectId, IReadOnlyDictionary<string, string> roles, CancellationToken ct = default) =>
+        SendAsync<DrawingUpload>(HttpMethod.Put, $"api/projects/{Uri.EscapeDataString(projectId)}/dxf/roles", roles, ct);
+
     public async Task<string> StartCheckAsync(string projectId, CancellationToken ct = default) =>
         (await SendAsync<JobResponse>(HttpMethod.Post, $"api/projects/{Uri.EscapeDataString(projectId)}/checks", null, ct)).JobId
         ?? throw new ApiException(0, "server returned no job id");
@@ -171,6 +185,19 @@ public sealed record JobEvent(string Stage, double? Pct = null, string? Msg = nu
 {
     public bool IsFinal => Stage is "done" or "error";
 }
+
+/// <summary>What the server read from an uploaded drawing (POST /dxf, PUT /dxf/roles).</summary>
+public sealed record DrawingUpload(
+    string? ModelVersion = null,
+    IReadOnlyList<string>? Warnings = null,
+    IReadOnlyDictionary<string, int>? Counts = null,
+    bool HasSiteBoundary = false,
+    IReadOnlyList<LayerRole>? Layers = null,
+    int Unmapped = 0);
+
+/// <summary>One layer of the drawing: its role (null = not understood) and where the role came from
+/// (predcr, user, suggested by Nemotron, or convention).</summary>
+public sealed record LayerRole(string Layer, string? Role, string? Source = null, double? Confidence = null, int Entities = 0);
 
 public sealed class ApiException : Exception
 {

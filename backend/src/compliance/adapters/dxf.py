@@ -577,6 +577,7 @@ _CORE_NAME = re.compile(r"\b(stair|staircase|lift|elevator)s?\b", re.IGNORECASE)
 
 def _core(d: _Drawing, fr: _Shape) -> Point | None:
     """Where a floor's stair / lift core is. The core stands in the same place on every floor."""
+
     def inside(s: _Shape) -> bool:
         return fr.poly.contains(s.poly.representative_point())
 

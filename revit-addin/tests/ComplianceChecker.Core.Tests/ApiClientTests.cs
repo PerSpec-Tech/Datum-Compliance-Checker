@@ -37,6 +37,30 @@ public class ApiClientTests
     }
 
     [Fact]
+    public async Task Drawing_upload_posts_raw_dxf_and_reads_layers()
+    {
+        const string reply = "{\"model_version\":\"v2\",\"warnings\":[\"w\"],\"counts\":{\"spaces\":14},"
+            + "\"has_site_boundary\":true,\"unmapped\":1,"
+            + "\"layers\":[{\"layer\":\"_Room\",\"role\":\"room\",\"source\":\"predcr\",\"entities\":14},"
+            + "{\"layer\":\"MYSTERY\",\"role\":null,\"source\":null,\"entities\":3}]}";
+        var h = new FakeHandler(_ => Json(reply));
+        var api = new ApiClient("http://server:8000", "secret", new HttpClient(h));
+        DrawingUpload up = await api.UploadDxfAsync("p1", Encoding.ASCII.GetBytes("  0\nSECTION"));
+        Assert.Equal("v2", up.ModelVersion);
+        Assert.Equal(14, up.Counts!["spaces"]);
+        Assert.Equal(1, up.Unmapped);
+        Assert.Null(up.Layers![1].Role);
+        var (req, body) = h.Seen.Single();
+        Assert.Equal(HttpMethod.Post, req.Method);
+        Assert.Equal("http://server:8000/api/projects/p1/dxf", req.RequestUri!.ToString());
+        Assert.Equal("  0\nSECTION", body);
+
+        await api.SetLayerRolesAsync("p1", new Dictionary<string, string> { ["MYSTERY"] = "ignore" });
+        Assert.Equal(HttpMethod.Put, h.Seen[1].Req.Method);
+        Assert.Equal("{\"MYSTERY\":\"ignore\"}", h.Seen[1].Body);
+    }
+
+    [Fact]
     public async Task Calls_send_the_bearer_token_and_model_json()
     {
         var h = new FakeHandler(r => r.Method == HttpMethod.Put ? Json("{\"model_version\":\"v1\"}") : Json("{\"job_id\":\"j1\"}"));

@@ -21,18 +21,23 @@ export default function PairPage() {
   const live = pair.data && left > 0;
   return (
     <div className="mx-auto max-w-[600px]">
-      <Title>check from inside revit.</Title>
+      <Title>check from inside revit or autocad.</Title>
 
       <ol className="mt-8 space-y-3">
         <Step n={1} title="install">
-          <p title="Unzip, close Revit, right-click install.ps1 → Run with PowerShell, then start Revit and choose Always Load.">unzip · run install.ps1 · Always Load</p>
-          <a className="btn-secondary mt-3" href="/downloads/ComplianceChecker-revit2026.zip" download>
-            <Icon name="download" /> add-in for Revit 2026
-          </a>
+          <p title="Unzip, close Revit / AutoCAD, right-click install.ps1 → Run with PowerShell, then start it (Revit: choose Always Load).">unzip · run install.ps1 · start</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <a className="btn-secondary" href="/downloads/ComplianceChecker-revit2026.zip" download>
+              <Icon name="cube" /> add-in for Revit 2026
+            </a>
+            <a className="btn-secondary" href="/downloads/ComplianceChecker-autocad2026.zip" download>
+              <Icon name="layers" /> plug-in for AutoCAD 2026
+            </a>
+          </div>
         </Step>
 
         <Step n={2} title="pair">
-          <p>Revit → Compliance → 1 Pair</p>
+          <p>Compliance tab → 1 Pair (one code pairs both)</p>
           <div className="mt-3 divide-y divide-line-subtle rounded-sm border border-line-subtle">
             <div className="flex items-baseline gap-4 px-3 py-2.5">
               <span className="w-24 text-xs text-fg-2">server URL</span>
@@ -63,7 +68,7 @@ export default function PairPage() {
         </Step>
 
         <Step n={3} title="check">
-          <p>2 Site Setup → 3 Run Check</p>
+          <p>Revit: 2 Site Setup → 3 Run Check · AutoCAD: 2 Layers → 3 Site → 4 Run Check</p>
         </Step>
       </ol>
     </div>

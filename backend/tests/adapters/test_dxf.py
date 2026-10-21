@@ -308,15 +308,15 @@ def test_floors_line_up_on_the_stair_core_when_a_floor_projects(tmp_path):
     for sh in d.polys["floor"]:
         sh.name = dxf_mod._name_inside(sh, d.texts, "floor")
     first = next(fr for fr, nums in dxf_mod._floor_frames(d, []) if nums == [1])
-    fsi = [s.poly for s in d.polys["fsi_resi"] if first.poly.contains(s.poly.representative_point())]
+    on_first = first.poly.contains
+    fsi = [s.poly for s in d.polys["fsi_resi"] if on_first(s.poly.representative_point())]
     x0, y0, _, _ = fsi[0].bounds
     doc = ezdxf.readfile(src)
     balcony = [(x0 - 1.5, y0 + 1), (x0, y0 + 1), (x0, y0 + 4), (x0 - 1.5, y0 + 4)]
     for layer in ("_ResiFSI", "_Room"):
         doc.modelspace().add_lwpolyline(balcony, close=True, dxfattribs={"layer": layer})
-    doc.modelspace().add_text("Balcony", dxfattribs={"layer": "_Room", "height": 0.2}).set_placement(
-        (x0 - 0.75, y0 + 2.5)
-    )
+    label = doc.modelspace().add_text("Balcony", dxfattribs={"layer": "_Room", "height": 0.2})
+    label.set_placement((x0 - 0.75, y0 + 2.5))
     path = tmp_path / "projecting.dxf"
     doc.saveas(path)
 

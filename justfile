@@ -70,6 +70,18 @@ package-addin: build-addin
 install-addin: build-addin
     powershell -NoProfile -ExecutionPolicy Bypass -File revit-addin/install/install.ps1
 
+# Build the AutoCAD 2026 plug-in (P11)
+build-autocad:
+    dotnet build autocad-addin/ComplianceChecker.AutoCAD.sln -c Release -nologo -v q
+
+# Release zip for the AutoCAD plug-in (also copied to web/public/downloads)
+package-autocad: build-autocad
+    powershell -NoProfile -ExecutionPolicy Bypass -File autocad-addin/install/package.ps1
+
+# Build and install the AutoCAD plug-in as %AppData%/Autodesk/ApplicationPlugins/ComplianceChecker.bundle (close AutoCAD first)
+install-autocad: build-autocad
+    powershell -NoProfile -ExecutionPolicy Bypass -File autocad-addin/install/install.ps1
+
 # Check the Nemotron models on Nebius; add --write to update backend/config/models.yaml (P0.5)
 smoke-llm *args:
     {{py}} scripts/smoke_nebius.py {{args}}
