@@ -1,0 +1,302 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "live-pack.schema.json",
+  "title": "LivePack",
+  "description": "P9.1 / D32: the rule engine's limits for one project, reduced to geometry the Revit and AutoCAD add-ins can test locally while the user models. A preview; the full check stays the official result.",
+  "type": "object",
+  "required": [
+    "project_id",
+    "model_version",
+    "report_id",
+    "ruleset_version",
+    "created_at",
+    "edges",
+    "envelope",
+    "fsi",
+    "height",
+    "thresholds",
+    "notes"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "project_id": {
+      "type": "string"
+    },
+    "model_version": {
+      "type": "string"
+    },
+    "report_id": {
+      "type": "string",
+      "description": "The check this pack was compiled from."
+    },
+    "ruleset_version": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "edges": {
+      "type": "array",
+      "description": "One entry per plot side with the margin the rules require from it.",
+      "items": {
+        "$ref": "#/definitions/EdgeMargin"
+      }
+    },
+    "envelope": {
+      "description": "Buildable area: the plot inset by every side's margin. Null when a margin is unknown.",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/Ring"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "fsi": {
+      "$ref": "#/definitions/FsiBudget"
+    },
+    "height": {
+      "$ref": "#/definitions/HeightBand"
+    },
+    "thresholds": {
+      "type": "array",
+      "description": "Per-element limits that are constants for this project (room heights, stair and door widths).",
+      "items": {
+        "$ref": "#/definitions/Threshold"
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "definitions": {
+    "Point": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "Ring": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Point"
+      },
+      "minItems": 3
+    },
+    "EdgeMargin": {
+      "type": "object",
+      "required": [
+        "edge_id",
+        "a",
+        "b",
+        "kind",
+        "margin_m",
+        "rule_id",
+        "clause_ref",
+        "margin_by_height"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "edge_id": {
+          "type": "string"
+        },
+        "a": {
+          "$ref": "#/definitions/Point"
+        },
+        "b": {
+          "$ref": "#/definitions/Point"
+        },
+        "kind": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "margin_m": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Null: the margin can't be known yet (a fact is missing)."
+        },
+        "rule_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "clause_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "margin_by_height": {
+          "type": "array",
+          "items": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "description": "The margin this side needs at building height i × height.step_m (i = 0, 1, …). Take the larger of the two samples around the live height. Empty when the margin doesn't depend on height or is unknown."
+        }
+      }
+    },
+    "FsiBudget": {
+      "type": "object",
+      "required": [
+        "plot_area_m2",
+        "base",
+        "max",
+        "base_built_up_m2",
+        "max_built_up_m2",
+        "used_m2",
+        "rule_ids"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "plot_area_m2": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "base": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "max": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "base_built_up_m2": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "max_built_up_m2": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "used_m2": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Built-up area at the time of the check."
+        },
+        "rule_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "HeightBand": {
+      "type": "object",
+      "required": [
+        "current_m",
+        "step_m",
+        "max_m"
+      ],
+      "additionalProperties": false,
+      "description": "Heights for the margin tables: samples every step_m from 0 to max_m (floors held as in the check).",
+      "properties": {
+        "current_m": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "step_m": {
+          "type": "number"
+        },
+        "max_m": {
+          "type": "number"
+        }
+      }
+    },
+    "Threshold": {
+      "type": "object",
+      "required": [
+        "rule_id",
+        "title",
+        "clause_ref",
+        "for_each",
+        "field",
+        "op",
+        "limit",
+        "element_ids",
+        "source_ids"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "rule_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "clause_ref": {
+          "type": "string"
+        },
+        "for_each": {
+          "type": "string",
+          "enum": [
+            "spaces",
+            "doors",
+            "stairs",
+            "units"
+          ]
+        },
+        "field": {
+          "type": "string",
+          "description": "The element field the rule measures, e.g. clear_height_m."
+        },
+        "op": {
+          "type": "string",
+          "enum": [
+            ">=",
+            "<=",
+            ">",
+            "<"
+          ]
+        },
+        "limit": {
+          "type": "number"
+        },
+        "element_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

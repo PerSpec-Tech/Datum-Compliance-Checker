@@ -64,12 +64,24 @@ def evaluate(
             # Every plot has edges: an empty list means the site wasn't modelled, not "no edges".
             results.append(_unknown_collection(rule, ALWAYS_PRESENT[rule.for_each]))
             continue
+        per_element = []
         for el in elements:
             label = f"{rule.for_each}[{el['id']}]"
             element = {"kind": rule.for_each, "id": el["id"], "source_id": el.get("source_id")}
-            results.append(
+            per_element.append(
                 _evaluate_one(rule, {**ctx, "item": el}, tables, label, element, derived)
             )
+        # Elements a rule doesn't apply to aren't listed one by one (a shop-height rule against
+        # every bedroom); if it applies to none, the rule appears once as not applicable.
+        applicable = [r for r in per_element if r["status"] != "not_applicable"]
+        if applicable:
+            results.extend(applicable)
+        elif per_element:
+            first = per_element[0]
+            results.append({
+                **first, "element": None, "facts_used": [], "missing_inputs": [],
+                "message": f"Not applicable to any of the {len(per_element)} {rule.for_each}.",
+            })  # fmt: skip
     results.sort(
         key=lambda r: (
             SEVERITY_ORDER[r["severity"]],

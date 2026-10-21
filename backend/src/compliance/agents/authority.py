@@ -167,7 +167,10 @@ def _matches(authority: dict[str, Any], address: dict[str, Any]) -> bool:
     states = [s.lower() for s in m.get("state", [])]
     if states and str(address.get("state", "")).lower() not in states:
         return False
-    return any(c.lower() in names for c in m.get("city", []))
+    if any(c.lower() in names for c in m.get("city", [])):
+        return True
+    county = str(address.get("county", "")).strip().lower()
+    return bool(county) and county in {c.lower() for c in m.get("county", [])}
 
 
 def _in_bbox(authority: dict[str, Any], lat: float, lon: float) -> bool:

@@ -89,7 +89,7 @@ export interface Meta {
     tool_version: null | string;
 }
 
-export type SourceKind = "revit" | "ifc" | "manual";
+export type SourceKind = "revit" | "ifc" | "dxf" | "autocad" | "manual";
 
 export interface Project {
     /**
@@ -636,3 +636,96 @@ export interface Summary {
     pass:           number;
     unverifiable:   number;
 }
+
+/**
+ * P9.1 / D32: the rule engine's limits for one project, reduced to geometry the Revit and
+ * AutoCAD add-ins can test locally while the user models. A preview; the full check stays
+ * the official result.
+ */
+export interface LivePack {
+    created_at: Date;
+    /**
+     * One entry per plot side with the margin the rules require from it.
+     */
+    edges: EdgeMargin[];
+    /**
+     * Buildable area: the plot inset by every side's margin. Null when a margin is unknown.
+     */
+    envelope:      Array<number[]> | null;
+    fsi:           FsiBudget;
+    height:        HeightBand;
+    model_version: string;
+    notes:         string[];
+    project_id:    string;
+    /**
+     * The check this pack was compiled from.
+     */
+    report_id:       string;
+    ruleset_version: string;
+    /**
+     * Per-element limits that are constants for this project (room heights, stair and door
+     * widths).
+     */
+    thresholds: Threshold[];
+}
+
+export interface EdgeMargin {
+    a:          number[];
+    b:          number[];
+    clause_ref: null | string;
+    edge_id:    string;
+    kind:       null | string;
+    /**
+     * The margin this side needs at building height i × height.step_m (i = 0, 1, …). Take the
+     * larger of the two samples around the live height. Empty when the margin doesn't depend on
+     * height or is unknown.
+     */
+    margin_by_height: Array<number | null>;
+    /**
+     * Null: the margin can't be known yet (a fact is missing).
+     */
+    margin_m: number | null;
+    rule_id:  null | string;
+}
+
+export interface FsiBudget {
+    base:             number | null;
+    base_built_up_m2: number | null;
+    max:              number | null;
+    max_built_up_m2:  number | null;
+    plot_area_m2:     number | null;
+    rule_ids:         string[];
+    /**
+     * Built-up area at the time of the check.
+     */
+    used_m2: number | null;
+}
+
+/**
+ * Heights for the margin tables: samples every step_m from 0 to max_m (floors held as in
+ * the check).
+ */
+export interface HeightBand {
+    current_m: number | null;
+    max_m:     number;
+    step_m:    number;
+}
+
+export interface Threshold {
+    clause_ref:  string;
+    element_ids: string[];
+    /**
+     * The element field the rule measures, e.g. clear_height_m.
+     */
+    field:      string;
+    for_each:   ForEach;
+    limit:      number;
+    op:         Op;
+    rule_id:    string;
+    source_ids: Array<null | string>;
+    title:      string;
+}
+
+export type ForEach = "spaces" | "doors" | "stairs" | "units";
+
+export type Op = ">=" | "<=" | ">" | "<";

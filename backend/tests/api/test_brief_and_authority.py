@@ -3,6 +3,7 @@
 import json
 
 import httpx
+import pytest
 
 from compliance.agents import authority
 from compliance.config import REPO_ROOT
@@ -141,3 +142,20 @@ def test_bund_garden_resolves_to_pmc_at_street_level(monkeypatch):
     http = httpx.Client(transport=httpx.MockTransport(handler))
     r = authority.resolve(18.53779, 73.88918, None, http)
     assert r.authority_id == "pmc" and zooms == ["18"]
+
+
+@pytest.mark.parametrize(
+    ("address", "pmc"),
+    [
+        ({"suburb": "Kondhwa", "village": "Kondhwa Budruk", "county": "Pune City Subdistrict",
+          "state": "Maharashtra"}, True),  # merged village: no city in OSM, still PMC
+        ({"suburb": "Mandalay Lines", "town": "Khadki", "county": "Pune City Subdistrict",
+          "state": "Maharashtra"}, False),  # cantonment board
+        ({"city": "Pimpri-Chinchwad", "county": "Haveli", "state": "Maharashtra"}, False),
+        ({"city": "Pune", "suburb": "Kasba Peth", "state": "Maharashtra"}, True),
+    ],
+)  # fmt: skip
+def test_pmc_limits_from_street_level_addresses(address, pmc):
+    from compliance.agents.authority import _matches, authorities
+
+    assert _matches(next(a for a in authorities() if a["id"] == "pmc"), address) is pmc

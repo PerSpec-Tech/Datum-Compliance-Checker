@@ -8,7 +8,7 @@
     "pass": 13,
     "fail": 0,
     "unverifiable": 10,
-    "not_applicable": 21,
+    "not_applicable": 3,
     "advisory": 0
   },
   "results": [
@@ -251,42 +251,6 @@
             "subdivision": "A-2"
           },
           "source": "declared"
-        }
-      ],
-      "clause": {
-        "ref": "9.29.1 (ii)",
-        "excerpt": "No exit doorway shall be less than 90 cm. in width except assembly buildings where door width shall be not less than 200 cm. Doorway shall be not less than 200 cm. in height.",
-        "source": "udcpr2020 p.165",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.exit-door-width",
-      "title": "Minimum exit door width",
-      "severity": "critical",
-      "element": {
-        "kind": "doors",
-        "id": "D2",
-        "source_id": "fx-dr-2"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "doors[D2].is_exit",
-          "value": false,
-          "source": "inferred"
         }
       ],
       "clause": {
@@ -574,42 +538,6 @@
       "guidance_note": null
     },
     {
-      "rule_id": "udcpr2020.ch9.exit-door-height",
-      "title": "Minimum exit door height",
-      "severity": "major",
-      "element": {
-        "kind": "doors",
-        "id": "D2",
-        "source_id": "fx-dr-2"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "doors[D2].is_exit",
-          "value": false,
-          "source": "inferred"
-        }
-      ],
-      "clause": {
-        "ref": "9.29.1 (ii)",
-        "excerpt": "No exit doorway shall be less than 90 cm. in width except assembly buildings where door width shall be not less than 200 cm. Doorway shall be not less than 200 cm. in height.",
-        "source": "udcpr2020 p.165",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
       "rule_id": "udcpr2020.ch9.habitable-height-min",
       "title": "Minimum height of habitable rooms",
       "severity": "major",
@@ -627,78 +555,6 @@
         {
           "path": "spaces[S1].usage",
           "value": "living",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "Table No. 9-A (Regulation 9.2.2)",
-        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
-        "source": "udcpr2020 p.153",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.habitable-height-min",
-      "title": "Minimum height of habitable rooms",
-      "severity": "major",
-      "element": {
-        "kind": "spaces",
-        "id": "S2",
-        "source_id": "fx-sp-2"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S2].usage",
-          "value": "kitchen",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "Table No. 9-A (Regulation 9.2.2)",
-        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
-        "source": "udcpr2020 p.153",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.habitable-height-min",
-      "title": "Minimum height of habitable rooms",
-      "severity": "major",
-      "element": {
-        "kind": "spaces",
-        "id": "S3",
-        "source_id": "fx-sp-3"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S3].usage",
-          "value": "bathroom",
           "source": "model"
         }
       ],
@@ -778,42 +634,6 @@
         "ref": "Table No. 9-A (Regulation 9.2.2)",
         "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
         "source": "udcpr2020 p.153",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.kitchen-height-min",
-      "title": "Minimum kitchen height",
-      "severity": "major",
-      "element": {
-        "kind": "spaces",
-        "id": "S1",
-        "source_id": "fx-sp-1"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S1].usage",
-          "value": "living",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "9.3.2",
-        "excerpt": "The height of a kitchen measured from the surface of the floor, to the lowest point in the ceiling (bottom of slab) shall not be less than 2.75 m. except for the portion to accommodate floor trap of the upper floor.",
-        "source": "udcpr2020 p.154",
         "retrieved": "2026-10-19"
       },
       "rule_status": "draft",
@@ -862,278 +682,16 @@
       "guidance_note": null
     },
     {
-      "rule_id": "udcpr2020.ch9.kitchen-height-min",
-      "title": "Minimum kitchen height",
-      "severity": "major",
-      "element": {
-        "kind": "spaces",
-        "id": "S3",
-        "source_id": "fx-sp-3"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S3].usage",
-          "value": "bathroom",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "9.3.2",
-        "excerpt": "The height of a kitchen measured from the surface of the floor, to the lowest point in the ceiling (bottom of slab) shall not be less than 2.75 m. except for the portion to accommodate floor trap of the upper floor.",
-        "source": "udcpr2020 p.154",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.kitchen-height-min",
-      "title": "Minimum kitchen height",
-      "severity": "major",
-      "element": {
-        "kind": "spaces",
-        "id": "S4",
-        "source_id": "fx-sp-4"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S4].usage",
-          "value": "bedroom",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "9.3.2",
-        "excerpt": "The height of a kitchen measured from the surface of the floor, to the lowest point in the ceiling (bottom of slab) shall not be less than 2.75 m. except for the portion to accommodate floor trap of the upper floor.",
-        "source": "udcpr2020 p.154",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.kitchen-height-min",
-      "title": "Minimum kitchen height",
-      "severity": "major",
-      "element": {
-        "kind": "spaces",
-        "id": "S5",
-        "source_id": "fx-sp-5"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S5].usage",
-          "value": "bedroom",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "9.3.2",
-        "excerpt": "The height of a kitchen measured from the surface of the floor, to the lowest point in the ceiling (bottom of slab) shall not be less than 2.75 m. except for the portion to accommodate floor trap of the upper floor.",
-        "source": "udcpr2020 p.154",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
       "rule_id": "udcpr2020.ch9.shop-height-min",
       "title": "Minimum shop height",
       "severity": "major",
-      "element": {
-        "kind": "spaces",
-        "id": "S1",
-        "source_id": "fx-sp-1"
-      },
+      "element": null,
       "status": "not_applicable",
       "measured": null,
       "limit": null,
-      "message": "Not applicable to this project.",
+      "message": "Not applicable to any of the 5 spaces.",
       "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S1].usage",
-          "value": "living",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "Table No. 9-A (Regulation 9.2.2)",
-        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
-        "source": "udcpr2020 p.153",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.shop-height-min",
-      "title": "Minimum shop height",
-      "severity": "major",
-      "element": {
-        "kind": "spaces",
-        "id": "S2",
-        "source_id": "fx-sp-2"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S2].usage",
-          "value": "kitchen",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "Table No. 9-A (Regulation 9.2.2)",
-        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
-        "source": "udcpr2020 p.153",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.shop-height-min",
-      "title": "Minimum shop height",
-      "severity": "major",
-      "element": {
-        "kind": "spaces",
-        "id": "S3",
-        "source_id": "fx-sp-3"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S3].usage",
-          "value": "bathroom",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "Table No. 9-A (Regulation 9.2.2)",
-        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
-        "source": "udcpr2020 p.153",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.shop-height-min",
-      "title": "Minimum shop height",
-      "severity": "major",
-      "element": {
-        "kind": "spaces",
-        "id": "S4",
-        "source_id": "fx-sp-4"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S4].usage",
-          "value": "bedroom",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "Table No. 9-A (Regulation 9.2.2)",
-        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
-        "source": "udcpr2020 p.153",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.shop-height-min",
-      "title": "Minimum shop height",
-      "severity": "major",
-      "element": {
-        "kind": "spaces",
-        "id": "S5",
-        "source_id": "fx-sp-5"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S5].usage",
-          "value": "bedroom",
-          "source": "model"
-        }
-      ],
+      "facts_used": [],
       "clause": {
         "ref": "Table No. 9-A (Regulation 9.2.2)",
         "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
@@ -1269,78 +827,6 @@
       "severity": "minor",
       "element": {
         "kind": "spaces",
-        "id": "S1",
-        "source_id": "fx-sp-1"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S1].usage",
-          "value": "living",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "9.4.2",
-        "excerpt": "The height of a bathroom or water closet measured from the surface of the floor to the lowest point in the ceiling (bottom of slab) shall be not less than 2.1 m.",
-        "source": "udcpr2020 p.154",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.bath-wc-height-min",
-      "title": "Minimum bathroom / WC height",
-      "severity": "minor",
-      "element": {
-        "kind": "spaces",
-        "id": "S2",
-        "source_id": "fx-sp-2"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S2].usage",
-          "value": "kitchen",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "9.4.2",
-        "excerpt": "The height of a bathroom or water closet measured from the surface of the floor to the lowest point in the ceiling (bottom of slab) shall be not less than 2.1 m.",
-        "source": "udcpr2020 p.154",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.bath-wc-height-min",
-      "title": "Minimum bathroom / WC height",
-      "severity": "minor",
-      "element": {
-        "kind": "spaces",
         "id": "S3",
         "source_id": "fx-sp-3"
       },
@@ -1353,78 +839,6 @@
         {
           "path": "spaces[S3].usage",
           "value": "bathroom",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "9.4.2",
-        "excerpt": "The height of a bathroom or water closet measured from the surface of the floor to the lowest point in the ceiling (bottom of slab) shall be not less than 2.1 m.",
-        "source": "udcpr2020 p.154",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.bath-wc-height-min",
-      "title": "Minimum bathroom / WC height",
-      "severity": "minor",
-      "element": {
-        "kind": "spaces",
-        "id": "S4",
-        "source_id": "fx-sp-4"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S4].usage",
-          "value": "bedroom",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "9.4.2",
-        "excerpt": "The height of a bathroom or water closet measured from the surface of the floor to the lowest point in the ceiling (bottom of slab) shall be not less than 2.1 m.",
-        "source": "udcpr2020 p.154",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.bath-wc-height-min",
-      "title": "Minimum bathroom / WC height",
-      "severity": "minor",
-      "element": {
-        "kind": "spaces",
-        "id": "S5",
-        "source_id": "fx-sp-5"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S5].usage",
-          "value": "bedroom",
           "source": "model"
         }
       ],
@@ -1461,78 +875,6 @@
         {
           "path": "spaces[S1].usage",
           "value": "living",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "Table No. 9-A (Regulation 9.2.2)",
-        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
-        "source": "udcpr2020 p.153",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.habitable-height-max",
-      "title": "Maximum height of habitable rooms",
-      "severity": "minor",
-      "element": {
-        "kind": "spaces",
-        "id": "S2",
-        "source_id": "fx-sp-2"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S2].usage",
-          "value": "kitchen",
-          "source": "model"
-        }
-      ],
-      "clause": {
-        "ref": "Table No. 9-A (Regulation 9.2.2)",
-        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
-        "source": "udcpr2020 p.153",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.habitable-height-max",
-      "title": "Maximum height of habitable rooms",
-      "severity": "minor",
-      "element": {
-        "kind": "spaces",
-        "id": "S3",
-        "source_id": "fx-sp-3"
-      },
-      "status": "not_applicable",
-      "measured": null,
-      "limit": null,
-      "message": "Not applicable to this project.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "spaces[S3].usage",
-          "value": "bathroom",
           "source": "model"
         }
       ],

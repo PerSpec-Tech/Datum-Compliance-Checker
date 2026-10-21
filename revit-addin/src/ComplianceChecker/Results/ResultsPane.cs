@@ -8,12 +8,14 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using ComplianceChecker.Core.Live;
 using ComplianceChecker.Core.Results;
 using ComplianceChecker.Generated;
 using Color = System.Windows.Media.Color;
 using Ellipse = System.Windows.Shapes.Ellipse;
 using Grid = System.Windows.Controls.Grid;
 using Rectangle = System.Windows.Shapes.Rectangle;
+using Visibility = System.Windows.Visibility;
 
 namespace ComplianceChecker.Results
 {
@@ -31,8 +33,60 @@ namespace ComplianceChecker.Results
         private UiActionQueue? _ui;
         private ListBox? _selectedList;
 
+        // Live strip (P9.2/P9.3): one calm line at the top, plus the lens toggle. Hidden until a check
+        // has produced a live pack for the open model.
+        private readonly Border _live = new()
+        {
+            Background = new SolidColorBrush(Color.FromRgb(20, 20, 22)),
+            Padding = new Thickness(10, 6, 10, 6),
+            Visibility = Visibility.Collapsed,
+        };
+        private readonly TextBlock _liveText = new()
+        {
+            Foreground = new SolidColorBrush(Color.FromRgb(242, 242, 243)),
+            FontFamily = new FontFamily("Consolas"),
+            FontSize = 11.5,
+            TextWrapping = TextWrapping.Wrap,
+        };
+        private readonly TextBlock _liveDetail = new()
+        {
+            Foreground = new SolidColorBrush(Color.FromRgb(154, 154, 161)),
+            FontSize = 11,
+            TextWrapping = TextWrapping.Wrap,
+            Margin = new Thickness(0, 3, 0, 0),
+        };
+        private readonly System.Windows.Controls.Primitives.ToggleButton _lensButton = new()
+        {
+            Content = "lens",
+            ToolTip = "Show the buildable line and setback issues over the current view (changes nothing in the model)",
+            Padding = new Thickness(8, 1, 8, 1),
+            Margin = new Thickness(8, 0, 0, 0),
+            VerticalAlignment = VerticalAlignment.Top,
+        };
+
+        /// <summary>Raised when the user turns the lens on or off.</summary>
+        public event System.Action<bool>? LensToggled;
+
         public ResultsPane()
         {
+            var liveRow = new DockPanel();
+            DockPanel.SetDock(_lensButton, Dock.Right);
+            liveRow.Children.Add(_lensButton);
+            var liveStack = new StackPanel();
+            liveStack.Children.Add(new TextBlock
+            {
+                Text = "LIVE PREVIEW",
+                Foreground = new SolidColorBrush(Color.FromRgb(122, 122, 128)),
+                FontSize = 9.5,
+                Margin = new Thickness(0, 0, 0, 2),
+            });
+            liveStack.Children.Add(_liveText);
+            liveStack.Children.Add(_liveDetail);
+            liveRow.Children.Add(liveStack);
+            _live.Child = liveRow;
+            _lensButton.Checked += (_, _) => LensToggled?.Invoke(true);
+            _lensButton.Unchecked += (_, _) => LensToggled?.Invoke(false);
+
             var detailBorder = new Border
             {
                 BorderBrush = Brushes.LightGray,
@@ -41,8 +95,10 @@ namespace ComplianceChecker.Results
                 Child = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Content = _detail },
             };
             var dock = new DockPanel();
+            DockPanel.SetDock(_live, Dock.Top);
             DockPanel.SetDock(_header, Dock.Top);
             DockPanel.SetDock(detailBorder, Dock.Bottom);
+            dock.Children.Add(_live);
             dock.Children.Add(_header);
             dock.Children.Add(detailBorder);
             dock.Children.Add(new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Content = _body });
@@ -51,6 +107,41 @@ namespace ComplianceChecker.Results
         }
 
         public void Attach(UiActionQueue ui) => _ui = ui;
+
+        /// <summary>Main thread. The live engine's latest result, as one quiet line and a short list.</summary>
+        public void ShowLive(LiveStatus status, bool lensOn)
+        {
+            _live.Visibility = Visibility.Visible;
+            _liveText.Text = status.StripText();
+            var lines = status.Setbacks
+                .GroupBy(s => s.ElementId)
+                .Select(g => g.OrderByDescending(s => s.DeficitM).First())
+                .OrderByDescending(s => s.DeficitM)
+                .Take(3)
+                .Select(s => $"{s.Label}: {s.DistanceM:0.00} m from side {s.EdgeId}, needs {s.RequiredM:0.00} ({s.ClauseRef})")
+                .Concat(status.Thresholds.Take(3).Select(t => $"{t.Title}: {t.Value:0.00} vs {t.Limit:0.00} ({t.ClauseRef})"))
+                .ToList();
+            int more = status.IssueCount - lines.Count;
+            _liveDetail.Text = lines.Count == 0
+                ? "Within the setbacks and size limits the last check found. Run Check for the full report."
+                : string.Join("\n", lines) + (more > 0 ? $"\n+{more} more" : "");
+            if (_lensButton.IsChecked != lensOn)
+                _lensButton.IsChecked = lensOn;
+        }
+
+        /// <summary>Main thread. Keep the toggle in step when the ribbon command switches the lens.</summary>
+        public void SetLensChecked(bool on)
+        {
+            if (_lensButton.IsChecked != on)
+                _lensButton.IsChecked = on;
+        }
+
+        /// <summary>Main thread. Live mode couldn't read the model this time; it tries again on the next edit.</summary>
+        public void ShowLiveError(string message)
+        {
+            _live.Visibility = Visibility.Visible;
+            _liveDetail.Text = "Live preview paused: " + message;
+        }
 
         public void SetupDockablePane(DockablePaneProviderData data)
         {

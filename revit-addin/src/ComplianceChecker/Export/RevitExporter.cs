@@ -73,7 +73,7 @@ namespace ComplianceChecker.Export
         }
 
         /// <summary>A level named like "Ground"/"GF", else the lowest level at or above elevation 0.</summary>
-        private static Level? GroundLevel(List<Level> levels)
+        internal static Level? GroundLevel(List<Level> levels)
         {
             Level? named = levels.FirstOrDefault(l => GroundName.IsMatch(l.Name));
             if (named is not null)
@@ -206,7 +206,7 @@ namespace ComplianceChecker.Export
         }
 
         /// <summary>A length parameter from the instance, else its type, in metres.</summary>
-        private static double? Length(FamilyInstance fi, BuiltInParameter bip)
+        internal static double? Length(FamilyInstance fi, BuiltInParameter bip)
         {
             Parameter? p = fi.get_Parameter(bip);
             if (p is null || !p.HasValue)

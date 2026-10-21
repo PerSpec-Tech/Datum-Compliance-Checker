@@ -5,6 +5,7 @@ using ComplianceChecker.Core.Model;
 using ComplianceChecker.Export;
 using ComplianceChecker.SiteSetup;
 using ComplianceChecker.Storage;
+using ComplianceChecker.UI;
 
 namespace ComplianceChecker.Commands
 {
@@ -32,6 +33,13 @@ namespace ComplianceChecker.Commands
             if (ok != true)
                 return Result.Cancelled;
             BriefStore.Write(doc, window.Result);
+            bool next = NextStep.Offer(
+                "Site details saved",
+                "They're stored in this project and sent with every check. Change them any time with 2 Site Setup.",
+                "Next: 3 Run Check",
+                "Send the model and see the results here in Revit (about 10–20 seconds).");
+            if (next)
+                return new CheckCommand().Execute(commandData, ref message, elements);
             return Result.Succeeded;
         }
     }

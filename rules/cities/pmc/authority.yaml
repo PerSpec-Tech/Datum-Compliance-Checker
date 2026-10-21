@@ -6,7 +6,11 @@ state: Maharashtra
 match:
   city: [Pune, Pune City, पुणे]
   state: [Maharashtra]
-  exclude_city: [Pimpri-Chinchwad, Pimpri Chinchwad]   # PCMC: separate authority, not covered yet
+  exclude_city: [Pimpri-Chinchwad, Pimpri Chinchwad,   # PCMC: separate authority, not covered yet
+                 Khadki, Pune Cantonment, Dehu Road]   # cantonment boards: their own planning authorities
+  # Villages merged into PMC (e.g. Kondhwa Budruk) have no 'city' in OpenStreetMap, only the
+  # subdistrict; inside it, anything not excluded above is PMC.
+  county: [Pune City Subdistrict]
 rulesets: [nbc2016, udcpr2020, pmc]                    # later overrides earlier
 sources: [udcpr2020, nbc2016, mfa2006, nbcs2026]       # manifest doc ids
 # Domains given to Tavily as include_domains (P3.3). Government and official sources only.

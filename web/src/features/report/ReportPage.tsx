@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { api } from "../../api/client";
 import type { BuildingModel, Result, Status } from "../../api/types";
 import { ErrorBox, Icon, STATUS_META, STATUS_ORDER, Skeleton, Spinner, StatusMark, Title } from "../../components/ui";
+import PlanViewer from "../viewer/PlanViewer";
 import Viewer from "../viewer/Viewer";
 import ClauseRow from "./ClauseRow";
 import FsiCard from "./FsiCard";
@@ -74,6 +75,7 @@ export default function ReportPage() {
   const model = useQuery({ queryKey: ["model", projectId], queryFn: () => api.model(projectId!), enabled: !!projectId, retry: false });
   const [statuses, setStatuses] = useState<Set<Status>>(new Set(["fail", "unverifiable", "advisory", "pass"]));
   const [selected, setSelected] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [rerunning, setRerunning] = useState(false);
   const report = q.data;
@@ -85,6 +87,18 @@ export default function ReportPage() {
       if (!g || r.status === "not_applicable") continue;
       const prev = m.get(g);
       if (!prev || RANK[r.status] < RANK[prev]) m.set(g, r.status);
+    }
+    return m;
+  }, [report]);
+
+  // 2D drawings have no GlobalIds: the plan viewer matches results by element id.
+  const statusById = useMemo(() => {
+    const m = new Map<string, Status>();
+    for (const r of report?.results ?? []) {
+      const id = r.element?.id;
+      if (!id || r.status === "not_applicable") continue;
+      const prev = m.get(id);
+      if (!prev || RANK[r.status] < RANK[prev]) m.set(id, r.status);
     }
     return m;
   }, [report]);
@@ -137,8 +151,8 @@ export default function ReportPage() {
         <div>
           <p className="meta">{model.data?.model.project.name ?? "compliance report"}</p>
           <Title>{s.fail === 0 && s.unverifiable === 0 ? "no issues found." : `${s.fail} issue${s.fail === 1 ? "" : "s"} to fix.`}</Title>
-          <p className="num mt-1 text-fg-2">
-            {report.results.length - s.not_applicable} clauses checked · {new Date(String(report.created_at)).toLocaleString()}
+          <p className="num mt-1 text-fg-3" title={new Date(String(report.created_at)).toLocaleString()}>
+            {report.results.length - s.not_applicable} clauses
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -189,7 +203,7 @@ export default function ReportPage() {
           <span className="flex items-center gap-3 text-sm">
             <Icon name="question" />
             <span>
-              {s.unverifiable} clauses can't be checked: the model doesn't say {report.questions.length === 1 ? "one thing" : `${report.questions.length} things`} about the site.
+              {s.unverifiable} can't be checked yet
             </span>
           </span>
           <span className="btn-primary shrink-0">answer</span>
@@ -210,6 +224,7 @@ export default function ReportPage() {
                     className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-raised"
                     onClick={() => {
                       if (g.guid) setSelected(g.guid);
+                      setSelectedId(g.key.split(":").slice(1).join(":") || null);
                       if (quiet) toggleOpen(g.key);
                     }}
                     title={g.guid ? "Show in 3D" : undefined}
@@ -244,6 +259,18 @@ export default function ReportPage() {
         </div>
 
         <div className="xl:sticky xl:top-8 xl:h-[calc(100vh-4rem)]">
+          {model.data?.model.meta.source_kind === "dxf" ? (
+            <PlanViewer
+              model={model.data.model}
+              projectId={report.project_id}
+              statusById={statusById}
+              selectedId={selectedId}
+              onPick={(kind, id) => {
+                setSelectedId(id);
+                document.getElementById(`el-${kind}:${id}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+              }}
+            />
+          ) : (
           <Viewer
             modelVersion={report.model_version}
             statusByGuid={statusByGuid}
@@ -254,6 +281,7 @@ export default function ReportPage() {
               if (g) document.getElementById(`el-${g.key}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
             }}
           />
+          )}
         </div>
       </div>
     </div>

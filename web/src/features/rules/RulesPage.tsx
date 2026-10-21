@@ -34,11 +34,7 @@ export default function RulesPage() {
     <div className="space-y-6">
       <header className="border-b border-line-subtle pb-5">
         <Title>rules.</Title>
-        <p className="mt-2 max-w-3xl text-sm text-fg-2">
-          Each check is a rule file: the clause it comes from, copied from the source PDF, and short expressions in a
-          safe mini-language that the engine evaluates. Nemotron drafts rules from clause text and a person verifies
-          them. The model never decides pass or fail.
-        </p>
+
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
@@ -82,7 +78,7 @@ export default function RulesPage() {
             <RuleDetail id={ruleId} onClose={() => navigate("/rules")} />
           ) : (
             <div className="panel flex items-center gap-3 p-5 text-sm text-fg-2">
-              <Icon name="list" /> select a rule to see its clause and compiled expressions.
+              <Icon name="list" /> select a rule
             </div>
           )}
           <CompileBox />
@@ -196,10 +192,7 @@ function CompileBox() {
       <Title as="h2" className="h1">
         compile a clause.
       </Title>
-      <p className="mt-1 text-sm text-fg-2">
-        Nemotron Super drafts a rule. The schema, the expression parser, a number-in-clause test and a dry run on sample
-        buildings check it{review ? ", then Nemotron Ultra reviews it against the clause" : ""}. Nothing is saved.
-      </p>
+
       <div className="mt-4 grid gap-3 sm:grid-cols-[10rem_minmax(0,1fr)]">
         <label>
           <span className="label">clause ref</span>

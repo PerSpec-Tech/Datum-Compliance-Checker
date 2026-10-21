@@ -111,6 +111,16 @@ def get_project_model(project_id: str, st: Store = Depends(store)) -> dict[str, 
     return {"model_version": latest[0], "model": merged, "skipped_answers": skipped}
 
 
+@router.get("/projects/{project_id}/live-pack")
+def get_live_pack(project_id: str, st: Store = Depends(store)) -> dict[str, Any]:
+    """The latest check's limits as geometry for live mode in Revit / AutoCAD (P9.1, D32)."""
+    project_or_404(project_id, st)
+    pack = st.get_live_pack(project_id)
+    if pack is None:
+        raise HTTPException(404, "Run a check first: the live pack comes from the latest check.")
+    return pack
+
+
 @router.get("/models/{version_id}/mesh")
 def get_mesh(version_id: str, st: Store = Depends(store)) -> Any:
     """IFC geometry as triangles per element (by GlobalId) for the web viewer; cached on disk."""
@@ -150,6 +160,151 @@ def ifc_path(version_id: str, st: Store):
     from pathlib import Path
 
     return Path(st.db.path).parent / "ifc" / f"{version_id}.ifc"
+
+
+def drawing_dir(project_id: str, st: Store):
+    """A project's uploaded DXF and its layer → role mapping (P10)."""
+    from pathlib import Path
+
+    return Path(st.db.path).parent / "drawings" / project_id
+
+
+def _read_drawing(project_id: str, st: Store, llm: Any = None) -> dict[str, Any]:
+    """Read the stored DXF with the project's layer roles; store the result as a model version.
+    With `llm`, unknown layers first get Nemotron's suggested roles (P10.3)."""
+    import json
+
+    from compliance.adapters.dxf import layer_profiles, layer_report
+    from compliance.adapters.dxf import read as read_dxf
+
+    folder = drawing_dir(project_id, st)
+    path = folder / "drawing.dxf"
+    roles_file, sugg_file = folder / "roles.json", folder / "suggested.json"
+    roles = json.loads(roles_file.read_text("utf-8")) if roles_file.exists() else {}
+    suggested = json.loads(sugg_file.read_text("utf-8")) if sugg_file.exists() else {}
+    if llm is not None:
+        from compliance.agents.layers import suggest_roles
+
+        try:
+            new = suggest_roles(layer_profiles(path, {**_roles(suggested), **roles}), llm)
+        except Exception:  # noqa: BLE001 - suggestions are optional; the table still works
+            new = {}
+        if new:
+            suggested.update(new)
+            sugg_file.write_text(json.dumps(suggested, indent=2), encoding="utf-8")
+    merged = {**_roles(suggested), **roles}
+    try:
+        model, warnings = read_dxf(path, merged)
+        layers = layer_report(path, roles, suggested)
+    except Exception as e:  # noqa: BLE001 - any parser failure is the file's problem
+        raise HTTPException(422, f"Couldn't read this DXF file: {e}") from e
+    project = st.get_project(project_id) or {}
+    model["project"]["name"] = project.get("name") or model["project"]["name"]
+    errs = schema_errors("building-model.schema.json", model)
+    if errs:
+        raise HTTPException(
+            422, "The drawing converted to an invalid model: " + "; ".join(errs[:3])
+        )
+    version = st.add_model_version(project_id, model)
+    return {
+        "model_version": version,
+        "warnings": warnings,
+        "counts": {
+            k: len(model[k]) for k in ("levels", "spaces", "areas", "stairs", "doors", "units")
+        },
+        "has_site_boundary": model["site"]["boundary"] is not None,
+        "layers": layers,
+        "unmapped": sum(1 for x in layers if x["role"] is None),
+    }
+
+
+def _roles(suggested: dict[str, Any]) -> dict[str, str]:
+    return {k: v["role"] for k, v in suggested.items()}
+
+
+@router.post("/projects/{project_id}/dxf")
+async def upload_dxf(
+    project_id: str, request: Request, st: Store = Depends(store)
+) -> dict[str, Any]:
+    """Body: the raw .dxf file (P10). 2D drawings in the PreDCR layer standard read directly;
+    other layer names can be mapped with PUT /dxf/roles. DWG: save as DXF first (D34)."""
+    import asyncio
+
+    project_or_404(project_id, st)
+    data = await request.body()
+    if not data:
+        raise HTTPException(400, "Send the .dxf file as the request body.")
+    if len(data) > MAX_IFC_BYTES:
+        raise HTTPException(413, "Drawings up to 60 MB are supported in this demo.")
+    if data[:6] == b"AC1032" or data[:4] == b"AC10":
+        raise HTTPException(415, "That's a DWG file. In AutoCAD use Save As → DXF, then upload it.")
+    if b"SECTION" not in data[:2000]:
+        raise HTTPException(415, "That doesn't look like a DXF file.")
+    folder = drawing_dir(project_id, st)
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / "drawing.dxf").write_bytes(data)
+    llm = getattr(request.app.state, "llm", None)
+    return await asyncio.to_thread(_read_drawing, project_id, st, llm)
+
+
+@router.get("/projects/{project_id}/drawing")
+def get_drawing(project_id: str, st: Store = Depends(store)) -> Any:
+    """The uploaded DXF as vector data per floor plan, aligned with the model (web plan view)."""
+    import json
+
+    from fastapi.responses import Response
+
+    from compliance.adapters.dxf import drawing
+
+    project_or_404(project_id, st)
+    folder = drawing_dir(project_id, st)
+    path = folder / "drawing.dxf"
+    if not path.exists():
+        raise HTTPException(404, "This project has no 2D drawing.")
+    sources = [path, folder / "roles.json", folder / "suggested.json"]
+    stamp = "-".join(str(int(f.stat().st_mtime)) for f in sources if f.exists())
+    cache = folder / f"drawing.{stamp}.json"
+    if not cache.exists():
+        roles = (
+            json.loads((folder / "roles.json").read_text("utf-8"))
+            if (folder / "roles.json").exists()
+            else {}
+        )
+        sugg_file = folder / "suggested.json"
+        suggested = json.loads(sugg_file.read_text("utf-8")) if sugg_file.exists() else {}
+        data = drawing(path, {**_roles(suggested), **roles})
+        for old in folder.glob("drawing.*.json"):
+            old.unlink()
+        cache.write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")
+    return Response(cache.read_bytes(), media_type="application/json")
+
+
+@router.put("/projects/{project_id}/dxf/roles")
+async def set_dxf_roles(
+    project_id: str, roles: dict[str, str | None] = Body(...), st: Store = Depends(store)
+) -> dict[str, Any]:
+    """Map drawing layers to roles ({layer: role}), then re-read the drawing (P10.5)."""
+    import asyncio
+    import json
+
+    project_or_404(project_id, st)
+    folder = drawing_dir(project_id, st)
+    if not (folder / "drawing.dxf").exists():
+        raise HTTPException(404, "Upload a DXF for this project first.")
+    allowed = {"plot", "road", "footprint", "floor", "floor_height", "ground", "fsi_resi",
+               "fsi_comm", "fsi_other", "carpet", "room", "door", "window", "stair", "balcony",
+               "parking", "ignore"}  # fmt: skip
+    bad = sorted({r for r in roles.values() if r is not None and r not in allowed})
+    if bad:
+        raise HTTPException(422, f"Unknown layer roles: {', '.join(bad)}")
+    path = folder / "roles.json"
+    current = json.loads(path.read_text("utf-8")) if path.exists() else {}
+    current.update({k: v for k, v in roles.items() if v is not None})
+    for k, v in roles.items():
+        if v is None:
+            current.pop(k, None)
+    path.write_text(json.dumps(current, indent=2), encoding="utf-8")
+    return await asyncio.to_thread(_read_drawing, project_id, st)
 
 
 @router.post("/projects/{project_id}/ifc")

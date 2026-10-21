@@ -20,6 +20,7 @@ TOP_LEVEL = [
     "rule.schema.json",
     "table.schema.json",
     "check-report.schema.json",
+    "live-pack.schema.json",
 ]
 PY_OUT = REPO_ROOT / "backend" / "src" / "compliance" / "models" / "generated"
 TS_OUT = REPO_ROOT / "web" / "src" / "generated" / "contracts.ts"

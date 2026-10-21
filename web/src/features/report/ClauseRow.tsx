@@ -20,20 +20,16 @@ export default function ClauseRow({ r }: { r: Result }) {
         <span className="min-w-0">
           <span className="block text-sm leading-5">{r.title}</span>
           <span className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-fg-3">
-            <span className="font-mono">{r.clause.ref}</span>
-            <span>·</span>
-            <span>{r.clause.source}</span>
+            <span className="font-mono" title={r.clause.source}>{r.clause.ref}</span>
             {r.rule_status === "draft" && (
               <Chip predicted title="Compiled from the clause text; not yet verified by a person">
-                draft rule
+                draft
               </Chip>
             )}
             {r.freshness.status === "possibly_superseded" && (
-              <Chip title="Tavily found a notification that may change this clause">may be superseded</Chip>
+              <Chip title="Tavily found a notification that may change this clause">superseded?</Chip>
             )}
-            {r.status === "unverifiable" && r.missing_inputs.length > 0 && (
-              <span className="text-fg-2">needs {r.missing_inputs.map(humanPath).join(", ")}</span>
-            )}
+
           </span>
         </span>
         <span className="text-right">

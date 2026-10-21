@@ -120,6 +120,24 @@ class Store:
         row = self.db.one("SELECT report_json FROM reports WHERE id = ?", (report_id,))
         return json.loads(row["report_json"]) if row else None
 
+    # ------------------------------------------------------------------ live packs (P9.1)
+    # One per project, from the latest check: a JSON file next to the database (small, read often).
+
+    def _live_path(self, project_id: str):
+        from pathlib import Path
+
+        base = Path(self.db.path).parent if self.db.path != ":memory:" else Path(".cache")
+        return base / "live" / f"{project_id}.json"
+
+    def save_live_pack(self, project_id: str, pack: dict[str, Any]) -> None:
+        path = self._live_path(project_id)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(pack, separators=(",", ":")), encoding="utf-8")
+
+    def get_live_pack(self, project_id: str) -> dict[str, Any] | None:
+        path = self._live_path(project_id)
+        return json.loads(path.read_text("utf-8")) if path.exists() else None
+
     # ------------------------------------------------------------------ usage (P7.4 proof)
 
     def record_llm_usage(

@@ -125,10 +125,7 @@ export default function BriefPage() {
       <div>
         <p className="meta">{project.data?.name}</p>
         <Title>project brief.</Title>
-        <p className="mt-2 text-sm text-fg-2">
-          Facts the model can't hold. Each answer is stored as <em>declared</em> and always wins over what was read or
-          guessed. Questions are ordered by how many checks they unlock.
-        </p>
+
       </div>
 
       {!report.data && (

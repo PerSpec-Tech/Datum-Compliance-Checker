@@ -1,7 +1,7 @@
 import { useEffect, useState, type DragEvent, type FormEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
-import { api, type Place, type UploadResult } from "../../api/client";
+import { LAYER_ROLES, api, type Place, type UploadResult } from "../../api/client";
 import { Chip, ErrorBox, FieldError, Icon, Spinner, Title } from "../../components/ui";
 import { recentProjects, rememberProject } from "../../lib/recent";
 import MapPin, { type LatLon } from "../brief/MapPin";
@@ -12,16 +12,18 @@ const SAMPLES = [
   {
     file: "demo_apartment.ifc",
     name: "mixed-use block near a metro station",
-    facts: "G+4 · 2 shops · 24 flats · stilt parking",
-    blurb: "Road, neighbours and planning facts are modelled. 9 issues to find.",
+    facts: "IFC · G+4 · 2 shops · 24 flats",
+    blurb: "Site and planning facts are modelled. 9 issues to find.",
   },
   {
-    file: "demo_house.ifc",
+    file: "demo_house.dxf",
     name: "two-storey bungalow",
-    facts: "G+1 · 14 rooms · 9 m road",
-    blurb: "Every room, door and window modelled. Passes every clause that applies.",
+    facts: "DXF · PreDCR layers · plans + section",
+    blurb: "How most drawings arrive. Set the location next.",
   },
 ];
+
+const isDxf = (name: string) => /\.dxf$/i.test(name);
 
 // Pilot: Pune only. The rest are shown so the scope is honest, and greyed out.
 const COMING = ["Pimpri-Chinchwad", "Mumbai", "Thane", "Nashik", "Nagpur", "Bengaluru", "Delhi"];
@@ -34,6 +36,7 @@ interface Loaded {
   name: string;
   upload: UploadResult;
   location: LatLon | null;
+  dxf: boolean;
 }
 
 export default function NewCheckPage() {
@@ -46,17 +49,18 @@ export default function NewCheckPage() {
   const [pin, setPin] = useState<LatLon | null>(null);
   const [running, setRunning] = useState(false);
 
-  async function load(file: Blob, name: string) {
+  async function load(file: Blob, name: string, fileName = name) {
     setError(null);
     try {
       setBusy("creating the project");
       const { id } = await api.createProject(name.replace(/\.ifc$/i, ""));
       rememberProject({ id, name });
-      setBusy("reading the IFC model");
-      const upload = await api.uploadIfc(id, file);
+      const dxf = isDxf(fileName);
+      setBusy(dxf ? "reading the 2D drawing" : "reading the IFC model");
+      const upload = dxf ? await api.uploadDxf(id, file) : await api.uploadIfc(id, file);
       const m = await api.model(id);
       const loc = m.model.project.location.value;
-      setLoaded({ id, name, upload, location: loc ? { lat: loc.lat, lon: loc.lon } : null });
+      setLoaded({ id, name, upload, location: loc ? { lat: loc.lat, lon: loc.lon } : null, dxf });
       setPin(loc ? { lat: loc.lat, lon: loc.lon } : null);
     } catch (e) {
       setError(e);
@@ -71,7 +75,7 @@ export default function NewCheckPage() {
     try {
       const res = await fetch(`/samples/${file}`);
       if (!res.ok) throw new Error(`Sample not found (${res.status}).`);
-      await load(await res.blob(), name);
+      await load(await res.blob(), name, file);
     } catch (e) {
       setError(e);
       setBusy(null);
@@ -126,6 +130,7 @@ export default function NewCheckPage() {
             setLoaded(null);
             setPin(null);
           }}
+          onRemapped={(upload) => setLoaded((l) => (l ? { ...l, upload } : l))}
           onNext={() => setStep(1)}
         />
       )}
@@ -154,6 +159,7 @@ function ModelStep({
   onFile,
   onSample,
   onReset,
+  onRemapped,
   onNext,
 }: {
   loaded: Loaded | null;
@@ -162,6 +168,7 @@ function ModelStep({
   onFile: (f: File) => void;
   onSample: (file: string, name: string) => void;
   onReset: () => void;
+  onRemapped: (u: UploadResult) => void;
   onNext: () => void;
 }) {
   const [dragging, setDragging] = useState(false);
@@ -199,6 +206,7 @@ function ModelStep({
             }
           />
         </div>
+        {loaded.dxf && loaded.upload.layers && <LayerTable loaded={loaded} onRemapped={onRemapped} />}
         {loaded.upload.warnings.length > 0 && (
           <ul className="mt-3 space-y-1 text-xs text-fg-2">
             {loaded.upload.warnings.map((w) => (
@@ -230,13 +238,6 @@ function ModelStep({
   return (
     <section>
       <Title>add a model.</Title>
-      <p className="mt-2 text-sm text-fg-2">
-        Upload an IFC, or start from a sample. Revit users can send the model from the add-in instead (
-        <Link to="/revit" className="text-fg underline decoration-line-strong underline-offset-4 hover:decoration-fg">
-          pair revit
-        </Link>
-        ).
-      </p>
 
       <label
         onDragOver={(e) => {
@@ -257,13 +258,14 @@ function ModelStep({
         ) : (
           <>
             <Icon name="upload" size={20} className="text-fg-2" />
-            <p className="text-sm">drop an .ifc file, or click to choose</p>
-            <p className="meta">IFC2x3 or IFC4 · up to 60 MB</p>
+            <p className="text-sm" title="IFC2x3 / IFC4, or 2D DXF (PreDCR or your own layers) · up to 60 MB · DWG: save as DXF first">
+              .ifc or .dxf
+            </p>
           </>
         )}
         <input
           type="file"
-          accept=".ifc"
+          accept=".ifc,.dxf"
           className="sr-only"
           disabled={!!busy}
           onChange={(e) => {
@@ -286,8 +288,7 @@ function ModelStep({
               <Icon name="cube" size={20} className="text-fg-2" />
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-medium">{s.name}</span>
-                <span className="block font-mono text-2xs text-fg-2">{s.facts}</span>
-                <span className="mt-0.5 block text-xs text-fg-3">{s.blurb}</span>
+                <span className="block font-mono text-2xs text-fg-3" title={s.blurb}>{s.facts}</span>
               </span>
               <Icon name="arrow" className="text-fg-3 transition-colors group-hover:text-fg" />
             </button>
@@ -374,7 +375,6 @@ function LocationStep({
   return (
     <section>
       <Title>where is the site.</Title>
-      <p className="mt-2 text-sm text-fg-2">The location picks the planning authority, its rulebook and the metro TOD zone.</p>
 
       <p className="label mt-6">city</p>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -443,7 +443,7 @@ function LocationStep({
         <MapPin value={pin} onChange={setPin} center={current?.center ?? undefined} />
       </div>
       <div className="mt-3 flex min-h-[20px] items-center gap-2 text-sm">
-        {!pin && <span className="text-fg-2">search for the address, or click the map to drop a pin.</span>}
+        {!pin && <span className="text-fg-3">search, or click the map</span>}
         {pin && located.isLoading && (
           <span className="flex items-center gap-2 text-fg-2">
             <Spinner /> checking the authority
@@ -515,10 +515,6 @@ function RunStep({
         <Row k="authority" v="Pune Municipal Corporation" />
         <Row k="rulebook" v={<span className="num">UDCPR 2020 → NBC 2016 · PMC TOD layer</span>} />
       </div>
-      <p className="meta mt-3">
-        Nemotron classifies unnamed rooms and writes the questions, and Tavily checks for newer notifications. Pass or
-        fail is decided by the rule engine only.
-      </p>
       {error ? (
         <div className="mt-4">
           <ErrorBox error={error} title="the check couldn't start" onRetry={onRun} />
@@ -533,6 +529,97 @@ function RunStep({
         </button>
       </div>
     </section>
+  );
+}
+
+// 2D drawings: each layer's role. PreDCR layers are recognised; anything else is set here (P10.5).
+function LayerTable({ loaded, onRemapped }: { loaded: Loaded; onRemapped: (u: UploadResult) => void }) {
+  const [saving, setSaving] = useState<string | null>(null);
+  const [err, setErr] = useState<unknown>(null);
+  const layers = loaded.upload.layers ?? [];
+  const unmapped = layers.filter((l) => l.role === null);
+  const suggested = layers.filter((l) => l.source === "suggested");
+  const [open, setOpen] = useState(unmapped.length > 0 || suggested.length > 0);
+
+  async function confirmAll() {
+    setSaving("*");
+    setErr(null);
+    try {
+      onRemapped(await api.setDxfRoles(loaded.id, Object.fromEntries(suggested.map((l) => [l.layer, l.role]))));
+    } catch (e) {
+      setErr(e);
+    } finally {
+      setSaving(null);
+    }
+  }
+
+  async function setRole(layer: string, role: string) {
+    setSaving(layer);
+    setErr(null);
+    try {
+      onRemapped(await api.setDxfRoles(loaded.id, { [layer]: role || null }));
+    } catch (e) {
+      setErr(e);
+    } finally {
+      setSaving(null);
+    }
+  }
+
+  return (
+    <div className="panel mt-3">
+      <button className="flex w-full items-center justify-between px-4 py-2.5 text-left text-sm" onClick={() => setOpen((o) => !o)}>
+        <span>
+          layers <span className="num text-fg-2">{layers.length}</span>
+          {unmapped.length > 0 && <span className="ml-2 text-xs text-fg">· {unmapped.length} not understood</span>}
+          {suggested.length > 0 && (
+            <span className="ml-2 text-xs text-fg-2">· {suggested.length} suggested</span>
+          )}
+        </span>
+        <Icon name="chevron" size={14} className={open ? "rotate-180" : ""} />
+      </button>
+      {open && suggested.length > 0 && (
+        <div className="flex items-center justify-between gap-3 border-t border-line-subtle px-4 py-2 text-xs text-fg-2">
+          <span title="Suggested by Nemotron from each layer's name and contents">dashed = suggested</span>
+          <button className="btn-secondary h-7 shrink-0 px-2.5 text-xs" disabled={saving !== null} onClick={() => void confirmAll()}>
+            {saving === "*" ? <Spinner className="h-3.5 w-3.5" /> : <Icon name="check" size={14} />} confirm all
+          </button>
+        </div>
+      )}
+      {open && (
+        <ul className="max-h-72 divide-y divide-line-subtle overflow-y-auto border-t border-line-subtle">
+          {layers.map((l) => (
+            <li key={l.layer} className="flex items-center gap-3 px-4 py-1.5">
+              <span className="min-w-0 flex-1 truncate font-mono text-xs">{l.layer}</span>
+              <span className="num w-10 text-right text-fg-3">{l.entities}</span>
+              <span className="w-20 text-right font-mono text-2xs text-fg-3" title="where the role came from">
+                {l.source === "suggested"
+                  ? `predicted ${Math.round((l.confidence ?? 0) * 100)}%`
+                  : l.source === "predcr"
+                    ? "PreDCR"
+                    : l.source === "user"
+                      ? "yours"
+                      : ""}
+              </span>
+              <select
+                className={`input h-7 w-36 py-0 text-xs ${l.role === null || l.source === "suggested" ? "border-dashed" : ""}`}
+                value={l.role ?? ""}
+                disabled={saving !== null}
+                onChange={(e) => void setRole(l.layer, e.target.value)}
+              >
+                <option value="">not set</option>
+                {LAYER_ROLES.map((r) => (
+                  <option key={r} value={r}>
+                    {r.replace("_", " ")}
+                  </option>
+                ))}
+              </select>
+              {saving === l.layer && <Spinner className="h-3.5 w-3.5" />}
+            </li>
+          ))}
+        </ul>
+      )}
+      {err ? <div className="px-4 pb-3"><FieldError error={err} /></div> : null}
+    </div>
   );
 }
 

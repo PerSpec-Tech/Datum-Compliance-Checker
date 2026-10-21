@@ -103,6 +103,17 @@ public sealed class ApiClient
             yield return last;
     }
 
+    /// <summary>The latest check's live pack (P9.1); null if the project has no check yet.</summary>
+    public async Task<Live.LivePack?> GetLivePackAsync(string projectId, CancellationToken ct = default)
+    {
+        using var req = Request(HttpMethod.Get, $"api/projects/{projectId}/live-pack");
+        using HttpResponseMessage resp = await _http.SendAsync(req, ct);
+        if (resp.StatusCode == System.Net.HttpStatusCode.NotFound)
+            return null;
+        resp.EnsureSuccessStatusCode();
+        return Live.LivePack.FromJson(await resp.Content.ReadAsStringAsync(ct));
+    }
+
     private HttpRequestMessage Request(HttpMethod method, string path)
     {
         var req = new HttpRequestMessage(method, new Uri(_base, path));

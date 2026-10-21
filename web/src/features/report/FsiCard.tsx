@@ -10,7 +10,7 @@ export default function FsiCard({ fsi }: { fsi: FsiSummary }) {
   return (
     <section className="panel p-5">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="h1">FSI headroom</h2>
+        <h2 className="h1" title={fsi.basis.join("\n")}>FSI headroom</h2>
         {fsi.plot_area_m2 !== null && (
           <p className="num text-fg-2">
             plot {fmt(fsi.plot_area_m2, 1)} m² · built-up {fmt(fsi.built_up_m2, 1)} m²
@@ -21,7 +21,7 @@ export default function FsiCard({ fsi }: { fsi: FsiSummary }) {
       {fsi.used === null ? (
         <p className="mt-3 flex gap-2 text-sm text-fg-2">
           <Icon name="question" className="mt-0.5" />
-          FSI can't be worked out yet. Missing: {fsi.missing_inputs.map(humanPath).join(", ") || "plot and built-up area"}.
+          needs {fsi.missing_inputs.map(humanPath).join(", ") || "plot and built-up area"}
         </p>
       ) : (
         <>
@@ -42,13 +42,7 @@ export default function FsiCard({ fsi }: { fsi: FsiSummary }) {
           </div>
         </>
       )}
-      {fsi.basis.length > 0 && (
-        <ul className="mt-4 space-y-0.5 text-xs text-fg-3">
-          {fsi.basis.map((b) => (
-            <li key={b}>{b}</li>
-          ))}
-        </ul>
-      )}
+
     </section>
   );
 }

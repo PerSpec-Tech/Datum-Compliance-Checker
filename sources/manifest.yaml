@@ -89,6 +89,26 @@ documents:
     index: false
     sha256: 7b811ec4021d2f8d25150d0d45c00d6d21f50c0f71fabf5adaa23d113e3afa9a
 
+  - id: predcr-maharashtra
+    title: "PreDCR help Manual : Maharashtra"
+    group: predcr
+    file: "sources/predcr/Maharashtra_Predcr_Help_Manual.pdf"
+    url: https://autodcr.pmc.gov.in/SWC.Client/Downloads/Maharashtra_Predcr%20Help%20Manual.pdf
+    captured: 2026-10-21
+    authority: reference             # drawing conventions for AutoDCR, not regulations; layer table → rules/cities/pmc/data/predcr_layers.yaml (P10.1)
+    index: false
+    sha256: 7b0256178d4fec7ef70ee6f0230b592625e661a8d0970955b56d6b74b00adca0
+
+  - id: predcr-complete-manual
+    title: "Complete PreDCR (AutoCAD compatible) user manual"
+    group: predcr
+    file: "sources/predcr/Complete_PreDCR_user_manual.pdf"
+    url: https://autodcr.pmc.gov.in/SWC.Client/Downloads/Help%20Manuals/1-Complete%20PreDCR%20(AutoCAD%20compatible)%20user%20manual.pdf
+    captured: 2026-10-21
+    authority: reference
+    index: false
+    sha256: 29a2caa8468091a1a2ec546715a440dbaa8fc9872fca10529872707d4e266c9b
+
   # Add here if found: the TOD delineation map, PMC circulars.
   # - id: pmc-tod-map-<date>
   #   group: pmc

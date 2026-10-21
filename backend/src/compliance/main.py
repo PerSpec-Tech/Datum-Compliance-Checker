@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
+from urllib.parse import urlparse
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -85,11 +86,17 @@ def _default_runner(store: Store, rulebase: Callable[[], RuleBase]) -> JobRunner
         search = Search(store)
 
         def discover(place: str) -> list[dict]:
-            return search.search(
+            """Official sources only: Indian government sites (gov.in / nic.in)."""
+            results = search.search(
                 f"{place} development control regulations building bye-laws notification PDF",
-                domains=[],
-                max_results=5,
+                domains=["gov.in", "nic.in"],
+                max_results=8,
             )
+            official = (".gov.in", ".nic.in")
+            return [
+                r for r in results
+                if any(urlparse(r["url"]).hostname.endswith(d) for d in official)
+            ][:5]  # fmt: skip
 
     return JobRunner(store, rulebase, hooks=make_hooks(store), discover=discover)
 

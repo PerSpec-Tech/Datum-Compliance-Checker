@@ -64,7 +64,6 @@ export default function ProgressPage() {
   return (
     <div className="mx-auto max-w-[600px]">
       <Title>checking the model.</Title>
-      <p className="mt-2 text-sm text-fg-2">Safe to leave this page; the report is kept with the project.</p>
 
       <div className="mt-6 flex items-center gap-3">
         <div className="h-[2px] flex-1 bg-line-subtle">
@@ -119,8 +118,8 @@ export default function ProgressPage() {
                 {state === "waiting" && <span className="h-1 w-1 bg-fg-off" />}
               </span>
               <div className="min-w-0 flex-1">
-                <p className={`text-sm ${state === "waiting" ? "text-fg-off" : "text-fg"}`}>{s.label}</p>
-                <p className="mt-0.5 text-xs text-fg-3">{state !== "waiting" && lastMsg(s.key) ? lastMsg(s.key) : s.who}</p>
+                <p className={`text-sm ${state === "waiting" ? "text-fg-off" : "text-fg"}`} title={s.who}>{s.label}</p>
+                {state !== "waiting" && lastMsg(s.key) && <p className="mt-0.5 text-xs text-fg-3">{lastMsg(s.key)}</p>}
               </div>
             </li>
           );

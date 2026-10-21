@@ -1,0 +1,70 @@
+# PreDCR layer standard (P10.1): the layers AutoDCR reads in a Maharashtra building-permit DWG.
+# Source: "PreDCR help Manual : Maharashtra", section "PREDCR SHORT-CUT COMMANDS", printed pp.100–113,
+# downloaded 2026-10-21 from https://autodcr.pmc.gov.in/SWC.Client/Downloads/Maharashtra_Predcr%20Help%20Manual.pdf
+# (kept in sources/predcr/, not committed). Descriptions are copied from the manual; `role` is ours.
+#
+# Matching ignores case, spaces and underscores, because the manual itself prints some names with a
+# space ("_Main Plot", "_Main Road") and drawings vary.
+#
+# Roles used by adapters/dxf.py:
+#   plot         the plot boundary            road        an abutting road (width in its text)
+#   footprint    building outline in layout   floor       frame grouping one floor plan (named)
+#   floor_height floor-to-floor in section    ground      ground level line in section
+#   fsi_resi / fsi_comm / fsi_other  built-up area per floor counted in FSI
+#   carpet       tenement carpet area         room        a room (name inside)
+#   door / window / stair                     balcony / parking / ignore
+source:
+  title: "PreDCR help Manual : Maharashtra"
+  url: https://autodcr.pmc.gov.in/SWC.Client/Downloads/Maharashtra_Predcr%20Help%20Manual.pdf
+  retrieved: "2026-10-21"
+layers:
+  - {name: "_Main Plot", role: plot, page: 106,
+     excerpt: "Draw a MainPlot poly as a closed polyline which is a parcel or piece of land enclosed by definite boundaries."}
+  - {name: "_Main Road", role: road, page: 106,
+     excerpt: "Draw Main Road as a closed Poly with Text, which should be abutting with the Plot closed Poly. (Note: Road width must be written at the starting of Text)"}
+  - {name: "_Internal Road", role: ignore, page: 105,
+     excerpt: "Draw each Internal Road as a closed Polyline with Centre Line (Ltype-CentreLine) & single text inside it."}
+  - {name: "_Road Widening", role: ignore, page: 109,
+     excerpt: "Road Acquisition/Road Widening area shall be drawn as a closed Polyline with Text on same layer inside Plot Entity."}
+  - {name: "_PropWork", role: footprint, page: 108,
+     excerpt: "PWork is a building profile and shall be drawn inside plot. Draw a closed polyline for Proposed Work on “_PropWork” Layer."}
+  - {name: "_Building", role: ignore, page: 101,
+     excerpt: "Building is used to group all floor plans of the same building."}
+  - {name: "_Floor", role: floor, page: 104,
+     excerpt: "Floor poly should be drawn as a closed Polyline with Text on same Layer. This is just a logical Group of all floor Entities."}
+  - {name: "_FloorInSection", role: floor_height, page: 103,
+     excerpt: "Draw a Floor Inspection as a closed polyline which is the height of that floor (slab top to slab top)"}
+  - {name: "_Section", role: ignore, page: 110,
+     excerpt: "Section poly should be drawn as a closed Polyline with Text on same Layer. It is used to group all Sectional detail like FloorInSection, Plinth, Stair cabin, Tank etc."}
+  - {name: "_Ground Level", role: ground, page: 104,
+     excerpt: "The Ground level line should be drawn as an open polyline in the section poly."}
+  - {name: "_ResiFSI", role: fsi_resi, page: 109,
+     excerpt: "Draw a ResiFSI as a closed polyline which is the area covered by a building on all the floors. This FSI polyline only used for residential use bldg or floor."}
+  - {name: "_CommFSI", role: fsi_comm, page: 101,
+     excerpt: "Draw a CommFSI as a closed polyline which is the area covered by a building on all the floors."}
+  - {name: "_IndFSI", role: fsi_other, page: 105,
+     excerpt: "Draw a closed FSI Polyline, which is used as a Industrial Purpose."}
+  - {name: "_SpecialUseFSI", role: fsi_other, page: 111,
+     excerpt: "A closed poly represents a other than Residential, commercial or Industrial use FSI or Floor FSI."}
+  - {name: "_Carpet area", role: carpet, page: 101,
+     excerpt: "Draw carpet area as a closed polyline which is a net usable floor area within a building excluding that covered by the walls"}
+  - {name: "_Room", role: room, page: 109,
+     excerpt: "A closed polyline for each room with its text inside should be drawn on this layer."}
+  - {name: "_Door", role: door, page: 102,
+     excerpt: "Door is a closed Polyline Which is drawn on “_Door” layer."}
+  - {name: "_Window", role: window, page: 113,
+     excerpt: "Draw a closed polyline on _Window” Layer to represent window."}
+  - {name: "_Staircase", role: stair, page: 111,
+     excerpt: "Total Staircase area should be drawn as a closed polyline with text inside it. This Main Stair Poly should contain Intermediate Landing, Floor Landing & Each Tread as an open polyline."}
+  - {name: "_Balcony", role: balcony, page: 100,
+     excerpt: "Draw a balcony as a closed polyline which is a horizontal projection including parapet to serve as a sitting out place."}
+  - {name: "_Parking", role: parking, page: 107,
+     excerpt: "Draw a closed Polyline for Parking on “_Parking” Layer."}
+  - {name: "_Liftwell", role: ignore, page: 105,
+     excerpt: "Draw a Liftwell as a closed polyline"}
+  - {name: "_Margin line", role: ignore, page: 106,
+     excerpt: "Margin Polylines will be created by PreDCR by using Tool \"Mark>Margins\""}
+  - {name: "_Site Plan", role: ignore, page: 110,
+     excerpt: "The encapsulating poly around the Site/Key Plan with the Text & Scale inside it."}
+  - {name: "_PrintAdditionalDetail", role: ignore, page: 108,
+     excerpt: "apart from the layers specified by PreDCR, any other information which user wants to display in final approval print shall be drawn on this layer"}

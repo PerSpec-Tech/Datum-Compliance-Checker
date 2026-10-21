@@ -24,7 +24,7 @@
     "units": { "type": "array", "items": { "$ref": "#/definitions/Unit" } }
   },
   "definitions": {
-    "SourceKind": { "type": "string", "enum": ["revit", "ifc", "manual"] },
+    "SourceKind": { "type": "string", "enum": ["revit", "ifc", "dxf", "autocad", "manual"] },
     "Meta": {
       "type": "object",
       "additionalProperties": false,

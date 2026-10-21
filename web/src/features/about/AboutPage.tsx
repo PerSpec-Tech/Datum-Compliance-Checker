@@ -9,11 +9,11 @@ const ROLES: [string, string, string][] = [
 ];
 
 const STEPS: [string, string][] = [
-  ["one building format", "The Revit add-in and the IFC reader produce the same model JSON. Every fact records where it came from: model, inferred, declared or default."],
-  ["authority and overlays", "The site location picks the planning authority (Pune: UDCPR 2020, NBC 2016 as fallback) and the metro TOD zone from OpenStreetMap stations."],
-  ["deterministic rules", "Each rule is a clause excerpt plus short expressions. A sandboxed evaluator decides pass, fail or can't verify. No language model decides compliance."],
-  ["agents around the engine", "Nemotron on Nebius Token Factory classifies rooms, compiles clauses into draft rules with a reviewer model, and words results. Tavily searches government sites for newer notifications during each check."],
-  ["results back in the model", "In Revit, issues colour the elements on a dedicated 3D view. For IFC, the web viewer and a BCF export."],
+  ["one format", "Revit, IFC and DXF become the same model; every fact keeps its source"],
+  ["authority", "location → Pune (PMC) → UDCPR 2020, NBC 2016, metro TOD"],
+  ["rules", "clause + expressions; only the engine decides pass or fail"],
+  ["agents", "Nemotron classifies, compiles and words; Tavily checks for newer notifications"],
+  ["back to the model", "Revit view and live lens · web 3D / 2D · BCF"],
 ];
 
 // P7.4: how it works + live usage counters (LLM calls by role, Tavily searches). Dashboard layout.
@@ -28,7 +28,7 @@ export default function AboutPage() {
     <div className="space-y-10">
       <header className="border-b border-line-subtle pb-5">
         <Title>usage and about.</Title>
-        <p className="mt-2 text-sm text-fg-2">Live counters from this server. Refreshed every 15 seconds.</p>
+
       </header>
 
       <section className="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-line-subtle bg-line-subtle lg:grid-cols-4">
@@ -101,10 +101,7 @@ export default function AboutPage() {
           ))}
         </ol>
         {health.data && <p className="num mt-3 text-fg-3">ruleset {health.data.ruleset_version}</p>}
-        <p className="meta mt-3">
-          Map data and tiles © OpenStreetMap contributors. IFC handling by IfcOpenShell. A design aid: it does not
-          replace professional review, AutoDCR scrutiny or approval by the planning authority.
-        </p>
+        <p className="meta mt-3">© OpenStreetMap contributors · IfcOpenShell · ezdxf · a design aid, not a permit</p>
       </section>
     </div>
   );

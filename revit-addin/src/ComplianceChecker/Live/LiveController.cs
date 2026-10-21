@@ -1,0 +1,132 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Events;
+using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Events;
+using ComplianceChecker.Core.Live;
+using ComplianceChecker.Export;
+using ComplianceChecker.Results;
+
+namespace ComplianceChecker.Live
+{
+    /// <summary>
+    /// Live mode (P9.2, D32). After a check, the server's live pack is kept per document. While the
+    /// user models, edits are noted (DocumentChanged); once nothing has changed for 1.5 s the model
+    /// is re-read and the live engine runs (Idling): the strip in the Compliance pane updates and,
+    /// if the lens is on, the overlay redraws. Calm rules: never a dialog or sound, new elements get
+    /// a 10 s grace before they are flagged, and nothing is ever written to the model.
+    /// </summary>
+    internal sealed class LiveController
+    {
+        private static readonly TimeSpan Settle = TimeSpan.FromSeconds(1.5);
+        private static readonly TimeSpan Grace = TimeSpan.FromSeconds(10);
+
+        private readonly ResultsPane _pane;
+        private readonly LensServer _lens;
+        private readonly Dictionary<string, LivePack> _packs = new();
+        private readonly Dictionary<long, DateTime> _born = new();
+        private DateTime _lastChange = DateTime.MinValue;
+        private bool _dirty;
+
+        public LiveController(ResultsPane pane, LensServer lens)
+        {
+            _pane = pane;
+            _lens = lens;
+            _pane.LensToggled += on => LensOn = on;
+        }
+
+        public bool LensOn
+        {
+            get => _lens.Enabled;
+            set
+            {
+                _lens.Enabled = value;
+                _pane.SetLensChecked(value);
+                _dirty = true;
+                _lastChange = DateTime.MinValue; // redraw at the next idle
+            }
+        }
+
+        public bool HasPack(Document doc) => _packs.ContainsKey(Key(doc));
+
+        public static string Key(Document doc) => string.IsNullOrEmpty(doc.PathName) ? doc.Title : doc.PathName;
+
+        public void Hook(UIControlledApplication app)
+        {
+            app.ControlledApplication.DocumentChanged += OnChanged;
+            app.Idling += OnIdling;
+        }
+
+        public void Unhook(UIControlledApplication app)
+        {
+            app.ControlledApplication.DocumentChanged -= OnChanged;
+            app.Idling -= OnIdling;
+        }
+
+        /// <summary>Main thread: a fresh pack arrived with a check's results.</summary>
+        public void SetPack(UIApplication app, string docKey, LivePack? pack)
+        {
+            if (pack is null)
+                _packs.Remove(docKey);
+            else
+                _packs[docKey] = pack;
+            _dirty = true;
+            _lastChange = DateTime.MinValue;
+        }
+
+        private void OnChanged(object? sender, DocumentChangedEventArgs e)
+        {
+            if (!_packs.ContainsKey(Key(e.GetDocument())))
+                return;
+            DateTime now = DateTime.Now;
+            foreach (ElementId id in e.GetAddedElementIds())
+                _born[id.Value] = now;
+            _dirty = true;
+            _lastChange = now;
+        }
+
+        private void OnIdling(object? sender, IdlingEventArgs e)
+        {
+            if (!_dirty || DateTime.Now - _lastChange < Settle || sender is not UIApplication app)
+                return;
+            Document? doc = app.ActiveUIDocument?.Document;
+            if (doc is null || !_packs.TryGetValue(Key(doc), out LivePack? pack))
+                return;
+            _dirty = false;
+            try
+            {
+                LiveSnapshot snap = LiveSnapshotReader.Read(doc);
+                LiveStatus status = LiveEngine.Evaluate(pack, snap);
+
+                // Grace: an element created moments ago isn't flagged yet; look again when it expires.
+                DateTime now = DateTime.Now;
+                var young = status.Setbacks.Where(s => long.TryParse(s.ElementId, out long id) &&
+                                                       _born.TryGetValue(id, out DateTime t) && now - t < Grace).ToList();
+                if (young.Count > 0)
+                {
+                    status = status with { Setbacks = status.Setbacks.Except(young).ToList() };
+                    _dirty = true;
+                    _lastChange = now - Settle + Grace / 2;
+                }
+                foreach (long old in _born.Where(kv => now - kv.Value > Grace).Select(kv => kv.Key).ToList())
+                    _born.Remove(old);
+
+                _pane.ShowLive(status, LensOn);
+                var levels = new FilteredElementCollector(doc).OfClass(typeof(Level)).Cast<Level>().ToList();
+                double groundFeet = RevitExporter.GroundLevel(levels)?.ProjectElevation ?? 0;
+                if (LensOn)
+                    _lens.Update(Key(doc), pack, snap, status, groundFeet);
+                else
+                    _lens.Clear();
+                app.ActiveUIDocument?.RefreshActiveView();
+            }
+            catch (Exception ex)
+            {
+                // Live mode is a convenience: a model mid-edit that can't be read now is read next time.
+                _pane.ShowLiveError(ex.Message);
+            }
+        }
+    }
+}

@@ -10,6 +10,7 @@
 //    var rule = Rule.FromJson(jsonString);
 //    var lookupTable = LookupTable.FromJson(jsonString);
 //    var checkReport = CheckReport.FromJson(jsonString);
+//    var livePack = LivePack.FromJson(jsonString);
 #nullable enable
 #pragma warning disable CS8618
 #pragma warning disable CS8601
@@ -1146,11 +1147,176 @@ namespace ComplianceChecker.Generated
     }
 
     /// <summary>
+    /// P9.1 / D32: the rule engine's limits for one project, reduced to geometry the Revit and
+    /// AutoCAD add-ins can test locally while the user models. A preview; the full check stays
+    /// the official result.
+    /// </summary>
+    public partial class LivePack
+    {
+        [JsonPropertyName("created_at")]
+        public DateTimeOffset CreatedAt { get; set; }
+
+        /// <summary>
+        /// One entry per plot side with the margin the rules require from it.
+        /// </summary>
+        [JsonPropertyName("edges")]
+        public List<EdgeMargin> Edges { get; set; }
+
+        /// <summary>
+        /// Buildable area: the plot inset by every side's margin. Null when a margin is unknown.
+        /// </summary>
+        [JsonPropertyName("envelope")]
+        public List<List<double>> Envelope { get; set; }
+
+        [JsonPropertyName("fsi")]
+        public FsiBudget Fsi { get; set; }
+
+        [JsonPropertyName("height")]
+        public HeightBand Height { get; set; }
+
+        [JsonPropertyName("model_version")]
+        public string ModelVersion { get; set; }
+
+        [JsonPropertyName("notes")]
+        public List<string> Notes { get; set; }
+
+        [JsonPropertyName("project_id")]
+        public string ProjectId { get; set; }
+
+        /// <summary>
+        /// The check this pack was compiled from.
+        /// </summary>
+        [JsonPropertyName("report_id")]
+        public string ReportId { get; set; }
+
+        [JsonPropertyName("ruleset_version")]
+        public string RulesetVersion { get; set; }
+
+        /// <summary>
+        /// Per-element limits that are constants for this project (room heights, stair and door
+        /// widths).
+        /// </summary>
+        [JsonPropertyName("thresholds")]
+        public List<Threshold> Thresholds { get; set; }
+    }
+
+    public partial class EdgeMargin
+    {
+        [JsonPropertyName("a")]
+        public List<double> A { get; set; }
+
+        [JsonPropertyName("b")]
+        public List<double> B { get; set; }
+
+        [JsonPropertyName("clause_ref")]
+        public string ClauseRef { get; set; }
+
+        [JsonPropertyName("edge_id")]
+        public string EdgeId { get; set; }
+
+        [JsonPropertyName("kind")]
+        public string Kind { get; set; }
+
+        /// <summary>
+        /// The margin this side needs at building height i × height.step_m (i = 0, 1, …). Take the
+        /// larger of the two samples around the live height. Empty when the margin doesn't depend on
+        /// height or is unknown.
+        /// </summary>
+        [JsonPropertyName("margin_by_height")]
+        public List<double?> MarginByHeight { get; set; }
+
+        /// <summary>
+        /// Null: the margin can't be known yet (a fact is missing).
+        /// </summary>
+        [JsonPropertyName("margin_m")]
+        public double? MarginM { get; set; }
+
+        [JsonPropertyName("rule_id")]
+        public string RuleId { get; set; }
+    }
+
+    public partial class FsiBudget
+    {
+        [JsonPropertyName("base")]
+        public double? Base { get; set; }
+
+        [JsonPropertyName("base_built_up_m2")]
+        public double? BaseBuiltUpM2 { get; set; }
+
+        [JsonPropertyName("max")]
+        public double? Max { get; set; }
+
+        [JsonPropertyName("max_built_up_m2")]
+        public double? MaxBuiltUpM2 { get; set; }
+
+        [JsonPropertyName("plot_area_m2")]
+        public double? PlotAreaM2 { get; set; }
+
+        [JsonPropertyName("rule_ids")]
+        public List<string> RuleIds { get; set; }
+
+        /// <summary>
+        /// Built-up area at the time of the check.
+        /// </summary>
+        [JsonPropertyName("used_m2")]
+        public double? UsedM2 { get; set; }
+    }
+
+    /// <summary>
+    /// Heights for the margin tables: samples every step_m from 0 to max_m (floors held as in
+    /// the check).
+    /// </summary>
+    public partial class HeightBand
+    {
+        [JsonPropertyName("current_m")]
+        public double? CurrentM { get; set; }
+
+        [JsonPropertyName("max_m")]
+        public double MaxM { get; set; }
+
+        [JsonPropertyName("step_m")]
+        public double StepM { get; set; }
+    }
+
+    public partial class Threshold
+    {
+        [JsonPropertyName("clause_ref")]
+        public string ClauseRef { get; set; }
+
+        [JsonPropertyName("element_ids")]
+        public List<string> ElementIds { get; set; }
+
+        /// <summary>
+        /// The element field the rule measures, e.g. clear_height_m.
+        /// </summary>
+        [JsonPropertyName("field")]
+        public string Field { get; set; }
+
+        [JsonPropertyName("for_each")]
+        public ForEach ForEach { get; set; }
+
+        [JsonPropertyName("limit")]
+        public double Limit { get; set; }
+
+        [JsonPropertyName("op")]
+        public Op Op { get; set; }
+
+        [JsonPropertyName("rule_id")]
+        public string RuleId { get; set; }
+
+        [JsonPropertyName("source_ids")]
+        public List<string> SourceIds { get; set; }
+
+        [JsonPropertyName("title")]
+        public string Title { get; set; }
+    }
+
+    /// <summary>
     /// Where a fact came from (D4). 'declared' always wins over the others.
     /// </summary>
     public enum Source { Declared, Default, Inferred, Model };
 
-    public enum SourceKind { Ifc, Manual, Revit };
+    public enum SourceKind { Autocad, Dxf, Ifc, Manual, Revit };
 
     public enum BuildingType { BungalowSelfUse, GroupHousing, MixedUse, Other, Standalone };
 
@@ -1197,6 +1363,10 @@ namespace ComplianceChecker.Generated
 
     public enum Status { Advisory, Fail, NotApplicable, Pass, Unverifiable };
 
+    public enum ForEach { Doors, Spaces, Stairs, Units };
+
+    public enum Op { Empty, Fluffy, Op, Purple };
+
     public partial struct Value
     {
         public bool? Bool;
@@ -1229,12 +1399,18 @@ namespace ComplianceChecker.Generated
         public static CheckReport FromJson(string json) => JsonSerializer.Deserialize<CheckReport>(json, ComplianceChecker.Generated.Converter.Settings);
     }
 
+    public partial class LivePack
+    {
+        public static LivePack FromJson(string json) => JsonSerializer.Deserialize<LivePack>(json, ComplianceChecker.Generated.Converter.Settings);
+    }
+
     public static class Serialize
     {
         public static string ToJson(this BuildingModel self) => JsonSerializer.Serialize(self, ComplianceChecker.Generated.Converter.Settings);
         public static string ToJson(this Rule self) => JsonSerializer.Serialize(self, ComplianceChecker.Generated.Converter.Settings);
         public static string ToJson(this LookupTable self) => JsonSerializer.Serialize(self, ComplianceChecker.Generated.Converter.Settings);
         public static string ToJson(this CheckReport self) => JsonSerializer.Serialize(self, ComplianceChecker.Generated.Converter.Settings);
+        public static string ToJson(this LivePack self) => JsonSerializer.Serialize(self, ComplianceChecker.Generated.Converter.Settings);
     }
 
     internal static class Converter
@@ -1265,6 +1441,8 @@ namespace ComplianceChecker.Generated
                 ElementKindConverter.Singleton,
                 FixDirectionConverter.Singleton,
                 StatusConverter.Singleton,
+                ForEachConverter.Singleton,
+                OpConverter.Singleton,
                 new DateOnlyConverter(),
                 new TimeOnlyConverter(),
                 IsoDateTimeOffsetConverter.Singleton
@@ -1379,6 +1557,10 @@ namespace ComplianceChecker.Generated
             var value = reader.GetString();
             switch (value)
             {
+                case "autocad":
+                    return SourceKind.Autocad;
+                case "dxf":
+                    return SourceKind.Dxf;
                 case "ifc":
                     return SourceKind.Ifc;
                 case "manual":
@@ -1393,6 +1575,12 @@ namespace ComplianceChecker.Generated
         {
             switch (value)
             {
+                case SourceKind.Autocad:
+                    JsonSerializer.Serialize(writer, "autocad", options);
+                    return;
+                case SourceKind.Dxf:
+                    JsonSerializer.Serialize(writer, "dxf", options);
+                    return;
                 case SourceKind.Ifc:
                     JsonSerializer.Serialize(writer, "ifc", options);
                     return;
@@ -2466,6 +2654,94 @@ namespace ComplianceChecker.Generated
         }
 
         public static readonly StatusConverter Singleton = new StatusConverter();
+    }
+
+    internal class ForEachConverter : JsonConverter<ForEach>
+    {
+        public override bool CanConvert(Type t) => t == typeof(ForEach);
+
+        public override ForEach Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var value = reader.GetString();
+            switch (value)
+            {
+                case "doors":
+                    return ForEach.Doors;
+                case "spaces":
+                    return ForEach.Spaces;
+                case "stairs":
+                    return ForEach.Stairs;
+                case "units":
+                    return ForEach.Units;
+            }
+            throw new Exception("Cannot unmarshal type ForEach");
+        }
+
+        public override void Write(Utf8JsonWriter writer, ForEach value, JsonSerializerOptions options)
+        {
+            switch (value)
+            {
+                case ForEach.Doors:
+                    JsonSerializer.Serialize(writer, "doors", options);
+                    return;
+                case ForEach.Spaces:
+                    JsonSerializer.Serialize(writer, "spaces", options);
+                    return;
+                case ForEach.Stairs:
+                    JsonSerializer.Serialize(writer, "stairs", options);
+                    return;
+                case ForEach.Units:
+                    JsonSerializer.Serialize(writer, "units", options);
+                    return;
+            }
+            throw new Exception("Cannot marshal type ForEach");
+        }
+
+        public static readonly ForEachConverter Singleton = new ForEachConverter();
+    }
+
+    internal class OpConverter : JsonConverter<Op>
+    {
+        public override bool CanConvert(Type t) => t == typeof(Op);
+
+        public override Op Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var value = reader.GetString();
+            switch (value)
+            {
+                case "<":
+                    return Op.Fluffy;
+                case "<=":
+                    return Op.Op;
+                case ">":
+                    return Op.Purple;
+                case ">=":
+                    return Op.Empty;
+            }
+            throw new Exception("Cannot unmarshal type Op");
+        }
+
+        public override void Write(Utf8JsonWriter writer, Op value, JsonSerializerOptions options)
+        {
+            switch (value)
+            {
+                case Op.Fluffy:
+                    JsonSerializer.Serialize(writer, "<", options);
+                    return;
+                case Op.Op:
+                    JsonSerializer.Serialize(writer, "<=", options);
+                    return;
+                case Op.Purple:
+                    JsonSerializer.Serialize(writer, ">", options);
+                    return;
+                case Op.Empty:
+                    JsonSerializer.Serialize(writer, ">=", options);
+                    return;
+            }
+            throw new Exception("Cannot marshal type Op");
+        }
+
+        public static readonly OpConverter Singleton = new OpConverter();
     }
     
     public class DateOnlyConverter : JsonConverter<DateOnly>

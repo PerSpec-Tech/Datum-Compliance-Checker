@@ -54,7 +54,22 @@ export interface UploadResult {
   warnings: string[];
   counts: Record<string, number>;
   has_site_boundary: boolean;
+  // DXF only (P10): every layer with its role (null = not understood yet)
+  layers?: {
+    layer: string;
+    role: string | null;
+    // predcr = official layer name · user = you chose it · suggested = Nemotron's guess (shown dashed)
+    source: "predcr" | "user" | "suggested" | null;
+    confidence?: number | null;
+    entities: number;
+  }[];
+  unmapped?: number;
 }
+
+export const LAYER_ROLES = [
+  "plot", "road", "footprint", "floor", "floor_height", "ground", "fsi_resi", "fsi_comm",
+  "fsi_other", "carpet", "room", "door", "window", "stair", "balcony", "parking", "ignore",
+] as const;
 
 export interface JobEvent {
   stage: string;
@@ -138,7 +153,17 @@ export interface Located {
   label: string | null;
 }
 
+// GET /projects/{id}/drawing: the uploaded DXF as vectors per floor plan (P10.5).
+export interface DrawingFloor {
+  nums: number[];
+  name: string | null;
+  paths: Record<string, number[][]>; // class → polylines as flat [x, y, x, y, …]
+  fills: number[][];
+  texts: [number, number, number, number, string, string][]; // x, y, height, rotation, text, class
+}
+
 export const api = {
+  drawing: (id: string) => request<{ floors: DrawingFloor[] }>(`/projects/${id}/drawing`),
   cities: () => request<City[]>("/cities"),
   geocode: (q: string, authority: string) =>
     request<Place[]>(`/geocode?${new URLSearchParams({ q, authority })}`),
@@ -157,6 +182,14 @@ export const api = {
       headers: { "Content-Type": "application/octet-stream" },
       body: file,
     }),
+  uploadDxf: (id: string, file: Blob) =>
+    request<UploadResult>(`/projects/${id}/dxf`, {
+      method: "POST",
+      headers: { "Content-Type": "application/octet-stream" },
+      body: file,
+    }),
+  setDxfRoles: (id: string, roles: Record<string, string | null>) =>
+    request<UploadResult>(`/projects/${id}/dxf/roles`, json("PUT", roles)),
   patchBrief: (id: string, answers: Record<string, unknown>) =>
     request<{ brief: Record<string, Fact<unknown>> }>(`/projects/${id}/brief`, json("PATCH", answers)),
   startCheck: (id: string) => request<{ job_id: string }>(`/projects/${id}/checks`, { method: "POST" }),

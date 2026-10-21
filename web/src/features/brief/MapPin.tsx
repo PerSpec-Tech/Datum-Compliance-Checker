@@ -61,7 +61,7 @@ export default function MapPin({
     else
       marker.current = L.circleMarker(ll, {
         radius: 7,
-        color: "#f2f2f3",
+        color: getComputedStyle(document.documentElement).getPropertyValue("--text-primary").trim() || "#f2f2f3",
         weight: 2.5,
         fillColor: "#d22b10",
         fillOpacity: 1,

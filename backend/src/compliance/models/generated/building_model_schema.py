@@ -13,6 +13,8 @@ from . import common_schema
 class SourceKind(StrEnum):
     revit = "revit"
     ifc = "ifc"
+    dxf = "dxf"
+    autocad = "autocad"
     manual = "manual"
 
 

@@ -90,9 +90,10 @@ extract-sources *args:
 find-clause query:
     {{py}} scripts/extract_sources.py find "{{query}}"
 
-# Generate the sample IFC files from the fixture buildings (P6.1)
+# Generate the sample IFC and DXF files from the fixture buildings (P6.1, P10.2)
 make-samples:
     {{py}} scripts/make_sample_ifc.py
+    {{py}} scripts/make_sample_dxf.py
 
 # Fetch Pune metro stations from OpenStreetMap (P3.10)
 fetch-stations *args:

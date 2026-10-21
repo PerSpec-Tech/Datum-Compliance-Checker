@@ -10,10 +10,10 @@ export interface EdgeTag {
 // Line weight carries meaning as in a drawing set (guidelines 9): road heavy, neighbour regular,
 // open space regular dashed, untagged hairline dashed.
 const KIND_STYLE: Record<EdgeKind | "none", { stroke: string; label: string; weight: number; dash?: boolean }> = {
-  road: { stroke: "#f2f2f3", label: "road", weight: 2.5 },
-  neighbour: { stroke: "#9a9aa1", label: "neighbour", weight: 1.5 },
-  open_space: { stroke: "#9a9aa1", label: "open space", weight: 1.5, dash: true },
-  none: { stroke: "#7a7a80", label: "not tagged", weight: 0.75, dash: true },
+  road: { stroke: "var(--text-primary)", label: "road", weight: 2.5 },
+  neighbour: { stroke: "var(--text-secondary)", label: "neighbour", weight: 1.5 },
+  open_space: { stroke: "var(--text-secondary)", label: "open space", weight: 1.5, dash: true },
+  none: { stroke: "var(--text-tertiary)", label: "not tagged", weight: 0.75, dash: true },
 };
 
 // P6.5: the plot boundary and building footprint drawn from the model; click a side to tag it.
@@ -47,7 +47,7 @@ export default function EdgePlan({
     <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_16rem]">
       <svg viewBox={`0 0 ${size} ${size}`} className="aspect-square w-full rounded-md border border-line-subtle bg-surface-low">
         {footprint && (
-          <polygon points={footprint.map(P).join(" ")} fill="#1c1c1f" stroke="#505057" strokeWidth={span * 0.004} />
+          <polygon points={footprint.map(P).join(" ")} fill="var(--bg-surface-raised)" stroke="var(--border-strong)" strokeWidth={span * 0.004} />
         )}
         {edges.map((e) => {
           const k = (tag(e.id).kind ?? "none") as EdgeKind | "none";
@@ -74,7 +74,7 @@ export default function EdgePlan({
                 dy={-span * 0.035}
                 textAnchor="middle"
                 fontSize={span * 0.045}
-                fill="#f2f2f3" fontFamily="JetBrains Mono, monospace"
+                fill="var(--text-primary)" fontFamily="JetBrains Mono, monospace"
                 fontWeight={isActive ? 700 : 400}
               >
                 {e.id}
@@ -83,7 +83,7 @@ export default function EdgePlan({
             </g>
           );
         })}
-        <text x={size - pad * 0.4} y={pad * 0.6} fontSize={span * 0.05} textAnchor="end" fill="#9a9aa1" fontFamily="JetBrains Mono, monospace">
+        <text x={size - pad * 0.4} y={pad * 0.6} fontSize={span * 0.05} textAnchor="end" fill="var(--text-secondary)" fontFamily="JetBrains Mono, monospace">
           N ↑
         </text>
       </svg>

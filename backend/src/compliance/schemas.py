@@ -18,6 +18,7 @@ SCHEMA_FILES = (
     "rule.schema.json",
     "table.schema.json",
     "check-report.schema.json",
+    "live-pack.schema.json",
 )
 
 

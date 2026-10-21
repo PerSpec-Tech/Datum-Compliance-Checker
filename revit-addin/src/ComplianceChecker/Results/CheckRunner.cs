@@ -93,7 +93,20 @@ namespace ComplianceChecker.Results
                         throw new InvalidOperationException("the server finished without a report");
 
                     CheckReport report = await api.GetReportAsync(reportId, cts.Token);
-                    _ui.Post(uiapp => Apply(uiapp, docKey, report, raw.Warnings));
+                    Core.Live.LivePack? pack = null;
+                    try
+                    {
+                        pack = await api.GetLivePackAsync(projectId, cts.Token);
+                    }
+                    catch (Exception)
+                    {
+                        // live mode is optional; the report still applies
+                    }
+                    _ui.Post(uiapp =>
+                    {
+                        Apply(uiapp, docKey, report, raw.Warnings);
+                        App.Current?.Live.SetPack(uiapp, docKey, pack);
+                    });
                 }
                 catch (OperationCanceledException)
                 {

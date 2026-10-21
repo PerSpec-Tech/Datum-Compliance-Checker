@@ -5,6 +5,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { ApiError, api, type Mesh } from "../../api/client";
 import type { Status } from "../../api/types";
 import { STATUS_META, Spinner, StatusMark } from "../../components/ui";
+import { useTheme } from "../../lib/theme";
 
 // P6.8: the IFC is tessellated server-side (/api/models/{v}/mesh) so the browser only needs three.js.
 // Elements are coloured by their worst result status, matched on IFC GlobalId.
@@ -27,6 +28,7 @@ export default function Viewer({ modelVersion, statusByGuid, selectedGuid, onPic
     dispose: () => void;
   } | null>(null);
   const [hover, setHover] = useState<string | null>(null);
+  const theme = useTheme();
   const [point, setPoint] = useState<[number, number, number] | null>(null);
   const [xray, setXray] = useState(true);
   const pickRef = useRef(onPick);
@@ -35,9 +37,9 @@ export default function Viewer({ modelVersion, statusByGuid, selectedGuid, onPic
   useEffect(() => {
     if (!mesh.data || !host.current) return;
     const { elements, spaces, context = [] } = mesh.data;
-    scene.current = build(host.current, elements, spaces, context, statusByGuid, (g) => pickRef.current?.(g), setHover, setPoint);
+    scene.current = build(host.current, elements, spaces, context, statusByGuid, (g) => pickRef.current?.(g), setHover, setPoint, theme === "light");
     return () => scene.current?.dispose();
-  }, [mesh.data, statusByGuid]);
+  }, [mesh.data, statusByGuid, theme]);
 
   useEffect(() => {
     scene.current?.focus(selectedGuid);
@@ -102,7 +104,7 @@ export default function Viewer({ modelVersion, statusByGuid, selectedGuid, onPic
           {xray ? "walls: x-ray" : "walls: solid"}
         </button>
       )}
-      {!hover && <p className="pointer-events-none absolute left-3 top-3 text-2xs text-fg-3">drag to orbit · scroll to zoom</p>}
+
     </div>
   );
 }
@@ -116,6 +118,7 @@ function build(
   pick: (guid: string) => void,
   setHover: (label: string | null) => void,
   setPoint: (p: [number, number, number] | null) => void,
+  light = false,
 ) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -126,7 +129,7 @@ function build(
   camera.up.set(0, 0, 1); // IFC is Z-up
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x2a2a2e, 2.0));
+  scene.add(new THREE.HemisphereLight(0xffffff, light ? 0xb4b4b9 : 0x2a2a2e, light ? 2.4 : 2.0));
   const sun = new THREE.DirectionalLight(0xffffff, 1.4);
   sun.position.set(30, -40, 60);
   scene.add(sun);
@@ -159,7 +162,7 @@ function build(
       // can't verify: a dashed outline, never colour alone (guidelines 10)
       const edges = new THREE.LineSegments(
         new THREE.EdgesGeometry(g, 30),
-        new THREE.LineDashedMaterial({ color: 0xf2f2f3, dashSize: 0.25, gapSize: 0.18 }),
+        new THREE.LineDashedMaterial({ color: light ? 0x0a0a0b : 0xf2f2f3, dashSize: 0.25, gapSize: 0.18 }),
       );
       edges.computeLineDistances();
       mesh.add(edges);
@@ -186,14 +189,14 @@ function build(
     const isSite = m.type === "IfcSite";
     const isRoad = /road|street|lane/i.test(m.name) || m.type === "IfcRoad";
     const mat = new THREE.MeshStandardMaterial({
-      color: isSite ? 0x1c1c1f : isRoad ? 0x2a2a2e : 0x38383d,
+      color: light ? (isSite ? 0xf0f0f1 : isRoad ? 0xc8c8cc : 0xdcdcdf) : isSite ? 0x1c1c1f : isRoad ? 0x2a2a2e : 0x38383d,
       transparent: !isSite && !isRoad,
       opacity: isSite || isRoad ? 1 : 0.5,
       roughness: 0.95,
     });
     const mesh = new THREE.Mesh(g, mat);
     mesh.userData = { label: isSite ? "Plot" : m.name };
-    if (isSite) mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(g, 30), new THREE.LineBasicMaterial({ color: 0x9a9aa1 })));
+    if (isSite) mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(g, 30), new THREE.LineBasicMaterial({ color: light ? 0x75757a : 0x9a9aa1 })));
     scene.add(mesh);
     contextMeshes.push(mesh);
   }
@@ -285,7 +288,7 @@ function build(
         const edges = m.children[0] as THREE.LineSegments | undefined;
         if (edges) {
           const em = edges.material as THREE.LineBasicMaterial;
-          em.color.setHex(on ? 0xf2f2f3 : 0x000000);
+          em.color.setHex(on ? (light ? 0x0a0a0b : 0xf2f2f3) : 0x000000);
           em.opacity = on ? 0.14 : 0.45;
         }
       }

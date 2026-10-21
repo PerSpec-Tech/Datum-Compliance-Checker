@@ -19,6 +19,7 @@ from typing import Any
 from compliance.agents.authority import Resolution, resolve
 from compliance.agents.overlays import apply_overlays
 from compliance.engine.brief import apply_brief
+from compliance.engine.live import build_live_pack
 from compliance.engine.report import build_report
 from compliance.engine.rules import RuleBase
 from compliance.store.repo import Store
@@ -146,6 +147,11 @@ class JobRunner:
 
             assert ctx.report is not None
             self.store.save_report(ctx.report)
+            try:  # the live pack for the add-ins (P9.1); it never fails the check itself
+                pack = await asyncio.to_thread(build_live_pack, ctx.model, ctx.rulebase, ctx.report)
+                self.store.save_live_pack(project_id, pack)
+            except Exception:  # noqa: BLE001
+                log.exception("live pack for %s failed", project_id)
             self.store.update_job(job_id, status="done", report_id=ctx.report["id"])
             s = ctx.report["summary"]
             await self._emit(

@@ -50,7 +50,7 @@ from shapely.ops import linemerge, unary_union
 from compliance.config import REPO_ROOT
 
 NAMES = ["compliant_house", "violating_apartment", "demo_apartment", "demo_house"]
-WEB_SAMPLES = {"demo_apartment", "demo_house"}  # what the web app offers under "Try a sample"
+WEB_SAMPLES = {"demo_apartment"}  # what the web app offers under "Try a sample"
 OUT = REPO_ROOT / "fixtures" / "ifc"
 WEB = REPO_ROOT / "web" / "public" / "samples"
 

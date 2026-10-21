@@ -22,21 +22,17 @@ export default function PairPage() {
   return (
     <div className="mx-auto max-w-[600px]">
       <Title>check from inside revit.</Title>
-      <p className="mt-2 text-sm text-fg-2">
-        The Revit 2026 add-in sends the model here. Results come back as colours on a “Compliance Check” 3D view and a
-        list next to the model. It never changes your model's elements.
-      </p>
 
       <ol className="mt-8 space-y-3">
-        <Step n={1} title="install the add-in">
-          <p>Download, unzip, close Revit, then right-click install.ps1 → Run with PowerShell. Start Revit and choose Always Load.</p>
+        <Step n={1} title="install">
+          <p title="Unzip, close Revit, right-click install.ps1 → Run with PowerShell, then start Revit and choose Always Load.">unzip · run install.ps1 · Always Load</p>
           <a className="btn-secondary mt-3" href="/downloads/ComplianceChecker-revit2026.zip" download>
             <Icon name="download" /> add-in for Revit 2026
           </a>
         </Step>
 
-        <Step n={2} title="pair revit with this server">
-          <p>In Revit: Compliance → Pair. Enter the server URL and the code.</p>
+        <Step n={2} title="pair">
+          <p>Revit → Compliance → 1 Pair</p>
           <div className="mt-3 divide-y divide-line-subtle rounded-sm border border-line-subtle">
             <div className="flex items-baseline gap-4 px-3 py-2.5">
               <span className="w-24 text-xs text-fg-2">server URL</span>
@@ -63,11 +59,11 @@ export default function PairPage() {
               <ErrorBox error={pair.error} title="couldn't create a code" onRetry={() => pair.mutate()} />
             </div>
           ) : null}
-          <p className="meta mt-2">codes work once and expire after 10 minutes.</p>
+
         </Step>
 
-        <Step n={3} title="describe the site, then check">
-          <p>Site Setup tags which plot sides face a road and their widths, and stores the project facts in the model. Run Check sends the model; results open in the Compliance pane.</p>
+        <Step n={3} title="check">
+          <p>2 Site Setup → 3 Run Check</p>
         </Step>
       </ol>
     </div>

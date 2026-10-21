@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { NavLink, Route, Routes } from "react-router-dom";
 import { Icon, Skeleton, type IconName } from "./components/ui";
+import { setTheme, useTheme } from "./lib/theme";
 import NewCheckPage from "./features/upload/NewCheckPage";
 import ProgressPage from "./features/progress/ProgressPage";
 
@@ -24,6 +25,30 @@ function Glyph() {
       <path d="M3 4h9M3 8h6M3 12h4" />
       <path d="M10 13l2.5 2.5L17 10" />
     </svg>
+  );
+}
+
+function ThemeToggle() {
+  const theme = useTheme();
+  const next = theme === "dark" ? "light" : "dark";
+  return (
+    <button
+      onClick={() => setTheme(next)}
+      className="btn-ghost h-7 px-2"
+      title={`${next} mode`}
+      aria-label={`Switch to ${next} mode`}
+    >
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+        {theme === "dark" ? (
+          <>
+            <circle cx="10" cy="10" r="3.5" />
+            <path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.3 4.3l1.4 1.4M14.3 14.3l1.4 1.4M4.3 15.7l1.4-1.4M14.3 5.7l1.4-1.4" />
+          </>
+        ) : (
+          <path d="M16 12.5A7 7 0 0 1 7.5 4a7 7 0 1 0 8.5 8.5z" />
+        )}
+      </svg>
+    </button>
   );
 }
 
@@ -60,16 +85,15 @@ export default function App() {
           ))}
         </nav>
         <div className="mt-auto hidden border-t border-line-subtle px-5 py-4 lg:block">
-          <p className="meta">rulebook</p>
-          <p className="mt-1 font-mono text-2xs leading-5 text-fg-2">
-            PMC · Pune
-            <br />
-            UDCPR 2020 → NBC 2016
+          <p className="font-mono text-2xs leading-5 text-fg-3" title="A design aid, not a permit. Every result cites its clause.">
+            PMC · UDCPR 2020
           </p>
-          <p className="meta mt-3">a design aid, not a permit. every result cites its clause.</p>
-          <p className="mt-3 text-xs font-semibold tracking-[-0.02em] text-fg-2">
-            perspec<span className="stop">.</span>
-          </p>
+          <div className="mt-2 flex items-center justify-between">
+            <p className="text-xs font-semibold tracking-[-0.02em] text-fg-2">
+              perspec<span className="stop">.</span>
+            </p>
+            <ThemeToggle />
+          </div>
         </div>
       </aside>
       <main className="mx-auto w-full max-w-[1440px] px-5 py-8 lg:px-10">

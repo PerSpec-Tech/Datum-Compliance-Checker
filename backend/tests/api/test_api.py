@@ -216,14 +216,14 @@ def test_each_fixture_create_model_check_report_bcf(client, name):
     def by_key(rep):
         return {(r["rule_id"], (r["element"] or {}).get("id")): r["status"] for r in rep["results"]}
 
-    got, want = by_key(report), by_key(golden)
-    assert got.keys() == want.keys()
-    for key in got:
-        if got[key] != want[key]:
-            assert key[0].startswith("pmc.tod.") and (want[key], got[key]) == (
-                "unverifiable",
-                "not_applicable",
-            ), key
+    # A TOD rule that becomes not applicable for every unit collapses to one rule-level line.
+    def outside_tod(rep):
+        return {k: v for k, v in by_key(rep).items() if not k[0].startswith("pmc.tod.")}
+
+    assert outside_tod(report) == outside_tod(golden)
+    for (rule_id, _), status in by_key(report).items():
+        if rule_id.startswith("pmc.tod.") and status != "not_applicable":
+            assert by_key(golden).get((rule_id, _)) == status, rule_id
     assert report["summary"]["fail"] == golden["summary"]["fail"]
     bcf = client.get(f"/api/reports/{report['id']}/bcf")
     assert bcf.status_code == 200

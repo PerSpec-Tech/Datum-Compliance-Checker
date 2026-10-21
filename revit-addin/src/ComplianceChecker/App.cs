@@ -1,5 +1,6 @@
 using System;
 using Autodesk.Revit.UI;
+using ComplianceChecker.Live;
 using ComplianceChecker.Results;
 using ComplianceChecker.UI;
 
@@ -15,6 +16,8 @@ namespace ComplianceChecker
 
         public ResultsPane ResultsPane { get; private set; } = null!;
         public CheckRunner CheckRunner { get; private set; } = null!;
+        internal LiveController Live { get; private set; } = null!;
+        private LensServer _lens = null!;
 
         public Result OnStartup(UIControlledApplication application)
         {
@@ -27,12 +30,19 @@ namespace ComplianceChecker
             ResultsPane.Attach(ui);
             application.RegisterDockablePane(ResultsPaneId, "Compliance results", ResultsPane);
             CheckRunner = new CheckRunner(ResultsPane, ui);
+
+            // Live mode (P9.2/P9.3): the lens joins Revit's DirectContext3D service once Revit is up.
+            _lens = new LensServer();
+            Live = new LiveController(ResultsPane, _lens);
+            Live.Hook(application);
+            application.ControlledApplication.ApplicationInitialized += (_, _) => LensServer.Register(_lens);
             return Result.Succeeded;
         }
 
         public Result OnShutdown(UIControlledApplication application)
         {
             CheckRunner?.Dispose();
+            Live?.Unhook(application);
             return Result.Succeeded;
         }
     }
