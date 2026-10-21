@@ -13,11 +13,35 @@ namespace ComplianceChecker.AutoCAD
     {
         private const string TabId = "PERSPEC_COMPLIANCE_TAB";
 
-        public static void Build()
+        /// <summary>Adds the tab (once; safe to call again). Returns false if there is no ribbon.</summary>
+        public static bool Build()
         {
-            RibbonControl ribbon = ComponentManager.Ribbon;
-            if (ribbon is null || ribbon.FindTab(TabId) is not null)
-                return;
+            try
+            {
+                RibbonControl ribbon = ComponentManager.Ribbon;
+                if (ribbon is null)
+                {
+                    Log.Info("ribbon: not available yet");
+                    return false;
+                }
+                if (ribbon.FindTab(TabId) is { } existing)
+                {
+                    existing.IsVisible = true;
+                    return true;
+                }
+                AddTab(ribbon);
+                Log.Info("ribbon: Compliance tab added");
+                return true;
+            }
+            catch (System.Exception e)
+            {
+                Log.Error("ribbon", e);
+                return false;
+            }
+        }
+
+        private static void AddTab(RibbonControl ribbon)
+        {
             var tab = new RibbonTab { Title = "Compliance", Id = TabId };
 
             tab.Panels.Add(Panel("Set up",

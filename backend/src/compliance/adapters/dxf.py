@@ -53,7 +53,8 @@ from compliance.config import REPO_ROOT
 SLAB_M = 0.15
 OUTER = "door on the floor's outer outline"
 _ORD = {"ground": 0, "first": 1, "second": 2, "third": 3, "fourth": 4, "fifth": 5, "sixth": 6,
-        "seventh": 7, "eighth": 8, "ninth": 9, "tenth": 10, "eleventh": 11, "twelfth": 12}  # fmt: skip
+        "seventh": 7, "eighth": 8, "ninth": 9, "tenth": 10, "eleventh": 11,
+        "twelfth": 12}  # fmt: skip
 _UNITS = {1: 0.0254, 2: 0.3048, 4: 0.001, 5: 0.01, 6: 1.0}  # $INSUNITS → metres
 _WIDTH = re.compile(r"^\s*(\d+(?:\.\d+)?)\s*m", re.I)
 
@@ -194,8 +195,14 @@ def _load(path: Path, roles: dict[str, str] | None, scale: float | None = None) 
     return d
 
 
+# Texts that only measure something (areas "15.30 m²", sizes "3.80 × 3.50"): never a room's name.
+_MEASURE = re.compile(
+    r"^\s*[\d.,]+\s*(m²|m2|sq\.?\s*m|sqm|sq\.?\s*ft|m)?\s*$|^\s*[\d.,]+\s*[x×]\s*[\d.,]+", re.I
+)
+
+
 def _name_inside(shape: _Shape, texts: list[tuple[Point, str, str]], role: str) -> str | None:
-    inside = [(t, r) for p, t, r in texts if t and shape.poly.contains(p)]
+    inside = [(t, r) for p, t, r in texts if t and not _MEASURE.match(t) and shape.poly.contains(p)]
     same = [t for t, r in inside if r == role]
     return (same or [t for t, _ in inside] or [None])[0]
 

@@ -53,110 +53,134 @@ export default function ReportPage() {
 
   return (
     <div className="report-doc mx-auto max-w-[880px]">
-      <div className="no-print mb-6 flex flex-wrap items-center gap-2">
-        <Link to={`/w/${report.project_id}`} className="btn-ghost">
-          <Icon name="back" /> workspace
-        </Link>
-        <span className="flex-1" />
-        <button className={`btn-secondary ${passes ? "border-fg text-fg" : ""}`} onClick={() => setPasses((v) => !v)} aria-pressed={passes}>
-          <StatusMark status="pass" short /> {passes ? "hide passes" : "show passes"}
-        </button>
-        <a className="btn-secondary" href={api.bcfUrl(report.id)} title="One BCF topic per failure, for Solibri, BIMcollab, Archicad, BlenderBIM">
-          <Icon name="download" /> BCF
-        </a>
-        <button className="btn-primary" onClick={() => window.print()}>
-          <Icon name="download" /> save as PDF
-        </button>
-      </div>
+      {/* Printed: the header and footer rows repeat on every page (Chrome repeats thead / tfoot). */}
+      <table className="w-full border-collapse">
+        <thead className="print-only">
+          <tr>
+            <td>
+              <PrintBand name={m?.project.name ?? "compliance report"} date={created} top />
+            </td>
+          </tr>
+        </thead>
+        <tfoot className="print-only">
+          <tr>
+            <td>
+              <PrintBand name={m?.project.name ?? "compliance report"} date={created} />
+            </td>
+          </tr>
+        </tfoot>
+        <tbody>
+          <tr>
+            <td className="p-0 align-top">
+          <div className="no-print mb-6 flex flex-wrap items-center gap-2">
+            <Link to={`/w/${report.project_id}`} className="btn-ghost">
+              <Icon name="back" /> workspace
+            </Link>
+            <span className="flex-1" />
+            <button className={`btn-secondary ${passes ? "border-fg text-fg" : ""}`} onClick={() => setPasses((v) => !v)} aria-pressed={passes}>
+              <StatusMark status="pass" short /> {passes ? "hide passes" : "show passes"}
+            </button>
+            <a className="btn-secondary" href={api.bcfUrl(report.id)} title="One BCF topic per failure, for Solibri, BIMcollab, Archicad, BlenderBIM">
+              <Icon name="download" /> BCF
+            </a>
+            <button className="btn-primary" onClick={() => window.print()}>
+              <Icon name="download" /> save as PDF
+            </button>
+          </div>
 
-      {/* ------------------------------------------------------------- header */}
-      <header className="border-b border-line pb-6">
+          {/* ------------------------------------------------------------- header */}
+          <header className="border-b border-line pb-6">
+            <Brand className="no-print mb-4" />
         <p className="meta font-mono">compliance memo · {created.toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}</p>
-        <h1 className="display mt-2">
-          {m?.project.name ?? "compliance report"}
-          <span className="stop">.</span>
-        </h1>
-        <dl className="mt-4 grid gap-x-8 gap-y-1.5 text-sm sm:grid-cols-2">
-          <Meta k="site">{place.data?.label ?? (loc ? `${loc.lat.toFixed(5)}, ${loc.lon.toFixed(5)}` : "not located")}</Meta>
-          <Meta k="authority">Pune Municipal Corporation</Meta>
-          <Meta k="rulebook">UDCPR 2020 → NBC 2016 · PMC TOD</Meta>
-          <Meta k="model">{m ? `${m.project.name} (${m.meta.source_kind.toUpperCase()})` : "…"}</Meta>
-        </dl>
-        <div className="mt-5 flex flex-wrap gap-2">
-          {ALL.map((st) => (
-            <span key={st} className="flex h-8 items-center gap-2 rounded-sm border border-line-subtle px-3">
-              <StatusMark status={st} />
-              <span className="num">{s[st]}</span>
-            </span>
-          ))}
-        </div>
-        <p className="mt-4 text-xs text-fg-3">
-          A design-time pre-check, not a permit. Every result quotes its clause; pass and fail are decided by the rule engine from the
-          model and the facts below, never by the AI.
-        </p>
-      </header>
-
-      {m && <Facts model={m} results={report.results} />}
-
-      {report.fsi && (
-        <section className="doc-entry mt-8">
-          <FsiCard fsi={report.fsi} />
-        </section>
-      )}
-
-      <Section title={fails.length ? `${s.fail} to fix, on ${fails.length} element${fails.length === 1 ? "" : "s"}` : "nothing to fix"}>
-        {fails.length === 0 && <p className="text-sm text-fg-2">Every clause that applies and can be checked passes.</p>}
-        {fails.map((g) => (
-          <Entry key={g.key} g={g} model={m} floors={drawing.data?.floors} only={["fail"]} />
-        ))}
-      </Section>
-
-      {unsure.length > 0 && (
-        <Section title={`${unsure.length} can't be verified yet`}>
-          {unsure.map((g) => (
-            <Entry key={g.key} g={g} model={m} floors={drawing.data?.floors} only={["unverifiable"]} compact />
-          ))}
-        </Section>
-      )}
-
-      {advisory.length > 0 && (
-        <Section title="advisory">
-          <ul className="divide-y divide-line-subtle border-y border-line-subtle">
-            {advisory.map((r) => (
-              <Line key={`${r.rule_id}:${r.element?.id ?? ""}`} r={r} />
-            ))}
-          </ul>
-        </Section>
-      )}
-
-      {passes && (
-        <Section title={`${s.pass} pass`}>
-          <ul className="divide-y divide-line-subtle border-y border-line-subtle">
-            {passed.map((g) => (
-              <li key={g.key} className="flex items-baseline gap-3 py-2 text-sm">
-                <StatusMark status="pass" short />
-                <span className="min-w-0 flex-1">
-                  {g.name}{" "}
-                  <span className="text-xs text-fg-3">
-                    {KIND_LABEL[g.kind] ?? g.kind}
-                    {g.detail ? ` · ${g.detail}` : ""}
-                  </span>
+            <h1 className="display mt-2">
+              {m?.project.name ?? "compliance report"}
+              <span className="stop">.</span>
+            </h1>
+            <dl className="mt-4 grid gap-x-8 gap-y-1.5 text-sm sm:grid-cols-2">
+              <Meta k="site">{place.data?.label ?? (loc ? `${loc.lat.toFixed(5)}, ${loc.lon.toFixed(5)}` : "not located")}</Meta>
+              <Meta k="authority">Pune Municipal Corporation</Meta>
+              <Meta k="rulebook">UDCPR 2020 → NBC 2016 · PMC TOD</Meta>
+              <Meta k="model">{m ? `${m.project.name} (${m.meta.source_kind.toUpperCase()})` : "…"}</Meta>
+            </dl>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {ALL.map((st) => (
+                <span key={st} className="flex h-8 items-center gap-2 rounded-sm border border-line-subtle px-3">
+                  <StatusMark status={st} />
+                  <span className="num">{s[st]}</span>
                 </span>
-                <span className="font-mono text-2xs text-fg-3">
-                  {g.results
-                    .map((r) => r.clause.ref)
-                    .filter((v, i, a) => a.indexOf(v) === i)
-                    .join(" · ")}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Section>
-      )}
+              ))}
+            </div>
+            <p className="mt-4 text-xs text-fg-3">
+              A design-time pre-check, not a permit. Every result quotes its clause; pass and fail are decided by the rule engine from the
+              model and the facts below, never by the AI.
+            </p>
+          </header>
 
-      <footer className="mt-12 border-t border-line-subtle pt-4 font-mono text-2xs text-fg-3">
-        report {report.id} · model {report.model_version} · rules {report.ruleset_version} · {created.toLocaleString()}
-      </footer>
+          {m && <Facts model={m} results={report.results} />}
+
+          {report.fsi && (
+            <section className="doc-entry mt-8">
+              <FsiCard fsi={report.fsi} />
+            </section>
+          )}
+
+          <Section title={fails.length ? `${s.fail} to fix, on ${fails.length} element${fails.length === 1 ? "" : "s"}` : "nothing to fix"}>
+            {fails.length === 0 && <p className="text-sm text-fg-2">Every clause that applies and can be checked passes.</p>}
+            {fails.map((g) => (
+              <Entry key={g.key} g={g} model={m} floors={drawing.data?.floors} only={["fail"]} />
+            ))}
+          </Section>
+
+          {unsure.length > 0 && (
+            <Section title={`${unsure.length} can't be verified yet`}>
+              {unsure.map((g) => (
+                <Entry key={g.key} g={g} model={m} floors={drawing.data?.floors} only={["unverifiable"]} compact />
+              ))}
+            </Section>
+          )}
+
+          {advisory.length > 0 && (
+            <Section title="advisory">
+              <ul className="divide-y divide-line-subtle border-y border-line-subtle">
+                {advisory.map((r) => (
+                  <Line key={`${r.rule_id}:${r.element?.id ?? ""}`} r={r} />
+                ))}
+              </ul>
+            </Section>
+          )}
+
+          {passes && (
+            <Section title={`${s.pass} pass`}>
+              <ul className="divide-y divide-line-subtle border-y border-line-subtle">
+                {passed.map((g) => (
+                  <li key={g.key} className="flex items-baseline gap-3 py-2 text-sm">
+                    <StatusMark status="pass" short />
+                    <span className="min-w-0 flex-1">
+                      {g.name}{" "}
+                      <span className="text-xs text-fg-3">
+                        {KIND_LABEL[g.kind] ?? g.kind}
+                        {g.detail ? ` · ${g.detail}` : ""}
+                      </span>
+                    </span>
+                    <span className="font-mono text-2xs text-fg-3">
+                      {g.results
+                        .map((r) => r.clause.ref)
+                        .filter((v, i, a) => a.indexOf(v) === i)
+                        .join(" · ")}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </Section>
+          )}
+
+          <footer className="mt-12 border-t border-line-subtle pt-4 font-mono text-2xs text-fg-3">
+            report {report.id} · model {report.model_version} · rules {report.ruleset_version} · {created.toLocaleString()}
+          </footer>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 }
@@ -303,5 +327,31 @@ function Line({ r, excerpt = false }: { r: Result; excerpt?: boolean }) {
         </div>
       )}
     </li>
+  );
+}
+
+// PerSpec's mark and wordmark (web/public/brand). Black artwork: inverted in the dark theme.
+function Brand({ className = "", size = 28 }: { className?: string; size?: number }) {
+  return (
+    <span className={`flex items-center gap-2.5 ${className}`} aria-label="PerSpec">
+      <img src="/brand/perspec-mark.png" alt="" style={{ height: size }} className="brand-art" />
+      <img src="/brand/perspec-wordmark.png" alt="PERSPEC" style={{ height: size * 0.32 }} className="brand-art" />
+    </span>
+  );
+}
+
+function PrintBand({ name, date, top = false }: { name: string; date: Date; top?: boolean }) {
+  return top ? (
+    <div className="mb-6 flex items-end justify-between border-b border-line pb-3">
+      <Brand size={30} />
+      <span className="text-right font-mono text-2xs text-fg-3">
+        {name} · compliance memo · {date.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}
+      </span>
+    </div>
+  ) : (
+    <div className="mt-6 flex items-center justify-between border-t border-line-subtle pt-2 font-mono text-2xs text-fg-3">
+      <span>PerSpec compliance checker · a design-time pre-check, not a permit</span>
+      <span>UDCPR 2020 → NBC 2016 · PMC</span>
+    </div>
   );
 }

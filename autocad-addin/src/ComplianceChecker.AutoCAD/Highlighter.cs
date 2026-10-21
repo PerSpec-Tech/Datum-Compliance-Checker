@@ -1,78 +1,246 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Autodesk.AutoCAD.ApplicationServices;
+using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using Autodesk.AutoCAD.Geometry;
 using Autodesk.AutoCAD.GraphicsInterface;
+using Polyline = Autodesk.AutoCAD.DatabaseServices.Polyline;
 using ComplianceChecker.Core.Results;
 using ComplianceChecker.Generated;
 
 namespace ComplianceChecker.AutoCAD
 {
     /// <summary>
-    /// Shows results on the drawing with transient graphics (P11.4): failing entities get a thick
-    /// red copy drawn on top, can't-verify ones a grey one. Transients are display-only: nothing is
-    /// added to or changed in the drawing, and they vanish with CCCLEAR or the next check.
+    /// Results on the drawing (P11.4, D36). Each failing element gets a red revision cloud and a short
+    /// label on the layer COMPLIANCE ISSUES; can't-verify ones a grey cloud. Every entity the plug-in
+    /// adds carries the PERSPEC_COMPLIANCE XData tag, so a re-check or CCCLEAR removes exactly those:
+    /// nothing else in the drawing is ever changed. Clicking a result adds a temporary red fill
+    /// (a transient, not saved) and zooms to it.
     /// </summary>
     internal static class Highlighter
     {
-        private static readonly List<Entity> Shown = new();
+        public const string LayerName = "COMPLIANCE ISSUES";
+        private const string App = "PERSPEC_COMPLIANCE";
+        private static readonly List<Entity> Focused = new();
 
-        public static void Show(Document doc, CheckReport report)
+        /// <summary>Redraw the clouds for a report (replacing the previous check's).</summary>
+        public static int Show(Document doc, CheckReport report)
         {
-            Clear();
+            ClearFocus();
             var view = new ReportView(report);
+            var rows = view.Groups.SelectMany(g => g.Rows)
+                .Where(r => r.Status is Status.Fail or Status.Unverifiable)
+                .GroupBy(r => (r.ElementKind, r.ElementId, r.SourceId))
+                .ToList();
             Database db = doc.Database;
-            using Transaction tr = db.TransactionManager.StartOpenCloseTransaction();
-            foreach (KeyValuePair<string, Status> kv in view.ElementStatus)
+            double unit = 1 / Markup.MetresPerUnit(db); // drawing units per metre
+            int drawn = 0;
+            using DocumentLock _ = doc.LockDocument();
+            using Transaction tr = db.TransactionManager.StartTransaction();
+            EraseOurs(db, tr);
+            ObjectId layer = EnsureLayer(db, tr);
+            EnsureApp(db, tr);
+            var space = (BlockTableRecord)tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite);
+            foreach (var group in rows)
             {
-                if (kv.Value is not (Status.Fail or Status.Unverifiable))
+                ResultRow first = group.First();
+                if (Outline(db, tr, first, unit) is not { Count: > 0 } outline)
                     continue;
-                if (Open(db, tr, kv.Key) is not { } ent)
-                    continue;
-                var copy = (Entity)ent.Clone();
-                copy.ColorIndex = kv.Value == Status.Fail ? 1 : 8; // red, grey
-                copy.LineWeight = kv.Value == Status.Fail ? LineWeight.LineWeight060 : LineWeight.LineWeight030;
-                TransientManager.CurrentTransientManager.AddTransient(copy, TransientDrawingMode.DirectTopmost, 128, new IntegerCollection());
-                Shown.Add(copy);
+                bool fail = group.Any(r => r.Status == Status.Fail);
+                var lead = group.Where(r => r.Status == (fail ? Status.Fail : Status.Unverifiable)).ToList();
+                Extents2d box = Markup.Box(outline, 0.4 * unit);
+                double size = Math.Max(box.MaxPoint.X - box.MinPoint.X, box.MaxPoint.Y - box.MinPoint.Y);
+                double arc = Math.Clamp(size / 10, 0.4 * unit, 2.5 * unit);
+
+                Polyline cloud = Markup.Cloud(box, arc);
+                Add(space, tr, cloud, layer, fail ? 1 : 8);
+                var label = new MText
+                {
+                    Contents = Label(lead),
+                    TextHeight = Math.Clamp(arc * 0.45, 0.18 * unit, 0.6 * unit),
+                    Location = new Point3d(box.MinPoint.X, box.MaxPoint.Y + arc * 0.6, 0),
+                    Attachment = AttachmentPoint.BottomLeft,
+                    Width = 0,
+                };
+                Add(space, tr, label, layer, fail ? 1 : 8);
+                drawn++;
             }
+            tr.Commit();
+            doc.Editor.Regen();
+            return drawn;
+        }
+
+        /// <summary>Remove everything the plug-in drew (CCCLEAR).</summary>
+        public static void Clear(Document? doc = null)
+        {
+            ClearFocus();
+            if (doc is null)
+                return;
+            using DocumentLock _ = doc.LockDocument();
+            using Transaction tr = doc.Database.TransactionManager.StartTransaction();
+            EraseOurs(doc.Database, tr);
             tr.Commit();
         }
 
-        public static void Clear()
+        /// <summary>Zoom to one result and fill it red for a moment (transient: not saved).</summary>
+        public static void Focus(Document doc, ResultRow row)
         {
-            foreach (Entity e in Shown)
+            ClearFocus();
+            Database db = doc.Database;
+            double unit = 1 / Markup.MetresPerUnit(db);
+            List<Point2d>? outline;
+            using (Transaction tr = db.TransactionManager.StartOpenCloseTransaction())
+                outline = Outline(db, tr, row, unit);
+            if (outline is not { Count: > 2 })
+            {
+                doc.Editor.WriteMessage("\nCompliance: this result has no place on the drawing (it is about the whole project).");
+                return;
+            }
+            try
+            {
+                var hatch = new Hatch();
+                hatch.SetDatabaseDefaults(db);
+                hatch.SetHatchPattern(HatchPatternType.PreDefined, "SOLID");
+                var loop = new HatchLoop(HatchLoopTypes.Polyline);
+                foreach (Point2d p in outline)
+                    loop.Polyline.Add(new BulgeVertex(p, 0));
+                loop.Polyline.Add(new BulgeVertex(outline[0], 0));
+                hatch.AppendLoop(loop);
+                hatch.EvaluateHatch(true);
+                hatch.ColorIndex = row.Status == Status.Fail ? 1 : 8;
+                hatch.Transparency = new Transparency(110); // about 57 % see-through
+                Transient(hatch);
+            }
+            catch (System.Exception e)
+            {
+                Log.Error("focus fill", e); // the zoom and the cloud still show where it is
+            }
+            Extents2d box = Markup.Box(outline, 0.4 * unit);
+            Zoom(doc.Editor, box);
+        }
+
+        // ------------------------------------------------------------------ internals
+
+        private static string Label(List<ResultRow> rows)
+        {
+            ResultRow r = rows[0];
+            string mark = r.Status == Status.Fail ? "FAIL" : "CHECK"; // plain text: the Standard style's font has no ✕
+            string numbers = r.Measured is null && r.Limit is null ? "" : $"  {r.Measured ?? "—"} / {r.Limit ?? "—"}";
+            string more = rows.Count > 1 ? $"  (+{rows.Count - 1} more)" : "";
+            return $"{mark} {r.Title}{numbers}  [{r.ClauseRef}]{more}";
+        }
+
+        /// <summary>The result's outline in drawing units: its entity, plot side, or the building.</summary>
+        private static List<Point2d>? Outline(Database db, Transaction tr, ResultRow r, double unit)
+        {
+            if (r.SourceId is { } handle && Open(db, tr, handle) is { } ent)
+            {
+                if (ent is Polyline { Closed: true } pl && pl.NumberOfVertices > 2)
+                    return Enumerable.Range(0, pl.NumberOfVertices).Select(pl.GetPoint2dAt).ToList();
+                Extents3d e = ent.GeometricExtents;
+                return new()
+                {
+                    new(e.MinPoint.X, e.MinPoint.Y), new(e.MaxPoint.X, e.MinPoint.Y),
+                    new(e.MaxPoint.X, e.MaxPoint.Y), new(e.MinPoint.X, e.MaxPoint.Y),
+                };
+            }
+            if (Markup.Current is not { } m)
+                return null;
+            if (r.ElementKind == "site.edges" && r.ElementId is { } edge)
+                return m.Edge(edge, 0.6 * unit);
+            return m.Footprint; // the whole building or the plot: cloud the building on the site plan
+        }
+
+        private static void Add(BlockTableRecord space, Transaction tr, Entity e, ObjectId layer, int colour)
+        {
+            e.LayerId = layer;
+            e.Color = Color.FromColorIndex(ColorMethod.ByAci, (short)colour);
+            e.XData = new ResultBuffer(new TypedValue((int)DxfCode.ExtendedDataRegAppName, App));
+            space.AppendEntity(e);
+            tr.AddNewlyCreatedDBObject(e, true);
+        }
+
+        private static void EraseOurs(Database db, Transaction tr)
+        {
+            var bt = (BlockTable)tr.GetObject(db.BlockTableId, OpenMode.ForRead);
+            foreach (ObjectId spaceId in bt)
+            {
+                var space = (BlockTableRecord)tr.GetObject(spaceId, OpenMode.ForRead);
+                if (!space.IsLayout)
+                    continue;
+                foreach (ObjectId id in space)
+                {
+                    if (id.IsErased || tr.GetObject(id, OpenMode.ForRead) is not Entity e)
+                        continue;
+                    if (e.GetXDataForApplication(App) is { } xd)
+                    {
+                        xd.Dispose();
+                        e.UpgradeOpen();
+                        e.Erase();
+                    }
+                }
+            }
+        }
+
+        private static ObjectId EnsureLayer(Database db, Transaction tr)
+        {
+            var layers = (LayerTable)tr.GetObject(db.LayerTableId, OpenMode.ForRead);
+            if (layers.Has(LayerName))
+                return layers[LayerName];
+            var ltr = new LayerTableRecord
+            {
+                Name = LayerName,
+                Color = Color.FromColorIndex(ColorMethod.ByAci, 1),
+                LineWeight = LineWeight.LineWeight050,
+                Description = "Compliance check results (PERSPEC). Redrawn by every check; CCCLEAR removes them.",
+            };
+            layers.UpgradeOpen();
+            ObjectId id = layers.Add(ltr);
+            tr.AddNewlyCreatedDBObject(ltr, true);
+            return id;
+        }
+
+        private static void EnsureApp(Database db, Transaction tr)
+        {
+            var apps = (RegAppTable)tr.GetObject(db.RegAppTableId, OpenMode.ForRead);
+            if (apps.Has(App))
+                return;
+            apps.UpgradeOpen();
+            var rec = new RegAppTableRecord { Name = App };
+            apps.Add(rec);
+            tr.AddNewlyCreatedDBObject(rec, true);
+        }
+
+        private static void Transient(Entity e)
+        {
+            TransientManager.CurrentTransientManager.AddTransient(e, TransientDrawingMode.DirectShortTerm, 128, new IntegerCollection());
+            Focused.Add(e);
+        }
+
+        private static void ClearFocus()
+        {
+            foreach (Entity e in Focused)
             {
                 TransientManager.CurrentTransientManager.EraseTransient(e, new IntegerCollection());
                 e.Dispose();
             }
-            Shown.Clear();
+            Focused.Clear();
         }
 
-        /// <summary>Zoom to an entity (by DXF handle) and select it.</summary>
-        public static void ZoomTo(Document doc, string handle)
+        private static void Zoom(Editor ed, Extents2d box)
         {
-            Database db = doc.Database;
-            Editor ed = doc.Editor;
-            using Transaction tr = db.TransactionManager.StartOpenCloseTransaction();
-            if (Open(db, tr, handle) is not { } ent)
-            {
-                ed.WriteMessage($"\nCompliance: entity {handle} is no longer in the drawing.");
-                return;
-            }
-            Extents3d ext = ent.GeometricExtents;
-            double w = Math.Max(ext.MaxPoint.X - ext.MinPoint.X, 1), h = Math.Max(ext.MaxPoint.Y - ext.MinPoint.Y, 1);
+            double w = Math.Max(box.MaxPoint.X - box.MinPoint.X, 1e-6), h = Math.Max(box.MaxPoint.Y - box.MinPoint.Y, 1e-6);
             using ViewTableRecord view = ed.GetCurrentView();
             double aspect = view.Width / Math.Max(view.Height, 1e-9);
-            double height = Math.Max(h, w / aspect) * 2.2;
-            view.CenterPoint = new Point2d((ext.MinPoint.X + ext.MaxPoint.X) / 2, (ext.MinPoint.Y + ext.MaxPoint.Y) / 2);
+            double height = Math.Max(h, w / aspect) * 1.8;
+            view.CenterPoint = new Point2d((box.MinPoint.X + box.MaxPoint.X) / 2, (box.MinPoint.Y + box.MaxPoint.Y) / 2);
             view.Height = height;
             view.Width = height * aspect;
             ed.SetCurrentView(view);
-            ed.SetImpliedSelection(new[] { ent.ObjectId });
-            tr.Commit();
         }
 
         private static Entity? Open(Database db, Transaction tr, string handle)

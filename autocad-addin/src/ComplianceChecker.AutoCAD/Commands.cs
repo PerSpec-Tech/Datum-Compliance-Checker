@@ -35,6 +35,7 @@ namespace ComplianceChecker.AutoCAD
             }
             catch (System.Exception e)
             {
+                Log.Error("CCLAYERS", e);
                 doc.Editor.WriteMessage("\nCompliance: " + e.Message);
             }
         }
@@ -47,12 +48,11 @@ namespace ComplianceChecker.AutoCAD
                 return;
             try
             {
-                string pid = await Checker.SendAsync(doc, api);
-                Checker.OpenInBrowser($"/w/{Uri.EscapeDataString(pid)}?site=1");
-                doc.Editor.WriteMessage("\nCompliance: set the site in the browser (save & check), then come back and run 4 Run Check.");
+                await SiteSetup.RunAsync(doc, api);
             }
             catch (System.Exception e)
             {
+                Log.Error("CCSITE", e);
                 doc.Editor.WriteMessage("\nCompliance: " + e.Message);
             }
         }
@@ -60,8 +60,16 @@ namespace ComplianceChecker.AutoCAD
         [CommandMethod("CCCHECK")]
         public async void Check()
         {
-            if (Doc is { } doc)
-                await Checker.CheckAsync(doc);
+            try
+            {
+                if (Doc is { } doc)
+                    await Checker.CheckAsync(doc);
+            }
+            catch (System.Exception e)
+            {
+                Log.Error("CCCHECK (outer)", e);
+                Doc?.Editor.WriteMessage($"\nCompliance: {e.Message} (details in {Log.FilePath})");
+            }
         }
 
         [CommandMethod("CCRESULTS")]
@@ -79,7 +87,21 @@ namespace ComplianceChecker.AutoCAD
                 Doc?.Editor.WriteMessage("\nCompliance: run a check first (Compliance › 4 Run Check).");
         }
 
+        /// <summary>Put the Compliance tab back on the ribbon (e.g. after changing workspace).</summary>
+        [CommandMethod("CCRIBBON")]
+        public void ShowRibbon()
+        {
+            bool ok = Ribbon.Build();
+            Doc?.Editor.WriteMessage(ok
+                ? "\nCompliance: the Compliance tab is on the ribbon."
+                : $"\nCompliance: no ribbon to add the tab to (type RIBBON to show it, then CCRIBBON). Details in {Log.FilePath}");
+        }
+
         [CommandMethod("CCCLEAR")]
-        public void Clear() => Highlighter.Clear();
+        public void Clear()
+        {
+            Highlighter.Clear(Doc);
+            Doc?.Editor.WriteMessage($"\nCompliance: issue clouds removed (layer {Highlighter.LayerName} kept, now empty).");
+        }
     }
 }

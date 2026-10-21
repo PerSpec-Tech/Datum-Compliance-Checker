@@ -198,7 +198,27 @@
 }
 
 /* P12.5: the report prints as a document (the page switches to the light theme on beforeprint). */
+/* P12.5: PerSpec artwork is black; light on the dark theme. Print-only rows are hidden on screen. */
+.brand-art {
+  filter: invert(1);
+}
+:root[data-theme="light"] .brand-art {
+  filter: none;
+}
+.print-only {
+  display: none;
+}
+
 @media print {
+  .brand-art {
+    filter: none !important;
+  }
+  thead.print-only {
+    display: table-header-group;
+  }
+  tfoot.print-only {
+    display: table-footer-group;
+  }
   :root {
   --bg-canvas: #ffffff;
   --bg-surface-low: #fafafa;

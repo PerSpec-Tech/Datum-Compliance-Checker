@@ -64,6 +64,7 @@ namespace ComplianceChecker.AutoCAD
         /// <summary>The drawing as DXF bytes. DxfOut writes a file; the document itself is untouched.</summary>
         private static byte[] ExportDxf(Document doc)
         {
+            Log.Info("exporting DXF");
             string tmp = Path.Combine(Path.GetTempPath(), $"compliance-{Guid.NewGuid():N}.dxf");
             try
             {
@@ -96,8 +97,11 @@ namespace ComplianceChecker.AutoCAD
             _busy = true;
             try
             {
+                Log.Info($"CCCHECK {doc.Name}");
+                ed.WriteMessage("\nCompliance: sending the drawing…");
                 ResultsPalette.SetStatus("Sending the drawing…");
                 string pid = await SendAsync(doc, api);
+                Log.Info($"sent: project {pid}, {(Upload?.Counts is { } c && c.TryGetValue("spaces", out int n) ? n : 0)} rooms, {Upload?.Unmapped} unknown layers");
                 if (NeedsLayerCheck(Upload))
                 {
                     var window = new LayersWindow(api, pid, Upload!);
@@ -109,6 +113,7 @@ namespace ComplianceChecker.AutoCAD
                     Upload = window.Result ?? Upload;
                 }
                 ResultsPalette.SetStatus("Checking…");
+                ed.WriteMessage("\nCompliance: checking…");
                 string job = await api.StartCheckAsync(pid);
                 string? reportId = null;
                 await foreach (JobEvent e in api.StreamJobAsync(job))
@@ -123,15 +128,35 @@ namespace ComplianceChecker.AutoCAD
                 if (reportId is null)
                     throw new InvalidOperationException("the check ended without a report");
                 Report = await api.GetReportAsync(reportId);
+                try
+                {
+                    Markup.Current = Markup.FromModelJson(await api.GetModelJsonAsync(pid), doc.Database);
+                }
+                catch (Exception e)
+                {
+                    Log.Error("model for markup", e); // plot sides and whole-building results won't be clouded
+                }
                 ResultsPalette.ShowReport(doc, Report, pid);
-                Highlighter.Show(doc, Report);
+                int clouds = 0;
+                try
+                {
+                    clouds = Highlighter.Show(doc, Report);
+                }
+                catch (Exception e)
+                {
+                    Log.Error("clouds", e);
+                    ed.WriteMessage($"\nCompliance: couldn't draw the issue clouds ({e.Message}).");
+                }
                 var s = Report.Summary;
-                ed.WriteMessage($"\nCompliance: {s.Fail} fail · {s.Unverifiable} can't verify · {s.Pass} pass. See the Compliance palette.");
+                Log.Info($"report {reportId}: {s.Fail} fail, {s.Unverifiable} unverifiable, {clouds} clouds");
+                ed.WriteMessage($"\nCompliance: {s.Fail} fail · {s.Unverifiable} can't verify · {s.Pass} pass. "
+                                + $"Issues are clouded on layer {Highlighter.LayerName}; see the Compliance palette.");
             }
             catch (Exception e)
             {
+                Log.Error("CCCHECK", e);
+                ed.WriteMessage("\nCompliance: the check stopped: " + e.Message + $"\n  (details in {Log.FilePath})");
                 ResultsPalette.SetStatus("The check stopped: " + e.Message);
-                ed.WriteMessage("\nCompliance: the check stopped: " + e.Message);
             }
             finally
             {

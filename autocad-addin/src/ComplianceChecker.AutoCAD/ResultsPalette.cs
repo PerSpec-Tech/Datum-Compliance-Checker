@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Media;
 using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Windows;
@@ -17,35 +18,75 @@ namespace ComplianceChecker.AutoCAD
     /// </summary>
     internal static class ResultsPalette
     {
+        // Always light, whatever AutoCAD's theme: the web app's light tokens.
+        private static readonly Brush Paper = Brush(0xff, 0xff, 0xff);
+        private static readonly Brush Ink = Brush(0x0a, 0x0a, 0x0b);
+        private static readonly Brush Muted = Brush(0x5c, 0x5c, 0x61);
+        private static readonly Brush Bad = Brush(0xd4, 0x24, 0x3d);
+        private static readonly Brush Good = Brush(0x12, 0x87, 0x5a);
+        private static readonly Brush Picked = Brush(0xf0, 0xf0, 0xf1);
+
+        private static Brush Brush(byte r, byte g, byte b)
+        {
+            var brush = new SolidColorBrush(Color.FromRgb(r, g, b));
+            brush.Freeze();
+            return brush;
+        }
+
         private static PaletteSet? _set;
-        private static readonly TextBlock StatusLine = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 6, 0, 6), Foreground = Icons.Grey };
+        private static readonly TextBlock StatusLine = new() { TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 6, 0, 6), Foreground = Muted };
         private static readonly TextBlock Summary = new() { FontSize = 15, FontWeight = FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap };
         private static readonly StackPanel ListPanel = new();
         private static readonly CheckBox Passes = new() { Content = "show passes", Margin = new Thickness(0, 4, 0, 8) };
         private static CheckReport? _report;
+        private static Button? _picked;
         private static string? _projectId;
 
         public static void SetStatus(string text)
         {
-            Ensure();
-            StatusLine.Text = text;
-            _set!.Visible = true;
+            try
+            {
+                Ensure();
+                StatusLine.Text = text;
+                _set!.Visible = true;
+            }
+            catch (Exception e)
+            {
+                Log.Error("palette status", e);
+            }
         }
 
         public static void ShowReport(Document doc, CheckReport report, string projectId)
         {
-            Ensure();
             _report = report;
             _projectId = projectId;
-            StatusLine.Text = $"Checked {DateTime.Now:HH:mm} · {report.Results.Count(r => r.Status != Status.NotApplicable)} clauses";
-            Render();
-            _set!.Visible = true;
+            try
+            {
+                Ensure();
+                StatusLine.Text = $"Checked {DateTime.Now:HH:mm} · {report.Results.Count(r => r.Status != Status.NotApplicable)} clauses";
+                Render();
+                _set!.Visible = true;
+            }
+            catch (Exception e)
+            {
+                Log.Error("palette report", e);
+                doc.Editor.WriteMessage($"\nCompliance: couldn't show the palette ({e.Message}); details in {Log.FilePath}");
+            }
         }
 
         public static void Toggle()
         {
-            Ensure();
-            _set!.Visible = true;
+            try
+            {
+                Ensure();
+                if (_report is not null)
+                    Render();
+                _set!.Visible = true;
+            }
+            catch (Exception e)
+            {
+                Log.Error("palette toggle", e);
+            }
         }
 
         private static void Ensure()
@@ -57,15 +98,17 @@ namespace ComplianceChecker.AutoCAD
             buttons.Children.Add(Icons.Button(Icons.Pin, "Site", (_, _) => Run("CCSITE")));
             buttons.Children.Add(Icons.Button(Icons.Book, "Report", (_, _) => Run("CCREPORT")));
 
-            var root = new DockPanel { Margin = new Thickness(10) };
-            var head = new StackPanel();
+            var root = new DockPanel { Margin = new Thickness(0), Background = Paper };
+            TextElement.SetForeground(root, Ink);
+            var head = new StackPanel { Margin = new Thickness(10, 10, 10, 0) };
             head.Children.Add(Summary);
             head.Children.Add(StatusLine);
             head.Children.Add(Passes);
             head.Children.Add(buttons);
             DockPanel.SetDock(head, Dock.Top);
             root.Children.Add(head);
-            root.Children.Add(new ScrollViewer { Content = ListPanel, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new Thickness(0, 8, 0, 0) });
+            root.Children.Add(new ScrollViewer { Content = ListPanel, VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new Thickness(10, 8, 10, 10), Background = Paper });
+            Passes.Foreground = Ink;
             Passes.Checked += (_, _) => Render();
             Passes.Unchecked += (_, _) => Render();
             Summary.Text = "Not checked yet";
@@ -76,7 +119,17 @@ namespace ComplianceChecker.AutoCAD
                 Style = PaletteSetStyles.ShowCloseButton | PaletteSetStyles.ShowAutoHideButton | PaletteSetStyles.ShowPropertiesMenu,
             };
             _set.AddVisual("Results", root);
-            _set.Dock = DockSides.Right;
+            _set.KeepFocus = false;
+            _set.Visible = true;
+            try
+            {
+                _set.Dock = DockSides.Right;
+            }
+            catch (Exception e)
+            {
+                Log.Error("palette dock", e); // floating is fine too
+            }
+            Log.Info("palette created");
         }
 
         private static void Render()
@@ -87,7 +140,7 @@ namespace ComplianceChecker.AutoCAD
             var view = new ReportView(_report);
             var s = _report.Summary;
             Summary.Text = s.Fail == 0 ? "No issues to fix" : $"{s.Fail} issue{(s.Fail == 1 ? "" : "s")} to fix";
-            Summary.Foreground = s.Fail == 0 ? Icons.Green : Icons.Red;
+            Summary.Foreground = s.Fail == 0 ? Good : Bad;
             foreach (ResultGroup g in view.Groups)
             {
                 if (g.Status is Status.NotApplicable || (g.Status == Status.Pass && Passes.IsChecked != true))
@@ -107,23 +160,23 @@ namespace ComplianceChecker.AutoCAD
         {
             (string icon, Brush brush) = r.Status switch
             {
-                Status.Fail => (Icons.Cross, Icons.Red),
-                Status.Pass => (Icons.Check, Icons.Green),
-                _ => (Icons.Question, Icons.Grey),
+                Status.Fail => (Icons.Cross, Bad),
+                Status.Pass => (Icons.Check, Good),
+                _ => (Icons.Question, Muted),
             };
             var text = new StackPanel { Margin = new Thickness(8, 0, 0, 0) };
             text.Children.Add(new TextBlock { Text = r.Title, TextWrapping = TextWrapping.Wrap });
             string where = r.ElementKind is null ? "whole building" : $"{r.ElementKind} {r.ElementId}";
-            text.Children.Add(new TextBlock { Text = $"{r.ClauseRef} · {where}", Foreground = Icons.Grey, FontSize = 11, TextWrapping = TextWrapping.Wrap });
+            text.Children.Add(new TextBlock { Text = $"{r.ClauseRef} · {where}", Foreground = Muted, FontSize = 11, TextWrapping = TextWrapping.Wrap });
             if (r.Measured is not null || r.Limit is not null)
                 text.Children.Add(new TextBlock
                 {
                     Text = $"{r.Measured ?? "—"} / {r.Limit ?? "—"}" + (r.Fix is null ? "" : $"   {r.Fix}"),
                     FontFamily = new FontFamily("Consolas"),
-                    Foreground = r.Status == Status.Fail ? Icons.Red : Icons.Grey,
+                    Foreground = r.Status == Status.Fail ? Bad : Muted,
                 });
             if (r.Status == Status.Unverifiable && r.MissingInputs.Count > 0)
-                text.Children.Add(new TextBlock { Text = "needs: " + string.Join(", ", r.MissingInputs), Foreground = Icons.Grey, FontSize = 11, TextWrapping = TextWrapping.Wrap });
+                text.Children.Add(new TextBlock { Text = "needs: " + string.Join(", ", r.MissingInputs), Foreground = Muted, FontSize = 11, TextWrapping = TextWrapping.Wrap });
 
             var line = new DockPanel { Margin = new Thickness(0, 3, 0, 3) };
             var glyph = Icons.Glyph(icon, 14, brush);
@@ -135,18 +188,31 @@ namespace ComplianceChecker.AutoCAD
             {
                 Content = line,
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
-                Background = Brushes.Transparent,
+                Background = Paper,
+                Foreground = Ink,
                 BorderThickness = new Thickness(0),
                 Padding = new Thickness(4),
                 Cursor = System.Windows.Input.Cursors.Hand,
-                ToolTip = r.SourceId is null ? r.Message : r.Message + "\nClick to zoom to it.",
+                ToolTip = r.Message + "\nClick to show it on the drawing.",
             };
-            if (r.SourceId is { } handle)
-                button.Click += (_, _) =>
+            button.Click += (_, _) =>
+            {
+                if (_picked is not null)
+                    _picked.Background = Paper;
+                button.Background = Picked;
+                _picked = button;
+                if (AcApp.DocumentManager.MdiActiveDocument is { } doc)
                 {
-                    if (AcApp.DocumentManager.MdiActiveDocument is { } doc)
-                        Highlighter.ZoomTo(doc, handle);
-                };
+                    try
+                    {
+                        Highlighter.Focus(doc, r);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error("focus", e);
+                    }
+                }
+            };
             return button;
         }
 

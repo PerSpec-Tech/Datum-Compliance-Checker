@@ -1,30 +1,61 @@
+using System;
+using Autodesk.AutoCAD.ApplicationServices;
 using Autodesk.AutoCAD.Runtime;
 using Autodesk.Windows;
+using AcApp = Autodesk.AutoCAD.ApplicationServices.Application;
 
 [assembly: ExtensionApplication(typeof(ComplianceChecker.AutoCAD.App))]
 [assembly: CommandClass(typeof(ComplianceChecker.AutoCAD.Commands))]
 
 namespace ComplianceChecker.AutoCAD
 {
-    /// <summary>Plug-in entry: adds the Compliance ribbon tab once AutoCAD's ribbon exists.</summary>
+    /// <summary>
+    /// Plug-in entry. The Compliance ribbon tab is added once AutoCAD is idle after start-up (the
+    /// ribbon may not exist yet while plug-ins load), and again whenever the workspace changes,
+    /// because switching or reloading a workspace rebuilds the ribbon without our tab.
+    /// </summary>
     public sealed class App : IExtensionApplication
     {
         public void Initialize()
         {
-            if (ComponentManager.Ribbon is not null)
-                Ribbon.Build();
-            else
-                ComponentManager.ItemInitialized += OnRibbonReady;
+            Log.Info("plug-in loaded");
+            AcApp.Idle += OnFirstIdle;
+            AcApp.SystemVariableChanged += OnSysVar;
         }
 
-        private static void OnRibbonReady(object? sender, RibbonItemEventArgs e)
+        private static void OnFirstIdle(object? sender, EventArgs e)
         {
             if (ComponentManager.Ribbon is null)
-                return;
-            ComponentManager.ItemInitialized -= OnRibbonReady;
+                return; // try again on the next idle
+            AcApp.Idle -= OnFirstIdle;
             Ribbon.Build();
+            Hello();
         }
 
-        public void Terminate() => Highlighter.Clear();
+        private static void OnSysVar(object? sender, SystemVariableChangedEventArgs e)
+        {
+            if (e.Name.Equals("WSCURRENT", StringComparison.OrdinalIgnoreCase))
+                Ribbon.Build();
+        }
+
+        private static void Hello()
+        {
+            try
+            {
+                AcApp.DocumentManager.MdiActiveDocument?.Editor.WriteMessage(
+                    "\nCompliance Checker loaded: Compliance tab on the ribbon (or type CCCHECK, CCPAIR, CCRIBBON).");
+            }
+            catch (System.Exception)
+            {
+                // no document open yet: the tab is enough
+            }
+        }
+
+        public void Terminate()
+        {
+            AcApp.Idle -= OnFirstIdle;
+            AcApp.SystemVariableChanged -= OnSysVar;
+            Highlighter.Clear();
+        }
     }
 }

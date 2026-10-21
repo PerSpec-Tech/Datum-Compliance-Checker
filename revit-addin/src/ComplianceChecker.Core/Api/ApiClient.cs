@@ -84,6 +84,34 @@ public sealed class ApiClient
         }
     }
 
+    /// <summary>The project's latest model with the brief merged in, as raw JSON
+    /// ({model_version, model, skipped_answers}); the AutoCAD plug-in reads plot sides from it.</summary>
+    public async Task<string> GetModelJsonAsync(string projectId, CancellationToken ct = default)
+    {
+        using var req = Request(HttpMethod.Get, $"api/projects/{Uri.EscapeDataString(projectId)}/model");
+        using var resp = await _http.SendAsync(req, ct);
+        await EnsureOk(resp, ct);
+        return await resp.Content.ReadAsStringAsync(ct);
+    }
+
+    /// <summary>Declare facts for the next check (PATCH /brief): path → value, e.g.
+    /// "project.location" → {lat, lon}, "site.boundary" → [[x, y], …], "site.edges" → {e1: {kind, road_width_m}}.</summary>
+    public Task<JsonElement> PatchBriefAsync(string projectId, IReadOnlyDictionary<string, object?> answers, CancellationToken ct = default) =>
+        SendAsync<JsonElement>(HttpMethod.Patch, $"api/projects/{Uri.EscapeDataString(projectId)}/brief", answers, ct);
+
+    /// <summary>Places in the authority's area for an address (GET /geocode).</summary>
+    public async Task<IReadOnlyList<Place>> GeocodeAsync(string query, string authority = "pmc", CancellationToken ct = default) =>
+        await SendAsync<List<Place>>(HttpMethod.Get, $"api/geocode?q={Uri.EscapeDataString(query)}&authority={Uri.EscapeDataString(authority)}", null, ct);
+
+    /// <summary>Which authority covers a point, and a short place name (GET /locate).</summary>
+    public Task<Located> LocateAsync(double lat, double lon, CancellationToken ct = default) =>
+        SendAsync<Located>(HttpMethod.Get, FormattableString.Invariant($"api/locate?lat={lat}&lon={lon}"), null, ct);
+
+    /// <summary>Planning facts the server suggests (occupancy, building type, congested area, land use).</summary>
+    public async Task<IReadOnlyList<Suggestion>> GetSuggestionsAsync(string projectId, double lat, double lon, CancellationToken ct = default) =>
+        await SendAsync<List<Suggestion>>(HttpMethod.Get,
+            FormattableString.Invariant($"api/projects/{Uri.EscapeDataString(projectId)}/suggestions?lat={lat}&lon={lon}"), null, ct);
+
     public async Task<CheckReport> GetReportAsync(string reportId, CancellationToken ct = default)
     {
         using var req = Request(HttpMethod.Get, $"api/reports/{Uri.EscapeDataString(reportId)}");
@@ -185,6 +213,13 @@ public sealed record JobEvent(string Stage, double? Pct = null, string? Msg = nu
 {
     public bool IsFinal => Stage is "done" or "error";
 }
+
+public sealed record Place(string Label, double Lat, double Lon);
+
+public sealed record Located(string? AuthorityId, string? Note, string? Label);
+
+/// <summary>A suggested planning fact and what the model has now (facts as raw JSON: {value, source, note}).</summary>
+public sealed record Suggestion(string Path, JsonElement Suggested, JsonElement Current);
 
 /// <summary>What the server read from an uploaded drawing (POST /dxf, PUT /dxf/roles).</summary>
 public sealed record DrawingUpload(
