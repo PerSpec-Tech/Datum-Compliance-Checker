@@ -1,0 +1,24 @@
+id: pmc.ch10.height-road-width
+title: Tall buildings need a wide enough road
+authority: pmc
+clause:
+  ref: 10.1.1
+  excerpt: For the building having height more than 36 m., the minimum road width shall be 12 m. and
+    for building having height equal to or more than 50 m., the minimum road width shall be 15 m.
+  source: udcpr2020 p.171
+  retrieved: '2026-10-21'
+status: draft
+severity: critical
+kind: check
+applies_when: derived.building_height_m > 36
+limit: 15.0 if derived.building_height_m >= 50 else 12.0
+measured: derived.front_road_width_m
+check: measured >= limit
+message: Front road is {measured:.1f} m; a building over 36 m tall needs a road of {limit:.1f} m or
+  more.
+fix_unit: m
+compiled_by: agent:claude-opus-5-5@p12-height
+freshness:
+  status: unchecked
+  url: null
+  checked: null

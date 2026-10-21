@@ -5,13 +5,39 @@
   "ruleset_version": "volatile",
   "created_at": "2000-01-01T00:00:00+00:00",
   "summary": {
-    "pass": 28,
-    "fail": 0,
+    "pass": 26,
+    "fail": 2,
     "unverifiable": 0,
-    "not_applicable": 10,
+    "not_applicable": 11,
     "advisory": 0
   },
   "results": [
+    {
+      "rule_id": "pmc.ch10.height-road-width",
+      "title": "Tall buildings need a wide enough road",
+      "severity": "critical",
+      "element": null,
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [],
+      "clause": {
+        "ref": "10.1.1",
+        "excerpt": "For the building having height more than 36 m., the minimum road width shall be 12 m. and for building having height equal to or more than 50 m., the minimum road width shall be 15 m.",
+        "source": "udcpr2020 p.171",
+        "retrieved": "2026-10-21"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
     {
       "rule_id": "pmc.tod.max-fsi",
       "title": "Maximum total FSI in the TOD zone",
@@ -222,10 +248,10 @@
         "id": "e2",
         "source_id": null
       },
-      "status": "pass",
-      "measured": 2.5,
+      "status": "fail",
+      "measured": 1.1,
       "limit": 1.5,
-      "message": "Margin on this side is 2.50 m; minimum is 1.50 m (Table 6-D, or H/5 above its height limit).",
+      "message": "Margin on this side is 1.10 m; minimum is 1.50 m (Table 6-D, or H/5 above its height limit).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -274,7 +300,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.4,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -351,9 +381,9 @@
         "source_id": null
       },
       "status": "pass",
-      "measured": 2.5,
+      "measured": 3.9,
       "limit": 1.5,
-      "message": "Margin on this side is 2.50 m; minimum is 1.50 m (Table 6-D, or H/5 above its height limit).",
+      "message": "Margin on this side is 3.90 m; minimum is 1.50 m (Table 6-D, or H/5 above its height limit).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -414,10 +444,10 @@
         "id": "D001",
         "source_id": "demo-dr-D001"
       },
-      "status": "pass",
-      "measured": 1.0,
+      "status": "fail",
+      "measured": 0.8,
       "limit": 0.9,
-      "message": "Exit door is 1.00 m wide; minimum is 0.90 m.",
+      "message": "Exit door is 0.80 m wide; minimum is 0.90 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -446,7 +476,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.1,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {

@@ -106,6 +106,7 @@ def test_apartment_finds_the_planted_issues_a_plan_can_show(rulebase):
         if r["status"] == "fail"
     )
     assert fails == [
+        "pmc.ch10.height-road-width",
         "pmc.tod.max-fsi", "pmc.tod.mixed-use-road-width", "pmc.tod.tenement-min-carpet",
         "udcpr2020.ch6.front-margin", "udcpr2020.ch6.side-rear-margin",
         "udcpr2020.ch9.exit-door-width", "udcpr2020.ch9.stair-width-residential",
@@ -286,7 +287,7 @@ def test_drawing_endpoint_serves_floor_vectors(tmp_path):
         c.post(f"/api/projects/{pid}/dxf", content=data)
         floors = c.get(f"/api/projects/{pid}/drawing").json()["floors"]
         model = c.get(f"/api/projects/{pid}/model").json()["model"]
-    assert [f["nums"] for f in floors] == [[0], [1], [2, 3, 4]]
+    assert [f["nums"] for f in floors] == [[0], [1], list(range(2, 12))]
     typical = floors[2]
     assert typical["paths"]["wall"] and typical["fills"] and typical["paths"]["furniture"]
     # The drawing sits where the model's rooms are (same per-floor alignment).

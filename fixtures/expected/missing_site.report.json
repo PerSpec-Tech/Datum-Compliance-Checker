@@ -7,11 +7,39 @@
   "summary": {
     "pass": 13,
     "fail": 0,
-    "unverifiable": 10,
+    "unverifiable": 11,
     "not_applicable": 3,
     "advisory": 0
   },
   "results": [
+    {
+      "rule_id": "pmc.ch10.height-road-width",
+      "title": "Tall buildings need a wide enough road",
+      "severity": "critical",
+      "element": null,
+      "status": "unverifiable",
+      "measured": null,
+      "limit": null,
+      "message": "Cannot verify: needs site.ground_level_m",
+      "missing_inputs": [
+        "site.ground_level_m"
+      ],
+      "facts_used": [],
+      "clause": {
+        "ref": "10.1.1",
+        "excerpt": "For the building having height more than 36 m., the minimum road width shall be 12 m. and for building having height equal to or more than 50 m., the minimum road width shall be 15 m.",
+        "source": "udcpr2020 p.171",
+        "retrieved": "2026-10-21"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
     {
       "rule_id": "pmc.tod.max-fsi",
       "title": "Maximum total FSI in the TOD zone",
@@ -1019,6 +1047,16 @@
         "udcpr2020.ch6.max-fsi-noncongested"
       ],
       "input_type": "bool",
+      "options": null
+    },
+    {
+      "path": "site.ground_level_m",
+      "prompt": "Average ground level of the plot (m, project datum)?",
+      "unlocks": 1,
+      "rule_ids": [
+        "pmc.ch10.height-road-width"
+      ],
+      "input_type": "number",
       "options": null
     }
   ],

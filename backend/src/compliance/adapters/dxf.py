@@ -53,7 +53,7 @@ from compliance.config import REPO_ROOT
 SLAB_M = 0.15
 OUTER = "door on the floor's outer outline"
 _ORD = {"ground": 0, "first": 1, "second": 2, "third": 3, "fourth": 4, "fifth": 5, "sixth": 6,
-        "seventh": 7, "eighth": 8, "ninth": 9, "tenth": 10}  # fmt: skip
+        "seventh": 7, "eighth": 8, "ninth": 9, "tenth": 10, "eleventh": 11, "twelfth": 12}  # fmt: skip
 _UNITS = {1: 0.0254, 2: 0.3048, 4: 0.001, 5: 0.01, 6: 1.0}  # $INSUNITS → metres
 _WIDTH = re.compile(r"^\s*(\d+(?:\.\d+)?)\s*m", re.I)
 

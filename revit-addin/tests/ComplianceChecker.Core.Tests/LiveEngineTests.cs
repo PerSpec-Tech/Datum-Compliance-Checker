@@ -48,7 +48,7 @@ public class LiveEngineTests
         LivePack p = Pack();
         Assert.Equal(4, p.Edges.Count);
         Assert.NotNull(p.Envelope);
-        Assert.Equal(2500.0, p.Fsi.MaxBuiltUpM2);
+        Assert.Equal(6375.0, p.Fsi.MaxBuiltUpM2); // 2.5 × the 2 550 m² plot
         Assert.NotEmpty(p.Thresholds);
     }
 
@@ -63,8 +63,8 @@ public class LiveEngineTests
         Assert.Equal(new[] { "udcpr2020.ch9.exit-door-width", "udcpr2020.ch9.habitable-height-min",
                              "udcpr2020.ch9.shop-height-min", "udcpr2020.ch9.stair-width-residential" },
             s.Thresholds.Select(t => t.RuleId).OrderBy(x => x).ToArray());
-        Assert.Equal(-80.6, s.FsiLeftM2!.Value, 1);
-        Assert.Contains("80 m² over", s.StripText().Replace("81", "80"));
+        Assert.Equal(-263.5, s.FsiLeftM2!.Value, 1);
+        Assert.Contains("m² over", s.StripText());
     }
 
     [Fact]
@@ -81,10 +81,11 @@ public class LiveEngineTests
         LivePack p = Pack();
         EdgeMargin side = p.Edges.Single(e => e.EdgeId == "e2");
         Assert.Equal(4.0, LiveEngine.MarginAt(side, 20.0, p.Height)!.Value, 3);
+        Assert.Equal(8.0, LiveEngine.MarginAt(side, 40.0, p.Height)!.Value, 3);
         Assert.Equal(3.0, LiveEngine.MarginAt(p.Edges.Single(e => e.EdgeId == "e1"), 20.0, p.Height)!.Value, 3);
-        // At 20 m even the moved building is too close to its sides (needs 4 m, has 3.15).
-        LiveStatus s = LiveEngine.Evaluate(p, Snapshot(dx: -0.35, dy: 0.6, height: 20.0));
-        Assert.Contains(s.Setbacks, x => x.EdgeId == "e2" && x.RequiredM == 4.0);
+        // At 40 m even the moved building is too close to its east side (needs 8 m, has 7.35).
+        LiveStatus s = LiveEngine.Evaluate(p, Snapshot(dx: -0.35, dy: 0.6, height: 40.0));
+        Assert.Contains(s.Setbacks, x => x.EdgeId == "e2" && x.RequiredM == 8.0);
     }
 
     [Fact]

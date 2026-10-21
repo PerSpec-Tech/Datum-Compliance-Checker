@@ -11,14 +11,14 @@ import type { LatLon } from "../brief/MapPin";
 const SAMPLES = [
   {
     file: "demo_apartment.ifc",
-    name: "mixed-use block near a metro station",
-    facts: "IFC · G+4 · 2 shops · 24 flats",
-    blurb: "Site and planning facts are modelled. 9 issues to find.",
+    name: "mixed-use tower near a metro station",
+    facts: "IFC · G+11 · 36.6 m · 66 flats · 10 issues",
+    blurb: "Site and planning facts are modelled. 10 issues to find, the height among them.",
   },
   {
     file: "demo_house.dxf",
     name: "two-storey bungalow",
-    facts: "DXF · PreDCR layers · plans + section",
+    facts: "DXF · PreDCR layers · plans + section · 2 issues",
     blurb: "How most drawings arrive. Set the location next.",
   },
 ];

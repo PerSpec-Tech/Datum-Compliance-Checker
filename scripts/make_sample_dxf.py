@@ -36,7 +36,7 @@ OUT = REPO_ROOT / "fixtures" / "dxf"
 WEB = REPO_ROOT / "web" / "public" / "samples"
 WEB_SAMPLES = {"demo_house"}  # the one DXF the web app offers; the rest are test fixtures
 ORDINAL = ["Ground", "First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth",
-           "Ninth", "Tenth"]  # fmt: skip
+           "Ninth", "Tenth", "Eleventh", "Twelfth"]  # fmt: skip
 WALL = 0.23
 
 
@@ -209,7 +209,8 @@ def build(name: str) -> None:
                 shared = a.boundary.intersection(polys[d["to_space_id"]].boundary)
             else:
                 shared = a.boundary.intersection(outline.boundary)
-            parts = [g for g in getattr(shared, "geoms", [shared]) if g.geom_type == "LineString"]
+            parts = [g for g in getattr(shared, "geoms", [shared])
+                     if g.geom_type == "LineString" and not g.is_empty and g.length > 0.05]  # fmt: skip
             if not parts:
                 continue
             line = (

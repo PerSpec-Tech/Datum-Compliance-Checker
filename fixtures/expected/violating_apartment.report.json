@@ -8,10 +8,36 @@
     "pass": 18,
     "fail": 13,
     "unverifiable": 0,
-    "not_applicable": 4,
+    "not_applicable": 5,
     "advisory": 1
   },
   "results": [
+    {
+      "rule_id": "pmc.ch10.height-road-width",
+      "title": "Tall buildings need a wide enough road",
+      "severity": "critical",
+      "element": null,
+      "status": "not_applicable",
+      "measured": null,
+      "limit": null,
+      "message": "Not applicable to this project.",
+      "missing_inputs": [],
+      "facts_used": [],
+      "clause": {
+        "ref": "10.1.1",
+        "excerpt": "For the building having height more than 36 m., the minimum road width shall be 12 m. and for building having height equal to or more than 50 m., the minimum road width shall be 15 m.",
+        "source": "udcpr2020 p.171",
+        "retrieved": "2026-10-21"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
     {
       "rule_id": "pmc.tod.max-fsi",
       "title": "Maximum total FSI in the TOD zone",
