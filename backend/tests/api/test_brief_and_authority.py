@@ -20,6 +20,25 @@ def D(v):
     return {"value": v, "source": "declared"}
 
 
+def test_plot_drawn_on_the_map_replaces_the_boundary_and_sides():
+    ring = [[0, 0], [20, 0], [20, 30], [0, 30], [0, 0]]
+    merged, skipped = apply_brief(
+        model(),
+        {
+            "site.edges": D({"e1": {"kind": "road", "road_width_m": 12}}),  # tags the new e1
+            "site.boundary": D(ring),
+            "site.placement": D({"lat": 18.5, "lon": 73.8, "rotation_deg": 0, "scale": 1}),
+        },
+    )
+    assert skipped == []
+    site = merged["site"]
+    assert site["boundary"] == ring[:-1]
+    assert [e["id"] for e in site["edges"]] == ["e1", "e2", "e3", "e4"]
+    assert site["edges"][0]["kind"]["value"] == "road"
+    assert site["edges"][1]["kind"]["source"] == "default"
+    assert apply_brief(model(), {"site.boundary": D([[0, 0], [1, 1]])})[1] == ["site.boundary"]
+
+
 def test_apply_brief_sets_declared_facts_and_skips_stale_paths():
     m = json.loads((REPO_ROOT / "fixtures/models/compliant_house.json").read_text("utf-8"))
     merged, skipped = apply_brief(

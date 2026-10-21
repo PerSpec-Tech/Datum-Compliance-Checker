@@ -49,7 +49,7 @@ export default function PairPage() {
                 </span>
               ) : (
                 <button className="btn-primary" onClick={() => pair.mutate()} disabled={pair.isPending}>
-                  {pair.isPending && <Spinner />} {pair.data ? "get a new code" : "get a code"}
+                  {pair.isPending ? <Spinner /> : <Icon name="plug" />} {pair.data ? "get a new code" : "get a code"}
                 </button>
               )}
             </div>

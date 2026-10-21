@@ -1,0 +1,10 @@
+# Congested-area suggestion for PMC (P12.1). A heuristic, not the Development Plan.
+# UDCPR 2020 p.105: the congested-area regulations apply "for the lands included in congested area
+# (or core area) as shown on the Development Plan". PMC publishes the DP as PDF sheets only, with no
+# GIS layer of it, so the checker suggests a value from the locality OpenStreetMap gives for the pin:
+# Pune's old-city peths form its core area. The architect confirms it on the DP sheet.
+patterns:   # regular expressions, matched case-insensitively against the locality
+  - '\bpeth\b'
+  - '\bgaothan\b'
+note_in: "{locality} is an old-city peth, which is usually in the DP's congested (core) area. Confirm on the DP sheet."
+note_out: "{locality} is outside the old-city peths, so usually not a congested area. Confirm on the DP sheet (a village gaothan can be congested)."

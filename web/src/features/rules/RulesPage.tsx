@@ -214,7 +214,9 @@ function CompileBox() {
               <Spinner /> compiling <span className="font-mono">{elapsed}s</span>
             </>
           ) : (
-            "compile"
+            <>
+              <Icon name="wand" /> compile
+            </>
           )}
         </button>
         <label className="flex items-center gap-2 text-sm text-fg-2">
@@ -229,7 +231,7 @@ function CompileBox() {
               setSource(EXAMPLE.source);
             }}
           >
-            use a UDCPR example
+            <Icon name="edit" /> use a UDCPR example
           </button>
         )}
       </div>

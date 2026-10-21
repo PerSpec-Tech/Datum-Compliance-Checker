@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from fastapi import APIRouter, Body, Depends, Header, HTTPException, Query, Request
+from fastapi import APIRouter, Body, Depends, Header, HTTPException, Query, Request, Response
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 
@@ -111,6 +111,54 @@ def get_project_model(project_id: str, st: Store = Depends(store)) -> dict[str, 
     return {"model_version": latest[0], "model": merged, "skipped_answers": skipped}
 
 
+@router.get("/projects/{project_id}/thumbnail")
+def get_thumbnail(project_id: str, st: Store = Depends(store)) -> Response:
+    """What is in the file, for the project cards: a 2D drawing's ground-floor plan (SVG) or an
+    IFC's building in 3D (PNG, cached). A model sent from Revit has neither: a sketch instead."""
+    import json
+
+    from compliance.thumbnail import floor_svg, mesh_png, plan_svg
+
+    project_or_404(project_id, st)
+    if (drawing_dir(project_id, st) / "drawing.dxf").exists():
+        svg = floor_svg(json.loads(_drawing_json(project_id, st)))
+        if svg:
+            return Response(svg, media_type="image/svg+xml")
+    latest = st.latest_model(project_id)
+    if latest and ifc_path(latest[0], st).exists():
+        png = ifc_path(latest[0], st).with_suffix(".thumb.png")
+        if not png.exists():
+            png.write_bytes(mesh_png(json.loads(_mesh_json(latest[0], st))))
+        return Response(png.read_bytes(), media_type="image/png")
+    model = get_project_model(project_id, st)["model"]
+    return Response(plan_svg(model), media_type="image/svg+xml")
+
+
+@router.get("/projects/{project_id}/suggestions")
+def get_suggestions(
+    project_id: str,
+    lat: float | None = Query(default=None, ge=-90, le=90),
+    lon: float | None = Query(default=None, ge=-180, le=180),
+    st: Store = Depends(store),
+) -> list[dict[str, Any]]:
+    """Planning facts the checker can suggest (P12.1), with what the model has now.
+
+    `lat`/`lon` default to the project location. Confirming one is a PATCH /brief (declared).
+    """
+    from compliance.agents import planning
+
+    model = get_project_model(project_id, st)["model"]
+    loc = model["project"]["location"]["value"]
+    if lat is None or lon is None:
+        lat, lon = (loc["lat"], loc["lon"]) if loc else (None, None)
+    site = planning.lookup(lat, lon, st) if lat is not None and lon is not None else None
+    out = []
+    for path, fact in planning.suggest(model, site).items():
+        current = model["project"][path.removeprefix("project.")]
+        out.append({"path": path, "suggested": fact, "current": current})
+    return out
+
+
 @router.get("/projects/{project_id}/live-pack")
 def get_live_pack(project_id: str, st: Store = Depends(store)) -> dict[str, Any]:
     """The latest check's limits as geometry for live mode in Revit / AutoCAD (P9.1, D32)."""
@@ -124,9 +172,11 @@ def get_live_pack(project_id: str, st: Store = Depends(store)) -> dict[str, Any]
 @router.get("/models/{version_id}/mesh")
 def get_mesh(version_id: str, st: Store = Depends(store)) -> Any:
     """IFC geometry as triangles per element (by GlobalId) for the web viewer; cached on disk."""
-    import json
+    return Response(_mesh_json(version_id, st), media_type="application/json")
 
-    from fastapi.responses import Response
+
+def _mesh_json(version_id: str, st: Store) -> bytes:
+    import json
 
     from compliance.adapters.mesh import ifc_to_mesh
 
@@ -136,7 +186,7 @@ def get_mesh(version_id: str, st: Store = Depends(store)) -> Any:
     cache = path.with_suffix(".mesh.json")
     if not cache.exists():
         cache.write_text(json.dumps(ifc_to_mesh(path), separators=(",", ":")), encoding="utf-8")
-    return Response(cache.read_bytes(), media_type="application/json")
+    return cache.read_bytes()
 
 
 @router.put("/projects/{project_id}/model", dependencies=[Depends(require_token)])
@@ -250,13 +300,15 @@ async def upload_dxf(
 @router.get("/projects/{project_id}/drawing")
 def get_drawing(project_id: str, st: Store = Depends(store)) -> Any:
     """The uploaded DXF as vector data per floor plan, aligned with the model (web plan view)."""
-    import json
+    project_or_404(project_id, st)
+    return Response(_drawing_json(project_id, st), media_type="application/json")
 
-    from fastapi.responses import Response
+
+def _drawing_json(project_id: str, st: Store) -> bytes:
+    import json
 
     from compliance.adapters.dxf import drawing
 
-    project_or_404(project_id, st)
     folder = drawing_dir(project_id, st)
     path = folder / "drawing.dxf"
     if not path.exists():
@@ -276,7 +328,7 @@ def get_drawing(project_id: str, st: Store = Depends(store)) -> Any:
         for old in folder.glob("drawing.*.json"):
             old.unlink()
         cache.write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")
-    return Response(cache.read_bytes(), media_type="application/json")
+    return cache.read_bytes()
 
 
 @router.put("/projects/{project_id}/dxf/roles")

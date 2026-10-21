@@ -24,6 +24,15 @@ const PATHS = {
   chevron: "M6 8l4 4 4-4",
   refresh: "M16 10a6 6 0 1 1-1.8-4.3M16 3v3.5h-3.5",
   edit: "M4 16h3l9-9-3-3-9 9v3z",
+  move: "M10 2v16M2 10h16M7.5 4.5L10 2l2.5 2.5M7.5 15.5L10 18l2.5-2.5M4.5 7.5L2 10l2.5 2.5M15.5 7.5L18 10l-2.5 2.5",
+  polygon: "M4 15L6 4l10 3-1 9zM4 15h.01M6 4h.01M16 7h.01M15 16h.01",
+  road: "M7 3L4 17M13 3l3 14M10 4v2M10 9v2M10 14v2",
+  home: "M3 10l7-6 7 6M5 8.5V17h10V8.5",
+  tree: "M10 17v-5M10 3l5.5 8h-11L10 3z",
+  ruler: "M2.5 13.5l11-11 4 4-11 11zM5.5 10.5l1.5 1.5M8 8l1.5 1.5M10.5 5.5L12 7",
+  eye: "M2 10s3-5.5 8-5.5 8 5.5 8 5.5-3 5.5-8 5.5S2 10 2 10zM10 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z",
+  plan: "M3 3h14v14H3zM3 9h7M10 3v10M13 13v4",
+  wand: "M3 17l9.5-9.5M11 3v2.5M15.5 4.5l-1.5 1.5M17 9h-2.5M13 6l1 1",
 } as const;
 export type IconName = keyof typeof PATHS;
 

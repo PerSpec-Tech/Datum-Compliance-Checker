@@ -277,6 +277,7 @@ def read(path: str | Path, roles: dict[str, str] | None = None) -> tuple[dict[st
     spaces, areas, doors, units = [], [], [], []
     stairs_by_spot: dict[tuple[int, int], dict[str, Any]] = {}
     slab_note = False
+    shifts = _floor_shifts(d, floors, footprint, warnings)
     for fr, nums in floors:
         inside = {
             role: [
@@ -284,8 +285,8 @@ def read(path: str | Path, roles: dict[str, str] | None = None) -> tuple[dict[st
             ]
             for role in ("room", "fsi_resi", "fsi_comm", "fsi_other", "carpet", "door", "stair")
         }
-        # Line the floor up with the footprint, so geometry is in plot coordinates.
-        dx, dy, outline_parts = _floor_shift(d, fr, footprint)
+        # Line the floor up with the others and the footprint, so geometry is in plot coordinates.
+        dx, dy, outline_parts = shifts[fr.handle]
 
         def moved(p: Polygon, dx: float = dx, dy: float = dy) -> Polygon:
             return translate(p, dx, dy)
@@ -571,6 +572,87 @@ def _floor_shift(
     return fx0 - ox0, fy0 - oy0, inside
 
 
+_CORE_NAME = re.compile(r"\b(stair|staircase|lift|elevator)s?\b", re.IGNORECASE)
+
+
+def _core(d: _Drawing, fr: _Shape) -> Point | None:
+    """Where a floor's stair / lift core is. The core stands in the same place on every floor."""
+    def inside(s: _Shape) -> bool:
+        return fr.poly.contains(s.poly.representative_point())
+
+    # stair outlines and rooms named stair / lift together, so every floor measures the same thing
+    parts = [s.poly for s in d.polys.get("stair", []) if inside(s)] + [
+        s.poly for s in d.polys.get("room", []) if inside(s) and _CORE_NAME.search(s.name or "")
+    ]
+    return unary_union(parts).centroid if parts else None
+
+
+def _floor_shifts(
+    d: _Drawing,
+    floors: list[tuple[_Shape, list[int]]],
+    footprint: Polygon | None,
+    warnings: list[str],
+) -> dict[str, tuple[float, float, list[Polygon]]]:
+    """How far to move each floor plan into plot coordinates.
+
+    One floor, the reference, is lined up with the building footprint on the site plan: the one
+    whose outline matches it best once their corners meet. Every other floor is lined up with the
+    reference on the stair / lift core, so a floor that projects or steps back still lands right.
+    A floor without a core (or whose core match is far from its outline) falls back to the corner.
+    """
+    corner = {fr.handle: _floor_shift(d, fr, footprint) for fr, _ in floors}
+    if len(floors) < 2:
+        return corner
+
+    def fit(fr: _Shape) -> float:
+        dx, dy, parts = corner[fr.handle]
+        if footprint is None or not parts:
+            return 0.0
+        outline = translate(unary_union(parts), dx, dy)
+        union = outline.union(footprint).area
+        return outline.intersection(footprint).area / union if union else 0.0
+
+    nums = {fr.handle: ns for fr, ns in floors}
+    ref = max((fr for fr, _ in floors), key=lambda f: (fit(f), -min(nums[f.handle] or [0])))
+    ref_core = _core(d, ref)
+    if ref_core is None:
+        warnings.append(
+            "Floors lined up by their outline's corner: no stair or lift found to line them up on."
+        )
+        return corner
+    rdx, rdy, _ = corner[ref.handle]
+    target = (ref_core.x + rdx, ref_core.y + rdy)
+    out, by_core, by_corner = dict(corner), [], []
+    for fr, _ in floors:
+        if fr is ref:
+            continue
+        core = _core(d, fr)
+        dx, dy, parts = corner[fr.handle]
+        if core is None:
+            by_corner.append(fr.name or fr.handle)
+            continue
+        cdx, cdy = target[0] - core.x, target[1] - core.y
+        # a core match far from the outline match means the cores aren't the same core
+        span = max(fr.poly.bounds[2] - fr.poly.bounds[0], fr.poly.bounds[3] - fr.poly.bounds[1])
+        if math.hypot(cdx - dx, cdy - dy) > span * 0.25:
+            by_corner.append(fr.name or fr.handle)
+            continue
+        out[fr.handle] = (cdx, cdy, parts)
+        by_core.append(fr.name or fr.handle)
+    if by_core:
+        warnings.append(
+            f"Floors lined up on the stair / lift core with {ref.name or 'the reference floor'} "
+            f"(matched to the building outline): {', '.join(by_core)}."
+        )
+    if by_corner:
+        warnings.append(
+            "Lined up by the outline's corner (no matching stair or lift): "
+            + ", ".join(by_corner)
+            + ". Check these floors in the plan view."
+        )
+    return out
+
+
 # Drawing classes for the web plan view (P10.5): how each layer is drawn, never what it means.
 _SKIP_ROLES = {"fsi_resi", "fsi_comm", "fsi_other", "carpet", "floor", "floor_height", "ground",
                "plot", "road", "footprint"}  # fmt: skip
@@ -618,7 +700,8 @@ def drawing(path: str | Path, roles: dict[str, str] | None = None) -> dict[str, 
     frames = _floor_frames(d, [])
     fps = sorted(d.polys.get("footprint", []), key=lambda x: -x.poly.area)
     footprint = fps[0].poly if fps else None
-    shifts = [(fr, nums, _floor_shift(d, fr, footprint)[:2]) for fr, nums in frames]
+    by_frame = _floor_shifts(d, frames, footprint, [])
+    shifts = [(fr, nums, by_frame[fr.handle][:2]) for fr, nums in frames]
     boxes = [(fr.poly.bounds, i) for i, (fr, _, _) in enumerate(shifts)]
 
     doc = ezdxf.readfile(str(path))

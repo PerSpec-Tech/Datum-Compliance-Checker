@@ -1,12 +1,12 @@
-import { useEffect, useState, type DragEvent, type FormEvent } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState, type DragEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LAYER_ROLES, api, type Place, type UploadResult } from "../../api/client";
-import { Chip, ErrorBox, FieldError, Icon, Spinner, Title } from "../../components/ui";
+import { LAYER_ROLES, api, type UploadResult } from "../../api/client";
+import { FieldError, Icon, Spinner, Title } from "../../components/ui";
 import { recentProjects, rememberProject } from "../../lib/recent";
-import MapPin, { type LatLon } from "../brief/MapPin";
+import Sketch from "../../components/Sketch";
+import type { LatLon } from "../brief/MapPin";
 
-// Wizard / setup flow (guidelines §12): centred column, numbered steps, one primary action per step.
+// Start: pick a model or a sample (guidelines §12: centred column, one primary action).
 
 const SAMPLES = [
   {
@@ -25,12 +25,6 @@ const SAMPLES = [
 
 const isDxf = (name: string) => /\.dxf$/i.test(name);
 
-// Pilot: Pune only. The rest are shown so the scope is honest, and greyed out.
-const COMING = ["Pimpri-Chinchwad", "Mumbai", "Thane", "Nashik", "Nagpur", "Bengaluru", "Delhi"];
-
-const STEPS = ["model", "location", "check"] as const;
-type Step = 0 | 1 | 2;
-
 interface Loaded {
   id: string;
   name: string;
@@ -39,34 +33,43 @@ interface Loaded {
   dxf: boolean;
 }
 
+// Upload, then straight into the workspace (P12.4). The check starts at once when the model knows
+// where it is; otherwise the workspace opens on "set the site". A drawing whose layers need a look
+// stops here first.
 export default function NewCheckPage() {
   const navigate = useNavigate();
-  const [step, setStep] = useState<Step>(0);
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<unknown>(null);
-  const [city, setCity] = useState("pmc");
-  const [pin, setPin] = useState<LatLon | null>(null);
-  const [running, setRunning] = useState(false);
 
   async function load(file: Blob, name: string, fileName = name) {
     setError(null);
     try {
       setBusy("creating the project");
-      const { id } = await api.createProject(name.replace(/\.ifc$/i, ""));
+      const { id } = await api.createProject(name.replace(/\.(ifc|dxf)$/i, ""));
       rememberProject({ id, name });
       const dxf = isDxf(fileName);
       setBusy(dxf ? "reading the 2D drawing" : "reading the IFC model");
       const upload = dxf ? await api.uploadDxf(id, file) : await api.uploadIfc(id, file);
       const m = await api.model(id);
       const loc = m.model.project.location.value;
-      setLoaded({ id, name, upload, location: loc ? { lat: loc.lat, lon: loc.lon } : null, dxf });
-      setPin(loc ? { lat: loc.lat, lon: loc.lon } : null);
+      const l = { id, name, upload, location: loc ? { lat: loc.lat, lon: loc.lon } : null, dxf };
+      const attention = dxf && ((upload.unmapped ?? 0) > 0 || upload.layers?.some((x) => x.source === "suggested"));
+      if (attention) setLoaded(l);
+      else await open(l);
     } catch (e) {
       setError(e);
     } finally {
       setBusy(null);
     }
+  }
+
+  async function open(l: Loaded) {
+    setBusy("opening the workspace");
+    if (l.location) {
+      const { job_id } = await api.startCheck(l.id);
+      navigate(`/w/${l.id}?job=${job_id}`);
+    } else navigate(`/w/${l.id}`);
   }
 
   async function sample(file: string, name: string) {
@@ -82,72 +85,18 @@ export default function NewCheckPage() {
     }
   }
 
-  async function run() {
-    if (!loaded || !pin) return;
-    setRunning(true);
-    setError(null);
-    try {
-      const moved = !loaded.location || loaded.location.lat !== pin.lat || loaded.location.lon !== pin.lon;
-      if (moved) await api.patchBrief(loaded.id, { "project.location": pin });
-      const { job_id } = await api.startCheck(loaded.id);
-      navigate(`/p/${loaded.id}/jobs/${job_id}`, { state: { warnings: loaded.upload.warnings } });
-    } catch (e) {
-      setError(e);
-      setRunning(false);
-    }
-  }
-
   return (
-    <div className="mx-auto max-w-[600px]">
-      <ol className="mb-10 flex items-center gap-3 font-mono text-xs" aria-label="Steps">
-        {STEPS.map((s, i) => (
-          <li key={s} className="flex items-center gap-3">
-            <button
-              disabled={i > step || running}
-              onClick={() => setStep(i as Step)}
-              className={`flex items-center gap-2 ${i === step ? "text-fg" : i < step ? "text-fg-2 hover:text-fg" : "text-fg-off"}`}
-            >
-              <span
-                className={`grid h-6 w-6 place-items-center rounded-sm border ${i === step ? "border-fg" : "border-line"}`}
-              >
-                {i < step ? <Icon name="check" size={12} /> : `0${i + 1}`}
-              </span>
-              {s}
-            </button>
-            {i < STEPS.length - 1 && <span className="h-px w-8 bg-line" aria-hidden />}
-          </li>
-        ))}
-      </ol>
-
-      {step === 0 && (
-        <ModelStep
-          loaded={loaded}
-          busy={busy}
-          error={error}
-          onFile={(f) => void load(f, f.name)}
-          onSample={(f, n) => void sample(f, n)}
-          onReset={() => {
-            setLoaded(null);
-            setPin(null);
-          }}
-          onRemapped={(upload) => setLoaded((l) => (l ? { ...l, upload } : l))}
-          onNext={() => setStep(1)}
-        />
-      )}
-      {step === 1 && loaded && (
-        <LocationStep
-          city={city}
-          setCity={setCity}
-          pin={pin}
-          setPin={setPin}
-          fromModel={loaded.location}
-          onBack={() => setStep(0)}
-          onNext={() => setStep(2)}
-        />
-      )}
-      {step === 2 && loaded && pin && (
-        <RunStep loaded={loaded} pin={pin} running={running} error={error} onBack={() => setStep(1)} onRun={() => void run()} />
-      )}
+    <div className="mx-auto max-w-[920px]">
+      <ModelStep
+        loaded={loaded}
+        busy={busy}
+        error={error}
+        onFile={(f) => void load(f, f.name)}
+        onSample={(f, n) => void sample(f, n)}
+        onReset={() => setLoaded(null)}
+        onRemapped={(upload) => setLoaded((l) => (l ? { ...l, upload } : l))}
+        onNext={() => loaded && void open(loaded).catch(setError)}
+      />
     </div>
   );
 }
@@ -172,7 +121,7 @@ function ModelStep({
   onNext: () => void;
 }) {
   const [dragging, setDragging] = useState(false);
-  const recent = recentProjects().filter((r) => r.reportId);
+  const recent = recentProjects();
 
   if (loaded) {
     const c = loaded.upload.counts;
@@ -201,7 +150,7 @@ function ModelStep({
                   {loaded.location.lat.toFixed(5)}, {loaded.location.lon.toFixed(5)}
                 </span>
               ) : (
-                <span className="text-fg-2">not in the model. set it in the next step</span>
+                <span className="text-fg-2">not in the model. set it on the map next</span>
               )
             }
           />
@@ -218,10 +167,10 @@ function ModelStep({
         )}
         <div className="mt-8 flex justify-between">
           <button className="btn-secondary" onClick={onReset}>
-            change model
+            <Icon name="back" /> change model
           </button>
-          <button className="btn-primary" onClick={onNext}>
-            set location <Icon name="arrow" />
+          <button className="btn-primary" onClick={onNext} disabled={!!busy}>
+            {busy ? <Spinner /> : null} open <Icon name="arrow" />
           </button>
         </div>
       </section>
@@ -246,22 +195,28 @@ function ModelStep({
         }}
         onDragLeave={() => setDragging(false)}
         onDrop={drop}
-        className={`mt-6 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md border border-dashed px-6 py-12 text-center transition-colors ${
+        className={`mt-6 flex cursor-pointer items-center gap-6 rounded-md border border-dashed px-8 py-8 transition-colors ${
           dragging ? "border-fg bg-surface-raised" : "border-line bg-surface hover:border-line-strong"
         } ${busy ? "pointer-events-none" : ""}`}
       >
-        {busy ? (
-          <>
-            <Spinner className="h-5 w-5 text-fg-2" />
-            <p className="text-sm text-fg-2">{busy}</p>
-          </>
-        ) : (
-          <>
-            <Icon name="upload" size={20} className="text-fg-2" />
-            <p className="text-sm" title="IFC2x3 / IFC4, or 2D DXF (PreDCR or your own layers) · up to 60 MB · DWG: save as DXF first">
-              .ifc or .dxf
-            </p>
-          </>
+        <span className="grid h-16 w-16 shrink-0 place-items-center rounded-md border border-line-subtle bg-surface-low text-fg-2">
+          {busy ? <Spinner className="h-6 w-6" /> : <Icon name="upload" size={28} />}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-base font-medium">{busy ?? "drop a model here"}</span>
+          <span className="mt-1 flex flex-wrap gap-2 text-xs text-fg-2">
+            <span className="flex items-center gap-1.5 rounded-sm border border-line-subtle px-2 py-1">
+              <Icon name="cube" size={14} /> IFC from Revit, ArchiCAD…
+            </span>
+            <span className="flex items-center gap-1.5 rounded-sm border border-line-subtle px-2 py-1">
+              <Icon name="layers" size={14} /> DXF from AutoCAD (PreDCR or your layers)
+            </span>
+          </span>
+        </span>
+        {!busy && (
+          <span className="btn-secondary shrink-0">
+            <Icon name="search" /> browse
+          </span>
         )}
         <input
           type="file"
@@ -276,263 +231,60 @@ function ModelStep({
       </label>
       {error ? <FieldError error={error} /> : null}
 
-      <p className="label mt-8">or select a sample</p>
-      <ul className="panel divide-y divide-line-subtle">
+      <p className="label mt-10">or try a sample</p>
+      <div className="grid gap-4 sm:grid-cols-2">
         {SAMPLES.map((s) => (
-          <li key={s.file}>
-            <button
-              disabled={!!busy}
-              onClick={() => onSample(s.file, s.name)}
-              className="group flex w-full items-center gap-4 px-4 py-3.5 text-left transition-colors hover:bg-surface-raised disabled:opacity-50"
-            >
-              <Icon name="cube" size={20} className="text-fg-2" />
+          <button
+            key={s.file}
+            disabled={!!busy}
+            onClick={() => onSample(s.file, s.name)}
+            className="group flex flex-col overflow-hidden rounded-md border border-line-subtle bg-surface text-left transition-colors hover:border-line-strong disabled:opacity-50"
+          >
+            <span className="relative block h-48 bg-surface-low">
+              <Sketch src={`/samples/${s.file}.${s.file.endsWith(".dxf") ? "svg" : "png"}`} className="h-full w-full p-3" />
+              <span className="absolute left-3 top-3 flex items-center gap-1.5 rounded-sm border border-line-subtle bg-surface px-2 py-0.5 font-mono text-2xs text-fg-2">
+                <Icon name={s.file.endsWith(".dxf") ? "layers" : "cube"} size={12} />
+                {s.file.endsWith(".dxf") ? "DXF · 2D" : "IFC · 3D"}
+              </span>
+            </span>
+            <span className="flex items-center gap-3 border-t border-line-subtle px-4 py-3">
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-medium">{s.name}</span>
-                <span className="block font-mono text-2xs text-fg-3" title={s.blurb}>{s.facts}</span>
+                <span className="block font-mono text-2xs text-fg-3">{s.facts}</span>
               </span>
               <Icon name="arrow" className="text-fg-3 transition-colors group-hover:text-fg" />
-            </button>
-          </li>
+            </span>
+          </button>
         ))}
-      </ul>
+      </div>
 
       {recent.length > 0 && (
         <>
-          <p className="label mt-8">recent reports</p>
-          <ul className="panel divide-y divide-line-subtle">
-            {recent.slice(0, 5).map((r) => (
-              <li key={r.id}>
-                <Link
-                  to={`/reports/${r.reportId}`}
-                  className="flex items-center justify-between px-4 py-2.5 text-sm hover:bg-surface-raised"
-                >
-                  <span>{r.name}</span>
-                  <span className="font-mono text-2xs text-fg-3">{new Date(r.at).toLocaleDateString()}</span>
-                </Link>
-              </li>
+          <p className="label mt-10">recent projects</p>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {recent.slice(0, 8).map((r) => (
+              <Link
+                key={r.id}
+                to={`/w/${r.id}`}
+                className="group flex flex-col overflow-hidden rounded-md border border-line-subtle bg-surface transition-colors hover:border-line-strong"
+              >
+                <Sketch src={`/api/projects/${r.id}/thumbnail`} className="h-32 w-full bg-surface-low p-3" />
+                <span className="flex items-center gap-2 border-t border-line-subtle px-3 py-2">
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm">{r.name}</span>
+                    <span className="block font-mono text-2xs text-fg-3">{new Date(r.at).toLocaleDateString()}</span>
+                  </span>
+                  <Icon name="arrow" size={14} className="text-fg-3 group-hover:text-fg" />
+                </span>
+              </Link>
             ))}
-          </ul>
+          </div>
         </>
       )}
     </section>
   );
 }
 
-function LocationStep({
-  city,
-  setCity,
-  pin,
-  setPin,
-  fromModel,
-  onBack,
-  onNext,
-}: {
-  city: string;
-  setCity: (c: string) => void;
-  pin: LatLon | null;
-  setPin: (p: LatLon) => void;
-  fromModel: LatLon | null;
-  onBack: () => void;
-  onNext: () => void;
-}) {
-  const cities = useQuery({ queryKey: ["cities"], queryFn: api.cities, staleTime: Infinity });
-  const [q, setQ] = useState("");
-  const [places, setPlaces] = useState<Place[] | null>(null);
-  const [searching, setSearching] = useState(false);
-  const [searchError, setSearchError] = useState<unknown>(null);
-  const key = pin ? [pin.lat.toFixed(4), pin.lon.toFixed(4)] : null;
-  const located = useQuery({
-    queryKey: ["locate", key],
-    queryFn: () => api.locate(pin!.lat, pin!.lon),
-    enabled: !!pin,
-    staleTime: Infinity,
-  });
-  const supported = cities.data ?? [];
-  const current = supported.find((c) => c.id === city);
-  const covered = located.data?.authority_id === city;
-  const fromModelPin = !!pin && !!fromModel && pin.lat === fromModel.lat && pin.lon === fromModel.lon;
-
-  useEffect(() => {
-    setPlaces(null);
-  }, [city]);
-
-  async function search(e: FormEvent) {
-    e.preventDefault();
-    if (q.trim().length < 3) return;
-    setSearching(true);
-    setSearchError(null);
-    try {
-      const res = await api.geocode(q, city);
-      setPlaces(res);
-      if (res.length === 1) setPin({ lat: res[0].lat, lon: res[0].lon });
-    } catch (err) {
-      setSearchError(err);
-    } finally {
-      setSearching(false);
-    }
-  }
-
-  return (
-    <section>
-      <Title>where is the site.</Title>
-
-      <p className="label mt-6">city</p>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {supported.map((c) => (
-          <button
-            key={c.id}
-            onClick={() => setCity(c.id)}
-            aria-pressed={city === c.id}
-            className={`flex h-14 flex-col items-start justify-center rounded-sm border px-3 text-left transition-colors ${
-              city === c.id ? "border-fg bg-surface-raised" : "border-line bg-surface hover:border-line-strong"
-            }`}
-          >
-            <span className="flex w-full items-center justify-between text-sm font-medium">
-              {c.city}
-              {city === c.id && <Icon name="check" size={14} />}
-            </span>
-            <span className="font-mono text-2xs text-fg-2">{c.id.toUpperCase()} · UDCPR</span>
-          </button>
-        ))}
-        {COMING.map((name) => (
-          <button
-            key={name}
-            disabled
-            title="Not covered yet"
-            className="flex h-14 cursor-not-allowed flex-col items-start justify-center rounded-sm border border-line-subtle px-3 text-left text-fg-off"
-          >
-            <span className="text-sm">{name}</span>
-            <span className="font-mono text-2xs">soon</span>
-          </button>
-        ))}
-      </div>
-
-      <p className="label mt-6">address</p>
-      <form onSubmit={search} className="flex gap-2">
-        <input
-          className="input"
-          placeholder={`street, area or landmark in ${current?.city ?? "the city"}`}
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-        />
-        <button className="btn-secondary shrink-0" disabled={searching || q.trim().length < 3}>
-          {searching ? <Spinner /> : <Icon name="search" />} search
-        </button>
-      </form>
-      {searchError ? <FieldError error={searchError} /> : null}
-      {places && (
-        <ul className="panel mt-2 divide-y divide-line-subtle">
-          {places.length === 0 && <li className="px-3 py-2.5 text-sm text-fg-2">no match in {current?.city}. drop a pin on the map instead.</li>}
-          {places.map((p) => (
-            <li key={`${p.lat},${p.lon}`}>
-              <button
-                onClick={() => setPin({ lat: p.lat, lon: p.lon })}
-                className={`flex w-full items-start gap-2.5 px-3 py-2.5 text-left text-sm hover:bg-surface-raised ${
-                  pin?.lat === p.lat && pin?.lon === p.lon ? "bg-surface-raised" : ""
-                }`}
-              >
-                <Icon name="pin" className="mt-0.5 text-fg-2" />
-                <span className="min-w-0 flex-1 truncate">{p.label}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <div className="mt-4">
-        <MapPin value={pin} onChange={setPin} center={current?.center ?? undefined} />
-      </div>
-      <div className="mt-3 flex min-h-[20px] items-center gap-2 text-sm">
-        {!pin && <span className="text-fg-3">search, or click the map</span>}
-        {pin && located.isLoading && (
-          <span className="flex items-center gap-2 text-fg-2">
-            <Spinner /> checking the authority
-          </span>
-        )}
-        {pin && located.data && (
-          <>
-            <Icon name={covered ? "check" : "x"} className={covered ? "text-fg" : "text-danger"} />
-            <span>{located.data.label ?? "pinned"}</span>
-            <span className="text-fg-2">·</span>
-            <span className={covered ? "text-fg-2" : "text-danger"}>
-              {covered ? current?.authority : located.data.note}
-            </span>
-            {fromModelPin && <Chip>from model</Chip>}
-          </>
-        )}
-      </div>
-
-      <div className="mt-8 flex justify-between">
-        <button className="btn-ghost" onClick={onBack}>
-          <Icon name="back" /> back
-        </button>
-        <button className="btn-primary" disabled={!pin || !covered} onClick={onNext}>
-          continue <Icon name="arrow" />
-        </button>
-      </div>
-    </section>
-  );
-}
-
-function RunStep({
-  loaded,
-  pin,
-  running,
-  error,
-  onBack,
-  onRun,
-}: {
-  loaded: Loaded;
-  pin: LatLon;
-  running: boolean;
-  error: unknown;
-  onBack: () => void;
-  onRun: () => void;
-}) {
-  const located = useQuery({
-    queryKey: ["locate", [pin.lat.toFixed(4), pin.lon.toFixed(4)]],
-    queryFn: () => api.locate(pin.lat, pin.lon),
-    staleTime: Infinity,
-  });
-  const c = loaded.upload.counts;
-  return (
-    <section>
-      <Title>run the check.</Title>
-      <div className="panel mt-6 divide-y divide-line-subtle">
-        <Row k="model" v={loaded.name} />
-        <Row k="read" v={<span className="num">{c.spaces} rooms · {c.doors} doors · {c.levels} storeys</span>} />
-        <Row
-          k="site"
-          v={
-            <span>
-              {located.data?.label ?? "pinned"}{" "}
-              <span className="num text-fg-2">
-                ({pin.lat.toFixed(5)}, {pin.lon.toFixed(5)})
-              </span>
-            </span>
-          }
-        />
-        <Row k="authority" v="Pune Municipal Corporation" />
-        <Row k="rulebook" v={<span className="num">UDCPR 2020 → NBC 2016 · PMC TOD layer</span>} />
-      </div>
-      {error ? (
-        <div className="mt-4">
-          <ErrorBox error={error} title="the check couldn't start" onRetry={onRun} />
-        </div>
-      ) : null}
-      <div className="mt-8 flex justify-between">
-        <button className="btn-ghost" onClick={onBack} disabled={running}>
-          <Icon name="back" /> back
-        </button>
-        <button className="btn-primary" onClick={onRun} disabled={running}>
-          {running ? <Spinner /> : null} run check
-        </button>
-      </div>
-    </section>
-  );
-}
-
-// 2D drawings: each layer's role. PreDCR layers are recognised; anything else is set here (P10.5).
 function LayerTable({ loaded, onRemapped }: { loaded: Loaded; onRemapped: (u: UploadResult) => void }) {
   const [saving, setSaving] = useState<string | null>(null);
   const [err, setErr] = useState<unknown>(null);

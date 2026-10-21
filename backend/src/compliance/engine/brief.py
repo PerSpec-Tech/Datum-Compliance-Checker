@@ -5,6 +5,11 @@ Answers are keyed by the same paths the engine reports as missing, e.g.
 plus one grouped form for edge tags:
   site.edges → {"e1": {"kind": "road", "road_width_m": 12,
                         "road_width_basis": "development_plan"}, …}
+and the plot drawn on the map in the web app (P12.3):
+  site.boundary  → [[x, y], …] in model coordinates: replaces the plot; its sides become e1…en,
+                   untagged, so tag them with site.edges (applied after the boundary)
+  site.placement → {lat, lon, rotation_deg, scale}: where the drawing sits on the map; kept for the
+                   web app only, the check doesn't use it
 Declared always wins (D4). Answers that no longer match the model (e.g. an edge that was redrawn)
 are skipped and reported, never forced in.
 """
@@ -26,8 +31,16 @@ def apply_brief(
     """Return (merged copy, skipped paths). `answers` maps path → Fact ({value, source})."""
     merged = copy.deepcopy(dict(model))
     skipped: list[str] = []
-    for path, fact in answers.items():
+    order = sorted(answers, key=lambda p: p != "site.boundary")  # new sides before their tags
+    for path in order:
+        fact = answers[path]
         value = fact.get("value") if isinstance(fact, Mapping) else fact
+        if path == "site.placement":
+            continue
+        if path == "site.boundary":
+            if not _set_boundary(merged, value):
+                skipped.append(path)
+            continue
         if path == "site.edges" and isinstance(value, Mapping):
             for edge_id, tags in value.items():
                 for key in ("kind", "road_width_m", "road_width_basis"):
@@ -37,6 +50,33 @@ def apply_brief(
         if not _set(merged, path, value):
             skipped.append(path)
     return merged, skipped
+
+
+def _set_boundary(model: dict[str, Any], ring: Any) -> bool:
+    """A plot drawn on the map replaces the model's plot and its sides."""
+    try:
+        pts = [[round(float(p[0]), 3), round(float(p[1]), 3)] for p in ring]
+    except (TypeError, ValueError, IndexError):
+        return False
+    if len(pts) > 3 and pts[0] == pts[-1]:
+        pts = pts[:-1]
+    if len(pts) < 3:
+        return False
+    note = "plot drawn on the map"
+    site = model["site"]
+    site["boundary"] = pts
+    site["edges"] = [
+        {
+            "id": f"e{i + 1}",
+            "a": a,
+            "b": pts[(i + 1) % len(pts)],
+            "kind": {"value": None, "source": "default", "note": note},
+            "road_width_m": {"value": None, "source": "default", "note": None},
+            "road_width_basis": {"value": None, "source": "default", "note": None},
+        }
+        for i, a in enumerate(pts)
+    ]
+    return True
 
 
 def _set(model: dict[str, Any], path: str, value: Any) -> bool:

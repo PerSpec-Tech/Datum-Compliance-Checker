@@ -94,6 +94,7 @@ find-clause query:
 make-samples:
     {{py}} scripts/make_sample_ifc.py
     {{py}} scripts/make_sample_dxf.py
+    {{py}} scripts/sample_thumbs.py
 
 # Fetch Pune metro stations from OpenStreetMap (P3.10)
 fetch-stations *args:

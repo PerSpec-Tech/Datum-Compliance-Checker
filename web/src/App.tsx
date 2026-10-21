@@ -1,15 +1,15 @@
 import { lazy, Suspense } from "react";
-import { NavLink, Route, Routes } from "react-router-dom";
+import { Navigate, NavLink, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { Icon, Skeleton, type IconName } from "./components/ui";
-import { setTheme, useTheme } from "./lib/theme";
+import ThemeToggle from "./components/ThemeToggle";
 import NewCheckPage from "./features/upload/NewCheckPage";
-import ProgressPage from "./features/progress/ProgressPage";
 
 const BriefPage = lazy(() => import("./features/brief/BriefPage"));
 const ReportPage = lazy(() => import("./features/report/ReportPage"));
 const RulesPage = lazy(() => import("./features/rules/RulesPage"));
 const AboutPage = lazy(() => import("./features/about/AboutPage"));
 const PairPage = lazy(() => import("./features/about/PairPage"));
+const WorkspacePage = lazy(() => import("./features/workspace/WorkspacePage"));
 
 const NAV: { to: string; label: string; icon: IconName; end?: boolean }[] = [
   { to: "/", label: "new check", icon: "upload", end: true },
@@ -28,31 +28,34 @@ function Glyph() {
   );
 }
 
-function ThemeToggle() {
-  const theme = useTheme();
-  const next = theme === "dark" ? "light" : "dark";
-  return (
-    <button
-      onClick={() => setTheme(next)}
-      className="btn-ghost h-7 px-2"
-      title={`${next} mode`}
-      aria-label={`Switch to ${next} mode`}
-    >
-      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-        {theme === "dark" ? (
-          <>
-            <circle cx="10" cy="10" r="3.5" />
-            <path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.3 4.3l1.4 1.4M14.3 14.3l1.4 1.4M4.3 15.7l1.4-1.4M14.3 5.7l1.4-1.4" />
-          </>
-        ) : (
-          <path d="M16 12.5A7 7 0 0 1 7.5 4a7 7 0 1 0 8.5 8.5z" />
-        )}
-      </svg>
-    </button>
-  );
+// Old progress links (P4): the check now runs inside the workspace.
+function ToWorkspace() {
+  const { projectId, jobId } = useParams();
+  return <Navigate to={`/w/${projectId}?job=${jobId}`} replace />;
 }
 
 export default function App() {
+  const path = useLocation().pathname;
+  // The report is a document: no sidebar, prints on its own.
+  if (path.startsWith("/reports/"))
+    return (
+      <main className="min-h-screen bg-canvas px-5 py-8 print:p-0">
+        <Suspense fallback={<Skeleton />}>
+          <Routes>
+            <Route path="/reports/:reportId" element={<ReportPage />} />
+          </Routes>
+        </Suspense>
+      </main>
+    );
+  // The workspace is full screen, like a CAD program: no sidebar.
+  if (path.startsWith("/w/"))
+    return (
+      <Suspense fallback={<Skeleton />}>
+        <Routes>
+          <Route path="/w/:projectId" element={<WorkspacePage />} />
+        </Routes>
+      </Suspense>
+    );
   return (
     <div className="min-h-screen lg:pl-[var(--sidebar)]">
       <aside className="z-[1000] flex flex-col border-b border-line-subtle bg-canvas lg:fixed lg:inset-y-0 lg:left-0 lg:w-[var(--sidebar)] lg:border-b-0 lg:border-r">
@@ -101,7 +104,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<NewCheckPage />} />
             <Route path="/p/:projectId/brief" element={<BriefPage />} />
-            <Route path="/p/:projectId/jobs/:jobId" element={<ProgressPage />} />
+            <Route path="/p/:projectId/jobs/:jobId" element={<ToWorkspace />} />
             <Route path="/reports/:reportId" element={<ReportPage />} />
             <Route path="/rules" element={<RulesPage />} />
             <Route path="/rules/:ruleId" element={<RulesPage />} />

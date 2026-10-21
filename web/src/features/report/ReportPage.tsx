@@ -1,289 +1,307 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { api } from "../../api/client";
-import type { BuildingModel, Result, Status } from "../../api/types";
-import { ErrorBox, Icon, STATUS_META, STATUS_ORDER, Skeleton, Spinner, StatusMark, Title } from "../../components/ui";
-import PlanViewer from "../viewer/PlanViewer";
-import Viewer from "../viewer/Viewer";
-import ClauseRow from "./ClauseRow";
+import { Link, useParams } from "react-router-dom";
+import { api, type DrawingFloor } from "../../api/client";
+import type { BuildingModel, Result, Source, Status } from "../../api/types";
+import { Chip, ErrorBox, Icon, Skeleton, SourceBadge, StatusMark, fmt } from "../../components/ui";
+import { applyTheme, storedTheme } from "../../lib/theme";
+import ElementThumb from "./ElementThumb";
 import FsiCard from "./FsiCard";
+import { KIND_LABEL, groupResults, type Group } from "./groups";
 
-// Workbench layout (§12): results on the left, the 3D model on the right.
+// P12.5: the report as a document (D30 compliance memo). Failures first, each with a plan
+// thumbnail of the element; then what can't be verified yet; passes only on request. Prints to
+// PDF in the light theme.
 
-const RANK: Record<Status, number> = { fail: 0, unverifiable: 1, advisory: 2, pass: 3, not_applicable: 4 };
-const KIND_LABEL: Record<string, string> = {
-  spaces: "room",
-  doors: "door",
-  stairs: "staircase",
-  units: "tenement",
-  levels: "floor",
-  areas: "FSI area",
-  "site.edges": "plot side",
-  site: "plot",
-  building: "building",
-};
-
-interface Group {
-  key: string;
-  kind: string;
-  name: string;
-  detail: string;
-  guid: string | null;
-  results: Result[];
-  worst: Status;
-}
-
-// Readable names for the elements a result refers to, from the model the report was run on.
-function describe(model: BuildingModel | undefined, r: Result): { name: string; detail: string } {
-  const el = r.element;
-  if (!el || el.kind === "building") return { name: "whole building", detail: "" };
-  if (el.kind === "site") return { name: "plot", detail: "" };
-  const levels = new Map(model?.levels.map((l) => [l.id, l.name]) ?? []);
-  if (el.kind === "site.edges") {
-    const e = model?.site.edges.find((x) => x.id === el.id);
-    const k = e?.kind.value;
-    const w = e?.road_width_m.value;
-    return { name: `side ${el.id}`, detail: k === "road" ? `road${w ? ` ${w} m` : ""}` : (k ?? "untagged").replace("_", " ") };
-  }
-  const coll = (model?.[el.kind as "spaces" | "doors" | "stairs" | "units" | "levels" | "areas"] ?? []) as {
-    id: string;
-    name?: string;
-    level_id?: string;
-    base_level_id?: string;
-  }[];
-  const item = coll.find((x) => x.id === el.id);
-  const level = levels.get(item?.level_id ?? item?.base_level_id ?? "");
-  if (el.kind === "doors" && model) {
-    // Doors rarely have names: say which rooms they join instead.
-    const d = model.doors.find((x) => x.id === el.id);
-    const room = (id: string | null | undefined) => model.spaces.find((sp) => sp.id === id)?.name;
-    const from = room(d?.from_space_id);
-    if (from) {
-      const to = d?.to_space_id ? room(d.to_space_id) : "outside";
-      return { name: `door ${from} → ${to ?? "?"}`, detail: [el.id, level].filter(Boolean).join(" · ") };
-    }
-  }
-  return { name: item?.name && item.name !== el.id ? item.name : `${KIND_LABEL[el.kind] ?? el.kind} ${el.id}`, detail: level ?? "" };
-}
+const ALL: Status[] = ["fail", "unverifiable", "advisory", "pass"];
 
 export default function ReportPage() {
   const { reportId = "" } = useParams();
-  const navigate = useNavigate();
   const q = useQuery({ queryKey: ["report", reportId], queryFn: () => api.report(reportId) });
-  const projectId = q.data?.project_id;
-  const model = useQuery({ queryKey: ["model", projectId], queryFn: () => api.model(projectId!), enabled: !!projectId, retry: false });
-  const [statuses, setStatuses] = useState<Set<Status>>(new Set(["fail", "unverifiable", "advisory", "pass"]));
-  const [selected, setSelected] = useState<string | null>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const [rerunning, setRerunning] = useState(false);
   const report = q.data;
+  const projectId = report?.project_id;
+  const model = useQuery({ queryKey: ["model", projectId], queryFn: () => api.model(projectId!), enabled: !!projectId, retry: false });
+  const m = model.data?.model;
+  const dxf = m?.meta.source_kind === "dxf";
+  const drawing = useQuery({ queryKey: ["drawing", projectId], queryFn: () => api.drawing(projectId!), enabled: !!projectId && dxf, retry: false, staleTime: Infinity });
+  const loc = m?.project.location.value;
+  const place = useQuery({ queryKey: ["locate", loc?.lat, loc?.lon], queryFn: () => api.locate(loc!.lat, loc!.lon), enabled: !!loc, staleTime: Infinity });
+  const [passes, setPasses] = useState(false);
 
-  const statusByGuid = useMemo(() => {
-    const m = new Map<string, Status>();
-    for (const r of report?.results ?? []) {
-      const g = r.element?.source_id;
-      if (!g || r.status === "not_applicable") continue;
-      const prev = m.get(g);
-      if (!prev || RANK[r.status] < RANK[prev]) m.set(g, r.status);
-    }
-    return m;
-  }, [report]);
+  // Print in the light theme, whatever is on screen.
+  useEffect(() => {
+    const before = () => applyTheme("light");
+    const after = () => applyTheme(storedTheme());
+    window.addEventListener("beforeprint", before);
+    window.addEventListener("afterprint", after);
+    return () => {
+      window.removeEventListener("beforeprint", before);
+      window.removeEventListener("afterprint", after);
+    };
+  }, []);
 
-  // 2D drawings have no GlobalIds: the plan viewer matches results by element id.
-  const statusById = useMemo(() => {
-    const m = new Map<string, Status>();
-    for (const r of report?.results ?? []) {
-      const id = r.element?.id;
-      if (!id || r.status === "not_applicable") continue;
-      const prev = m.get(id);
-      if (!prev || RANK[r.status] < RANK[prev]) m.set(id, r.status);
-    }
-    return m;
-  }, [report]);
-
-  const groups = useMemo(() => {
-    const byKey = new Map<string, Group>();
-    for (const r of report?.results ?? []) {
-      if (!statuses.has(r.status)) continue;
-      const kind = r.element?.kind ?? "building";
-      const key = `${kind}:${r.element?.id ?? ""}`;
-      let g = byKey.get(key);
-      if (!g) {
-        g = { key, kind, ...describe(model.data?.model, r), guid: r.element?.source_id ?? null, results: [], worst: r.status };
-        byKey.set(key, g);
-      }
-      g.results.push(r);
-      if (RANK[r.status] < RANK[g.worst]) g.worst = r.status;
-    }
-    const out = [...byKey.values()];
-    out.forEach((g) => g.results.sort((a, b) => RANK[a.status] - RANK[b.status]));
-    const fails = (g: Group) => g.results.filter((r) => r.status === "fail").length;
-    return out.sort((a, b) => RANK[a.worst] - RANK[b.worst] || fails(b) - fails(a) || a.name.localeCompare(b.name));
-  }, [report, statuses, model.data]);
+  const groups = useMemo(() => groupResults(report?.results ?? [], m, new Set(ALL)), [report, m]);
+  const fails = groups.filter((g) => g.results.some((r) => r.status === "fail"));
+  const unsure = groups.filter((g) => g.worst === "unverifiable");
+  const advisory = (report?.results ?? []).filter((r) => r.status === "advisory");
+  const passed = groups.filter((g) => g.worst === "pass");
 
   if (q.isLoading) return <Skeleton rows={8} />;
   if (q.error || !report) return <ErrorBox error={q.error ?? "Report not found."} title="couldn't load the report" onRetry={() => void q.refetch()} />;
-
-  async function rerun() {
-    setRerunning(true);
-    try {
-      const { job_id } = await api.startCheck(report!.project_id);
-      navigate(`/p/${report!.project_id}/jobs/${job_id}`);
-    } catch {
-      setRerunning(false);
-    }
-  }
-
   const s = report.summary;
-  const toggleOpen = (key: string) =>
-    setExpanded((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
+  const created = new Date(String(report.created_at));
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-wrap items-end justify-between gap-4 border-b border-line-subtle pb-5">
-        <div>
-          <p className="meta">{model.data?.model.project.name ?? "compliance report"}</p>
-          <Title>{s.fail === 0 && s.unverifiable === 0 ? "no issues found." : `${s.fail} issue${s.fail === 1 ? "" : "s"} to fix.`}</Title>
-          <p className="num mt-1 text-fg-3" title={new Date(String(report.created_at)).toLocaleString()}>
-            {report.results.length - s.not_applicable} clauses
-          </p>
+    <div className="report-doc mx-auto max-w-[880px]">
+      <div className="no-print mb-6 flex flex-wrap items-center gap-2">
+        <Link to={`/w/${report.project_id}`} className="btn-ghost">
+          <Icon name="back" /> workspace
+        </Link>
+        <span className="flex-1" />
+        <button className={`btn-secondary ${passes ? "border-fg text-fg" : ""}`} onClick={() => setPasses((v) => !v)} aria-pressed={passes}>
+          <StatusMark status="pass" short /> {passes ? "hide passes" : "show passes"}
+        </button>
+        <a className="btn-secondary" href={api.bcfUrl(report.id)} title="One BCF topic per failure, for Solibri, BIMcollab, Archicad, BlenderBIM">
+          <Icon name="download" /> BCF
+        </a>
+        <button className="btn-primary" onClick={() => window.print()}>
+          <Icon name="download" /> save as PDF
+        </button>
+      </div>
+
+      {/* ------------------------------------------------------------- header */}
+      <header className="border-b border-line pb-6">
+        <p className="meta font-mono">compliance memo · {created.toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}</p>
+        <h1 className="display mt-2">
+          {m?.project.name ?? "compliance report"}
+          <span className="stop">.</span>
+        </h1>
+        <dl className="mt-4 grid gap-x-8 gap-y-1.5 text-sm sm:grid-cols-2">
+          <Meta k="site">{place.data?.label ?? (loc ? `${loc.lat.toFixed(5)}, ${loc.lon.toFixed(5)}` : "not located")}</Meta>
+          <Meta k="authority">Pune Municipal Corporation</Meta>
+          <Meta k="rulebook">UDCPR 2020 → NBC 2016 · PMC TOD</Meta>
+          <Meta k="model">{m ? `${m.project.name} (${m.meta.source_kind.toUpperCase()})` : "…"}</Meta>
+        </dl>
+        <div className="mt-5 flex flex-wrap gap-2">
+          {ALL.map((st) => (
+            <span key={st} className="flex h-8 items-center gap-2 rounded-sm border border-line-subtle px-3">
+              <StatusMark status={st} />
+              <span className="num">{s[st]}</span>
+            </span>
+          ))}
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Link to={`/p/${report.project_id}/brief`} className="btn-secondary">
-            <Icon name="edit" /> brief
-          </Link>
-          <button className="btn-secondary" onClick={() => void rerun()} disabled={rerunning}>
-            {rerunning ? <Spinner /> : <Icon name="refresh" />} re-run
-          </button>
-          <a className="btn-secondary" href={api.bcfUrl(report.id)} title="One BCF topic per failure, for Solibri, BIMcollab, Archicad, BlenderBIM">
-            <Icon name="download" /> BCF
-          </a>
-        </div>
+        <p className="mt-4 text-xs text-fg-3">
+          A design-time pre-check, not a permit. Every result quotes its clause; pass and fail are decided by the rule engine from the
+          model and the facts below, never by the AI.
+        </p>
       </header>
 
-      <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by status">
-        {STATUS_ORDER.map((st) => {
-          const on = statuses.has(st);
-          return (
-            <button
-              key={st}
-              aria-pressed={on}
-              onClick={() =>
-                setStatuses((prev) => {
-                  const next = new Set(prev);
-                  if (next.has(st)) next.delete(st);
-                  else next.add(st);
-                  return next;
-                })
-              }
-              className={`flex h-8 items-center gap-2 rounded-sm border px-3 transition-colors ${
-                on ? "border-line-strong bg-surface" : "border-line-subtle opacity-50 hover:opacity-80"
-              }`}
-            >
-              <StatusMark status={st} short />
-              <span className="num">{s[st]}</span>
-              <span className="text-xs text-fg-2">{STATUS_META[st].label}</span>
-            </button>
-          );
-        })}
-      </div>
+      {m && <Facts model={m} results={report.results} />}
 
-      {report.questions.length > 0 && (
-        <Link
-          to={`/p/${report.project_id}/brief`}
-          className="panel flex items-center justify-between gap-4 border-dashed border-line px-4 py-3 transition-colors hover:border-line-strong"
-        >
-          <span className="flex items-center gap-3 text-sm">
-            <Icon name="question" />
-            <span>
-              {s.unverifiable} can't be checked yet
-            </span>
-          </span>
-          <span className="btn-primary shrink-0">answer</span>
-        </Link>
+      {report.fsi && (
+        <section className="doc-entry mt-8">
+          <FsiCard fsi={report.fsi} />
+        </section>
       )}
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)]">
-        <div className="space-y-4">
-          {report.fsi && <FsiCard fsi={report.fsi} />}
+      <Section title={fails.length ? `${s.fail} to fix, on ${fails.length} element${fails.length === 1 ? "" : "s"}` : "nothing to fix"}>
+        {fails.length === 0 && <p className="text-sm text-fg-2">Every clause that applies and can be checked passes.</p>}
+        {fails.map((g) => (
+          <Entry key={g.key} g={g} model={m} floors={drawing.data?.floors} only={["fail"]} />
+        ))}
+      </Section>
 
-          <div className="panel divide-y divide-line-subtle">
-            {groups.map((g) => {
-              const quiet = g.worst === "pass" || g.worst === "not_applicable";
-              const open = !quiet || expanded.has(g.key);
-              return (
-                <section key={g.key} id={`el-${g.key}`} className={g.guid && g.guid === selected ? "bg-surface-raised" : ""}>
-                  <button
-                    className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-raised"
-                    onClick={() => {
-                      if (g.guid) setSelected(g.guid);
-                      setSelectedId(g.key.split(":").slice(1).join(":") || null);
-                      if (quiet) toggleOpen(g.key);
-                    }}
-                    title={g.guid ? "Show in 3D" : undefined}
-                  >
-                    <span className="min-w-0 flex-1">
-                      <span className="h2">{g.name}</span>
-                      <span className="ml-2 text-xs text-fg-3">
-                        {KIND_LABEL[g.kind] ?? g.kind}
-                        {g.detail ? ` · ${g.detail}` : ""}
-                      </span>
-                    </span>
-                    {quiet && (
-                      <span className="flex items-center gap-1 text-xs text-fg-3">
-                        {g.results.length} clause{g.results.length === 1 ? "" : "s"}
-                        <Icon name="chevron" size={14} className={open ? "rotate-180" : ""} />
-                      </span>
-                    )}
-                    <StatusMark status={g.worst} short />
-                  </button>
-                  {open && (
-                    <ul className="divide-y divide-line-subtle border-t border-line-subtle">
-                      {g.results.map((r) => (
-                        <ClauseRow key={`${r.rule_id}:${r.element?.id ?? ""}`} r={r} />
-                      ))}
-                    </ul>
-                  )}
-                </section>
-              );
-            })}
-            {groups.length === 0 && <p className="px-4 py-8 text-center text-sm text-fg-2">nothing matches these filters.</p>}
-          </div>
-        </div>
+      {unsure.length > 0 && (
+        <Section title={`${unsure.length} can't be verified yet`}>
+          {unsure.map((g) => (
+            <Entry key={g.key} g={g} model={m} floors={drawing.data?.floors} only={["unverifiable"]} compact />
+          ))}
+        </Section>
+      )}
 
-        <div className="xl:sticky xl:top-8 xl:h-[calc(100vh-4rem)]">
-          {model.data?.model.meta.source_kind === "dxf" ? (
-            <PlanViewer
-              model={model.data.model}
-              projectId={report.project_id}
-              statusById={statusById}
-              selectedId={selectedId}
-              onPick={(kind, id) => {
-                setSelectedId(id);
-                document.getElementById(`el-${kind}:${id}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
-              }}
-            />
-          ) : (
-          <Viewer
-            modelVersion={report.model_version}
-            statusByGuid={statusByGuid}
-            selectedGuid={selected}
-            onPick={(guid) => {
-              setSelected(guid);
-              const g = groups.find((x) => x.guid === guid);
-              if (g) document.getElementById(`el-${g.key}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
-            }}
-          />
-          )}
-        </div>
-      </div>
+      {advisory.length > 0 && (
+        <Section title="advisory">
+          <ul className="divide-y divide-line-subtle border-y border-line-subtle">
+            {advisory.map((r) => (
+              <Line key={`${r.rule_id}:${r.element?.id ?? ""}`} r={r} />
+            ))}
+          </ul>
+        </Section>
+      )}
+
+      {passes && (
+        <Section title={`${s.pass} pass`}>
+          <ul className="divide-y divide-line-subtle border-y border-line-subtle">
+            {passed.map((g) => (
+              <li key={g.key} className="flex items-baseline gap-3 py-2 text-sm">
+                <StatusMark status="pass" short />
+                <span className="min-w-0 flex-1">
+                  {g.name}{" "}
+                  <span className="text-xs text-fg-3">
+                    {KIND_LABEL[g.kind] ?? g.kind}
+                    {g.detail ? ` · ${g.detail}` : ""}
+                  </span>
+                </span>
+                <span className="font-mono text-2xs text-fg-3">
+                  {g.results
+                    .map((r) => r.clause.ref)
+                    .filter((v, i, a) => a.indexOf(v) === i)
+                    .join(" · ")}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      )}
+
+      <footer className="mt-12 border-t border-line-subtle pt-4 font-mono text-2xs text-fg-3">
+        report {report.id} · model {report.model_version} · rules {report.ruleset_version} · {created.toLocaleString()}
+      </footer>
     </div>
+  );
+}
+
+function Meta({ k, children }: { k: string; children: React.ReactNode }) {
+  return (
+    <div className="flex gap-3">
+      <dt className="w-20 shrink-0 text-fg-3">{k}</dt>
+      <dd className="min-w-0">{children}</dd>
+    </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="mt-10">
+      <h2 className="h2 mb-4 border-b border-line-subtle pb-2">{title}</h2>
+      <div className="space-y-6">{children}</div>
+    </section>
+  );
+}
+
+// The planning facts every result depends on, with where each came from.
+function Facts({ model, results }: { model: BuildingModel; results: Result[] }) {
+  // What the check used (site lookups and suggestions are applied during the check, so the
+  // stored model may not have them); the model for anything no rule looked at.
+  const used = new Map(results.flatMap((r) => r.facts_used).map((f) => [f.path, f]));
+  const p = structuredClone(model.project);
+  for (const k of ["occupancy", "building_type", "zone", "congested_area"] as const) {
+    const f = used.get(`project.${k}`);
+    if (f) (p[k] as { value: unknown; source: Source }) = { value: f.value, source: f.source };
+  }
+  for (const k of ["metro_tod", "nearest_metro_station"] as const) {
+    const f = used.get(`project.overlays.${k}`);
+    if (f) (p.overlays[k] as { value: unknown; source: Source }) = { value: f.value, source: f.source };
+  }
+  const occ = p.occupancy.value;
+  const station = p.overlays.nearest_metro_station.value;
+  const roads = model.site.edges.filter((e) => e.kind.value === "road");
+  const yes = (v: boolean | null | undefined) => (v == null ? "—" : v ? "yes" : "no");
+  const rows: [string, string, Source | null][] = [
+    ["occupancy", occ ? (occ.subdivision ?? occ.group) : "—", p.occupancy.source],
+    ["building type", p.building_type.value?.replace(/_/g, " ") ?? "—", p.building_type.source],
+    ["land use / zone", p.zone.value ?? "—", p.zone.source],
+    ["congested area", yes(p.congested_area.value), p.congested_area.source],
+    ["metro TOD zone", yes(p.overlays.metro_tod.value), p.overlays.metro_tod.source],
+    ["nearest station", station ? `${station.name}, ${Math.round(station.distance_m)} m` : "—", p.overlays.nearest_metro_station.source],
+    ["road", roads.length ? roads.map((e) => `${e.id} ${e.road_width_m.value ?? "?"} m`).join(" · ") : "—", roads[0]?.road_width_m.source ?? null],
+  ];
+  return (
+    <section className="doc-entry mt-8">
+      <h2 className="h2 mb-3">planning facts</h2>
+      <table className="w-full text-sm">
+        <tbody>
+          {rows.map(([k, v, src]) => (
+            <tr key={k} className="border-t border-line-subtle">
+              <td className="w-40 py-1.5 text-fg-2">{k}</td>
+              <td className="py-1.5">{v}</td>
+              <td className="py-1.5 text-right">{src && v !== "—" ? <SourceBadge source={src} /> : null}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  );
+}
+
+function Entry({
+  g,
+  model,
+  floors,
+  only,
+  compact = false,
+}: {
+  g: Group;
+  model?: BuildingModel;
+  floors?: DrawingFloor[];
+  only: Status[];
+  compact?: boolean;
+}) {
+  const rs = g.results.filter((r) => only.includes(r.status));
+  const missing = [...new Set(rs.flatMap((r) => r.missing_inputs))];
+  return (
+    <article className="doc-entry flex flex-col gap-4 sm:flex-row">
+      {model && !compact && <ElementThumb model={model} group={g} floors={floors} />}
+      <div className="min-w-0 flex-1">
+        <p>
+          <span className="h2">{g.name}</span>
+          <span className="ml-2 text-xs text-fg-3">
+            {KIND_LABEL[g.kind] ?? g.kind}
+            {g.detail ? ` · ${g.detail}` : ""}
+          </span>
+        </p>
+        <ul className="mt-2 divide-y divide-line-subtle border-y border-line-subtle">
+          {rs.map((r) => (
+            <Line key={r.rule_id} r={r} excerpt={!compact} />
+          ))}
+        </ul>
+        {compact && missing.length > 0 && (
+          <p className="mt-2 text-xs text-fg-2">
+            needs: <span className="font-mono">{missing.join(", ")}</span>
+          </p>
+        )}
+      </div>
+    </article>
+  );
+}
+
+function Line({ r, excerpt = false }: { r: Result; excerpt?: boolean }) {
+  const shown = (r.measured !== null || r.limit !== null) && r.status !== "not_applicable";
+  return (
+    <li className="py-2.5">
+      <div className="flex items-start gap-3">
+        <span className="pt-0.5">
+          <StatusMark status={r.status} short />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm">{r.title}</p>
+          <p className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-fg-3">
+            <span className="font-mono">{r.clause.ref}</span> · {r.clause.source}
+            {r.rule_status === "draft" && <Chip predicted>draft</Chip>}
+          </p>
+        </div>
+        {shown && (
+          <div className="shrink-0 text-right">
+            <p className="num text-sm">
+              {fmt(r.measured)}
+              <span className="text-fg-3"> / {fmt(r.limit)}</span>
+            </p>
+            {r.fix_by && (
+              <p className={`font-mono text-2xs ${r.status === "fail" ? "text-danger" : "text-fg-2"}`}>
+                {r.fix_by.direction === "increase" ? "+" : "−"}
+                {fmt(r.fix_by.amount)}
+                {r.fix_by.unit ? ` ${r.fix_by.unit}` : ""}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+      {excerpt && (
+        <div className="ml-7 mt-2 space-y-1.5 text-xs">
+          <p className="text-fg-2">{r.message}</p>
+          <blockquote className="border-l border-fg-2 pl-3 text-fg">“{r.clause.excerpt}”</blockquote>
+        </div>
+      )}
+    </li>
   );
 }

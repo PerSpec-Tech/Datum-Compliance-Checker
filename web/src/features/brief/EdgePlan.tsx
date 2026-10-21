@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Edge, EdgeKind, RoadWidthBasis } from "../../api/types";
+import { Icon } from "../../components/ui";
 
 export interface EdgeTag {
   kind?: EdgeKind | null;
@@ -103,7 +104,9 @@ export default function EdgePlan({
                   onClick={() => set(active, { kind: k })}
                   className={`h-8 rounded-sm border px-2.5 text-sm transition-colors ${cur.kind === k ? "border-fg bg-surface-raised text-fg" : "border-line text-fg-2 hover:border-line-strong hover:text-fg"}`}
                 >
-                  {KIND_STYLE[k].label}
+                  <span className="flex items-center gap-1.5">
+                    <Icon name={k === "road" ? "road" : k === "neighbour" ? "home" : "tree"} size={14} /> {KIND_STYLE[k].label}
+                  </span>
                 </button>
               ))}
             </div>

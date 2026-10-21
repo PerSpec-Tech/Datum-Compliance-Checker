@@ -6,6 +6,7 @@ import type {
   Clause,
   Freshness,
   Fact,
+  LivePack,
   RuleStatus,
   Severity,
 } from "./types";
@@ -162,12 +163,22 @@ export interface DrawingFloor {
   texts: [number, number, number, number, string, string][]; // x, y, height, rotation, text, class
 }
 
+/** A planning fact the checker suggests (P12.1), with what the model has now. */
+export interface Suggestion {
+  path: string;
+  suggested: Fact<unknown>;
+  current: Fact<unknown>;
+}
+
 export const api = {
   drawing: (id: string) => request<{ floors: DrawingFloor[] }>(`/projects/${id}/drawing`),
   cities: () => request<City[]>("/cities"),
   geocode: (q: string, authority: string) =>
     request<Place[]>(`/geocode?${new URLSearchParams({ q, authority })}`),
   locate: (lat: number, lon: number) => request<Located>(`/locate?lat=${lat}&lon=${lon}`),
+  livePack: (id: string) => request<LivePack>(`/projects/${id}/live-pack`),
+  suggestions: (id: string, lat: number, lon: number) =>
+    request<Suggestion[]>(`/projects/${id}/suggestions?lat=${lat}&lon=${lon}`),
   health: () => request<{ ok: boolean; rules: number; ruleset_version: string }>("/health"),
   pairStart: () => request<{ code: string; expires_in_s: number }>("/pair/start", { method: "POST" }),
   createProject: (name: string) => request<{ id: string }>("/projects", json("POST", { name })),

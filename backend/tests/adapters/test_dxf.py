@@ -293,3 +293,37 @@ def test_drawing_endpoint_serves_floor_vectors(tmp_path):
     xs = [v for p in typical["paths"]["wall"] for v in p[0::2]]
     fx = [p[0] for p in model["building"]["footprint"]]
     assert min(xs) == pytest.approx(min(fx), abs=0.3) and max(xs) == pytest.approx(max(fx), abs=0.3)
+
+
+def test_floors_line_up_on_the_stair_core_when_a_floor_projects(tmp_path):
+    """A first floor that projects 1.5 m to the west: matching the outline's corner would shift it
+    1.5 m the wrong way; matching the stair core keeps its rooms over the ground floor's."""
+    import ezdxf
+
+    from compliance.adapters import dxf as dxf_mod
+
+    src = REPO_ROOT / "fixtures" / "dxf" / "demo_house.dxf"
+    d = dxf_mod._load(src, {})
+    assert d.scale == 1
+    for sh in d.polys["floor"]:
+        sh.name = dxf_mod._name_inside(sh, d.texts, "floor")
+    first = next(fr for fr, nums in dxf_mod._floor_frames(d, []) if nums == [1])
+    fsi = [s.poly for s in d.polys["fsi_resi"] if first.poly.contains(s.poly.representative_point())]
+    x0, y0, _, _ = fsi[0].bounds
+    doc = ezdxf.readfile(src)
+    balcony = [(x0 - 1.5, y0 + 1), (x0, y0 + 1), (x0, y0 + 4), (x0 - 1.5, y0 + 4)]
+    for layer in ("_ResiFSI", "_Room"):
+        doc.modelspace().add_lwpolyline(balcony, close=True, dxfattribs={"layer": layer})
+    doc.modelspace().add_text("Balcony", dxfattribs={"layer": "_Room", "height": 0.2}).set_placement(
+        (x0 - 0.75, y0 + 2.5)
+    )
+    path = tmp_path / "projecting.dxf"
+    doc.saveas(path)
+
+    model, warnings = read(path)
+    stair = {s["level_id"]: s["polygon"] for s in model["spaces"] if s["usage"]["value"] == "stair"}
+    assert stair["L1"] == stair["L0"]  # the core is over the core
+    assert any("stair / lift core" in w and "First Floor" in w for w in warnings)
+    balcony_room = next(s for s in model["spaces"] if s["name"] == "Balcony")
+    fp_x0 = min(p[0] for p in model["building"]["footprint"])
+    assert min(p[0] for p in balcony_room["polygon"]) == pytest.approx(fp_x0 - 1.5, abs=0.01)

@@ -98,7 +98,12 @@ def _default_runner(store: Store, rulebase: Callable[[], RuleBase]) -> JobRunner
                 if any(urlparse(r["url"]).hostname.endswith(d) for d in official)
             ][:5]  # fmt: skip
 
-    return JobRunner(store, rulebase, hooks=make_hooks(store), discover=discover)
+    from compliance.agents import planning
+
+    return JobRunner(
+        store, rulebase, hooks=make_hooks(store), discover=discover,
+        site_lookup=lambda lat, lon: planning.lookup(lat, lon, store, cached_only=True),
+    )  # fmt: skip
 
 
 def app() -> FastAPI:  # uvicorn --factory compliance.main:app

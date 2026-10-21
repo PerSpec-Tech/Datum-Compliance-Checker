@@ -16,6 +16,7 @@ from collections.abc import AsyncIterator, Callable
 from dataclasses import dataclass, field
 from typing import Any
 
+from compliance.agents import planning
 from compliance.agents.authority import Resolution, resolve
 from compliance.agents.overlays import apply_overlays
 from compliance.engine.brief import apply_brief
@@ -101,12 +102,14 @@ class JobRunner:
         resolver: Callable[..., Resolution] = resolve,
         hooks: dict[str, Hook] | None = None,
         discover: Callable[[str], list[dict[str, Any]]] | None = None,
+        site_lookup: Callable[[float, float], dict[str, Any]] | None = None,
     ) -> None:
         self.store = store
         self.rulebase = rulebase
         self.resolver = resolver
         self.hooks = hooks or {}
         self.discover = discover  # Tavily lookup of rule documents for places we don't cover yet
+        self.site_lookup = site_lookup  # locality + land use at the pin (planning suggestions)
         self.bus = JobBus()
         self._tasks: set[asyncio.Task] = set()
 
@@ -184,7 +187,10 @@ class JobRunner:
         if stage == "resolve_authority":
             return self._resolve_authority(ctx)
         if stage == "overlays":
-            return apply_overlays(ctx.model, ctx.rulebase)
+            loc = ctx.model["project"]["location"]["value"]
+            site = self.site_lookup(loc["lat"], loc["lon"]) if self.site_lookup and loc else None
+            msgs = (apply_overlays(ctx.model, ctx.rulebase), planning.apply(ctx.model, site))
+            return "; ".join(m for m in msgs if m) or None
         if stage == "evaluate":
             ctx.report = build_report(
                 ctx.model,
@@ -258,7 +264,7 @@ class JobRunner:
 
 _STAGE_LABEL = {
     "resolve_authority": "Finding the planning authority…",
-    "overlays": "Checking site overlays (metro TOD)…",
+    "overlays": "Checking the site: metro TOD, land use, building type…",
     "classify_usage": "Classifying room uses…",
     "derive": "Measuring the model…",
     "evaluate": "Checking the rules…",

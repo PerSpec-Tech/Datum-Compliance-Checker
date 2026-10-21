@@ -3,8 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { ApiError, api, type Mesh } from "../../api/client";
-import type { Status } from "../../api/types";
-import { STATUS_META, Spinner, StatusMark } from "../../components/ui";
+import type { LivePack, Status } from "../../api/types";
+import { Icon, STATUS_META, Spinner, StatusMark } from "../../components/ui";
 import { useTheme } from "../../lib/theme";
 
 // P6.8: the IFC is tessellated server-side (/api/models/{v}/mesh) so the browser only needs three.js.
@@ -17,14 +17,25 @@ interface Props {
   statusByGuid: Map<string, Status>;
   selectedGuid: string | null;
   onPick?: (guid: string) => void;
+  /** Shows the setbacks from this project's live pack (P12.2). */
+  projectId?: string;
 }
 
-export default function Viewer({ modelVersion, statusByGuid, selectedGuid, onPick }: Props) {
+export default function Viewer({ modelVersion, statusByGuid, selectedGuid, onPick, projectId }: Props) {
   const mesh = useQuery({ queryKey: ["mesh", modelVersion], queryFn: () => api.mesh(modelVersion), retry: false });
+  const pack = useQuery({
+    queryKey: ["live-pack", projectId],
+    queryFn: () => api.livePack(projectId!),
+    enabled: !!projectId,
+    retry: false,
+    staleTime: 60_000,
+  });
+  const [setbacks, setSetbacks] = useState(true);
   const host = useRef<HTMLDivElement>(null);
   const scene = useRef<{
     focus: (guid: string | null) => void;
     xray: (on: boolean) => void;
+    setbacks: (pack: LivePack | null) => void;
     dispose: () => void;
   } | null>(null);
   const [hover, setHover] = useState<string | null>(null);
@@ -48,6 +59,10 @@ export default function Viewer({ modelVersion, statusByGuid, selectedGuid, onPic
   useEffect(() => {
     scene.current?.xray(xray);
   }, [xray, mesh.data, statusByGuid]);
+
+  useEffect(() => {
+    scene.current?.setbacks(setbacks && pack.data?.envelope ? pack.data : null);
+  }, [setbacks, pack.data, mesh.data, statusByGuid, theme]);
 
   if (mesh.error) {
     const notFound = mesh.error instanceof ApiError && mesh.error.status === 404;
@@ -96,13 +111,25 @@ export default function Viewer({ modelVersion, statusByGuid, selectedGuid, onPic
         {point ? `x ${point[0].toFixed(2)}  y ${point[1].toFixed(2)}  z ${point[2].toFixed(2)} m` : "x —  y —  z — m"}
       </div>
       {mesh.data && (
-        <button
-          onClick={() => setXray((x) => !x)}
-          className="btn-secondary absolute right-3 top-3 h-7 bg-surface px-2.5 text-xs"
-          title="See the rooms through the walls and floors"
-        >
-          {xray ? "walls: x-ray" : "walls: solid"}
-        </button>
+        <div className="absolute right-3 top-3 flex gap-1">
+          {pack.data?.envelope && (
+            <button
+              onClick={() => setSetbacks((v) => !v)}
+              aria-pressed={setbacks}
+              className={`btn-secondary h-7 bg-surface px-2.5 text-xs ${setbacks ? "border-fg text-fg" : ""}`}
+              title="The buildable line: the plot inset by the margin each side needs"
+            >
+              <Icon name="ruler" size={12} /> setbacks
+            </button>
+          )}
+          <button
+            onClick={() => setXray((x) => !x)}
+            className="btn-secondary h-7 bg-surface px-2.5 text-xs"
+            title="See the rooms through the walls and floors"
+          >
+            <Icon name={xray ? "eye" : "cube"} size={12} /> {xray ? "walls: x-ray" : "walls: solid"}
+          </button>
+        </div>
       )}
 
     </div>
@@ -275,7 +302,52 @@ function build(
   };
   loop();
 
+  // Setbacks (P12.2): the buildable line on the ground and faint walls up to the building height.
+  let envelope: THREE.Group | null = null;
+  const dropEnvelope = () => {
+    if (!envelope) return;
+    scene.remove(envelope);
+    envelope.traverse((o) => {
+      const m = o as THREE.Mesh;
+      m.geometry?.dispose();
+      (m.material as THREE.Material | undefined)?.dispose();
+    });
+    envelope = null;
+  };
+
   return {
+    setbacks(pack: LivePack | null) {
+      dropEnvelope();
+      if (!pack?.envelope || pack.envelope.length < 3) return;
+      const ring = pack.envelope;
+      const top = pack.height.current_m ?? Math.max(all.max.z, 3);
+      const ink = light ? 0x0a0a0b : 0xf2f2f3;
+      envelope = new THREE.Group();
+      const line = (z: number, dashed: boolean) => {
+        const pts = [...ring, ring[0]].map((p) => new THREE.Vector3(p[0], p[1], z));
+        const l = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(pts),
+          dashed
+            ? new THREE.LineDashedMaterial({ color: ink, dashSize: 0.6, gapSize: 0.35 })
+            : new THREE.LineBasicMaterial({ color: ink, transparent: true, opacity: 0.25 }),
+        );
+        l.computeLineDistances();
+        envelope!.add(l);
+      };
+      line(0.03, true);
+      line(top, false);
+      const v: number[] = [];
+      ring.forEach((p, i) => {
+        const q = ring[(i + 1) % ring.length];
+        v.push(p[0], p[1], 0, q[0], q[1], 0, q[0], q[1], top, p[0], p[1], 0, q[0], q[1], top, p[0], p[1], top);
+      });
+      const g = new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.Float32BufferAttribute(v, 3));
+      envelope.add(
+        new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: ink, transparent: true, opacity: 0.05, depthWrite: false, side: THREE.DoubleSide })),
+      );
+      scene.add(envelope);
+    },
     xray(on: boolean) {
       const shellSet = new Set(shell);
       pickTargets = on ? meshes.filter((m) => !shellSet.has(m)) : meshes;
@@ -310,6 +382,7 @@ function build(
       frame(box, true);
     },
     dispose() {
+      dropEnvelope();
       cancelAnimationFrame(raf);
       ro.disconnect();
       controls.dispose();

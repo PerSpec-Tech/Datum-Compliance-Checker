@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState, type PointerEvent, type WheelEven
 import { useQuery } from "@tanstack/react-query";
 import { api, type DrawingFloor } from "../../api/client";
 import type { BuildingModel, Status } from "../../api/types";
-import { STATUS_META, StatusMark } from "../../components/ui";
+import { Icon, STATUS_META, StatusMark } from "../../components/ui";
+import SetbackLayer from "./SetbackLayer";
 
 // P10.5: the report's view for 2D drawings. The drawing itself (walls, doors, windows, furniture,
 // dimensions, texts) is the base; the check's results are a translucent layer on the rooms.
@@ -40,6 +41,8 @@ export default function PlanViewer({
   const selectedLevel = model.spaces.find((s) => s.id === selectedId)?.level_id;
   const [level, setLevel] = useState(levels.find((l) => failsOn(l.id) > 0)?.id ?? levels[0]?.id);
   const shown = selectedLevel ?? level;
+  const pack = useQuery({ queryKey: ["live-pack", projectId], queryFn: () => api.livePack(projectId), retry: false, staleTime: 60_000 });
+  const [setbacks, setSetbacks] = useState(true);
   const [hover, setHover] = useState<string | null>(null);
   const [cursor, setCursor] = useState<[number, number] | null>(null);
   // View: a viewBox in svg units; null = fitted. Scroll zooms at the cursor, drag pans.
@@ -77,10 +80,11 @@ export default function PlanViewer({
     for (let i = 0; i < a.length; i += 2) d += `${i ? "L" : "M"}${X(a[i]).toFixed(3)} ${Y(a[i + 1]).toFixed(3)}`;
     return d;
   };
-  // Fit: the drawing of this floor (plus a margin) when there is one, else the whole plot.
+  // Fit: the drawing of this floor and the plot (plus a margin) when there is a drawing, else the plot.
   let fit: [number, number, number, number] = [0, 0, W, H];
   if (sheet) {
-    const all = Object.values(sheet.paths).flat().concat(sheet.fills);
+    // the plot too, so its sides and the setbacks stay in view
+    const all = Object.values(sheet.paths).flat().concat(sheet.fills, [site.flat()]);
     let a = Infinity, b = Infinity, c = -Infinity, e = -Infinity;
     for (const line of all)
       for (let i = 0; i < line.length; i += 2) {
@@ -124,7 +128,7 @@ export default function PlanViewer({
 
   return (
     <div className="panel relative flex h-full min-h-[360px] flex-col overflow-hidden bg-surface-low">
-      <div className="flex flex-wrap gap-1 border-b border-line-subtle p-2">
+      <div className="flex items-center gap-1 overflow-x-auto border-b border-line-subtle p-2">
         {levels.map((l) => {
           const f = failsOn(l.id);
           return (
@@ -135,11 +139,24 @@ export default function PlanViewer({
                 l.id === shown ? "border-fg bg-surface-raised text-fg" : "border-line-subtle text-fg-2 hover:text-fg"
               }`}
             >
+              <Icon name="layers" size={12} />
               {l.name}
               {f > 0 && <span className="font-mono text-danger">{f}</span>}
             </button>
           );
         })}
+        {pack.data?.edges.some((e) => e.margin_m != null) && (
+          <button
+            onClick={() => setSetbacks((v) => !v)}
+            aria-pressed={setbacks}
+            className={`ml-auto flex h-7 shrink-0 items-center rounded-sm border px-2 text-xs ${
+              setbacks ? "border-fg bg-surface-raised text-fg" : "border-line-subtle text-fg-2 hover:text-fg"
+            }`}
+            title="Required margins from each side, the buildable line, and the gap the design gives"
+          >
+            <Icon name="ruler" size={12} className="mr-1.5" /> setbacks
+          </button>
+        )}
       </div>
       <svg
         ref={svgRef}
@@ -175,6 +192,19 @@ export default function PlanViewer({
                 stroke={st === "fail" ? hex(STATUS_META.fail.hex) : road ? "var(--text-primary)" : "var(--draw-fine)"}
                 strokeWidth={px * (road ? 3 : 1.2)}
                 strokeDasharray={e.kind.source === "inferred" ? `${px * 6} ${px * 4}` : undefined}
+              />
+              {/* a wide invisible hit line, so a plot side is easy to click */}
+              <line
+                x1={X(e.a[0])}
+                y1={Y(e.a[1])}
+                x2={X(e.b[0])}
+                y2={Y(e.b[1])}
+                stroke="transparent"
+                strokeWidth={px * 12}
+                className="cursor-pointer"
+                onMouseEnter={() => setHover(`side ${e.id}${road ? ` · road ${e.road_width_m.value ?? "?"} m` : e.kind.value ? ` · ${e.kind.value.replace("_", " ")}` : ""}`)}
+                onMouseLeave={() => setHover(null)}
+                onClick={() => onPick?.("site.edges", e.id)}
               />
               {road && (
                 <text x={(X(e.a[0]) + X(e.b[0])) / 2} y={(Y(e.a[1]) + Y(e.b[1])) / 2 + px * 16} fontSize={px * 10} textAnchor="middle" fill="var(--text-tertiary)" fontFamily="JetBrains Mono, monospace">
@@ -241,6 +271,8 @@ export default function PlanViewer({
         ) : (
           spaces.map((s) => <polygon key={`o${s.id}`} points={s.polygon!.map(P).join(" ")} fill="none" stroke="var(--draw-line)" strokeWidth={px} pointerEvents="none" />)
         )}
+
+        {setbacks && pack.data && <SetbackLayer pack={pack.data} footprint={model.building.footprint} X={X} Y={Y} px={px} />}
 
         {model.building.footprint && !sheet && (
           <polygon points={model.building.footprint.map(P).join(" ")} fill="none" stroke="var(--draw-line)" strokeWidth={px} strokeDasharray={`${px * 5} ${px * 3}`} />

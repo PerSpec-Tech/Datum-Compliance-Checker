@@ -7,7 +7,7 @@ import { ErrorBox, Icon, Loading, Spinner, Title } from "../../components/ui";
 import EdgePlan, { type EdgeTag } from "./EdgePlan";
 import MapPin from "./MapPin";
 
-const OCCUPANCY: Record<string, string> = {
+export const OCCUPANCY: Record<string, string> = {
   A: "A · Residential",
   B: "B · Educational",
   C: "C · Institutional",
@@ -18,7 +18,7 @@ const OCCUPANCY: Record<string, string> = {
   H: "H · Storage",
   J: "J · Hazardous",
 };
-const RESIDENTIAL_SUB: Record<string, string> = {
+export const RESIDENTIAL_SUB: Record<string, string> = {
   "A-1": "A-1 Lodging or rooming houses",
   "A-2": "A-2 One or two-family private dwellings",
   "A-3": "A-3 Dormitories",
@@ -36,7 +36,7 @@ const LABEL: Record<string, string> = {
 
 // Read a value from the merged model by an engine path such as `project.overlays.metro_tod`
 // or `spaces[S4].usage`. Facts return their `.value`.
-function getPath(model: BuildingModel, path: string): unknown {
+export function getPath(model: BuildingModel, path: string): unknown {
   let node: unknown = model;
   for (const part of path.split(".")) {
     const m = /^([A-Za-z_]\w*)(?:\[([^\]]+)\])?$/.exec(part);
@@ -49,7 +49,7 @@ function getPath(model: BuildingModel, path: string): unknown {
 }
 
 // `spaces[*].usage` → the concrete element paths the last report was missing.
-function concretePaths(q: Question, report: CheckReport): string[] {
+export function concretePaths(q: Question, report: CheckReport): string[] {
   const re = new RegExp("^" + q.path.replace(/[.]/g, "\\.").replace("[*]", "\\[([^\\]]+)\\]") + "$");
   const set = new Set<string>();
   for (const r of report.results) for (const p of r.missing_inputs) if (re.test(p)) set.add(p);
@@ -110,7 +110,7 @@ export default function BriefPage() {
       await api.patchBrief(projectId, payload);
       if (run) {
         const { job_id } = await api.startCheck(projectId);
-        navigate(`/p/${projectId}/jobs/${job_id}`);
+        navigate(`/w/${projectId}?job=${job_id}`);
       } else {
         setSaving(false);
       }
@@ -174,10 +174,10 @@ export default function BriefPage() {
           </Link>
         )}
         <button className="btn-secondary" disabled={saving} onClick={() => void save(false)}>
-          save
+          <Icon name="check" /> save
         </button>
         <button className="btn-primary" disabled={saving} onClick={() => void save(true)}>
-          {saving && <Spinner />} save and re-check
+          {saving ? <Spinner /> : <Icon name="refresh" />} save and re-check
         </button>
       </div>
     </div>
@@ -279,7 +279,7 @@ function QuestionInput({
   );
 }
 
-function Scalar({
+export function Scalar({
   type,
   options,
   value,
@@ -300,7 +300,9 @@ function Scalar({
             onClick={() => onChange(b)}
             className={`h-9 rounded-sm border px-4 text-sm transition-colors ${value === b ? "border-fg bg-surface-raised text-fg" : "border-line text-fg-2 hover:border-line-strong hover:text-fg"}`}
           >
-            {b ? "Yes" : "No"}
+            <span className="flex items-center gap-1.5">
+              <Icon name={b ? "check" : "x"} size={14} /> {b ? "Yes" : "No"}
+            </span>
           </button>
         ))}
       </div>

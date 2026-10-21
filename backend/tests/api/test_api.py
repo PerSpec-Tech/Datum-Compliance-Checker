@@ -229,3 +229,18 @@ def test_each_fixture_create_model_check_report_bcf(client, name):
     assert bcf.status_code == 200
     topics = [n for n in zipfile.ZipFile(io.BytesIO(bcf.content)).namelist() if "markup" in n]
     assert len(topics) == report["summary"]["fail"]
+
+
+def test_suggestions_for_a_drawing(client, monkeypatch):
+    from compliance.agents import planning
+
+    site = {"locality": "Kasba Peth", "landuse": "residential", "landuse_name": None}
+    monkeypatch.setattr(planning, "lookup", lambda *a, **k: site)
+    pid = client.post("/api/projects", json={"name": "house"}).json()["id"]
+    data = (REPO_ROOT / "fixtures" / "dxf" / "demo_house.dxf").read_bytes()
+    assert client.post(f"/api/projects/{pid}/dxf", content=data).status_code == 200
+    r = client.get(f"/api/projects/{pid}/suggestions", params={"lat": 18.5195, "lon": 73.8553})
+    got = {s["path"]: s for s in r.json()}
+    assert got["project.congested_area"]["suggested"]["value"] is True
+    assert got["project.occupancy"]["suggested"]["value"]["subdivision"] == "A-2"
+    assert got["project.zone"]["current"]["source"] == "default"
