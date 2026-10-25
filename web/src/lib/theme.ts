@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 
-// Dark is the default for tools (guidelines §2); light is the user's choice, remembered per browser.
+// Light is the default (user, 2026-10-25); dark is the user's choice, remembered per browser.
 export type Theme = "dark" | "light";
 const KEY = "cc.theme";
 const EVENT = "cc-theme";
 
 export function storedTheme(): Theme {
   try {
-    return localStorage.getItem(KEY) === "light" ? "light" : "dark";
+    return localStorage.getItem(KEY) === "dark" ? "dark" : "light";
   } catch {
-    return "dark";
+    return "light";
   }
 }
 
