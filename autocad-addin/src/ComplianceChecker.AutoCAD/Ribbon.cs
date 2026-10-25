@@ -50,6 +50,9 @@ namespace ComplianceChecker.AutoCAD
                 Button("3 Site", "CCSITE", Icons.Pin, "Place the drawing on the map, draw or confirm the plot, tag the roads.")));
             tab.Panels.Add(Panel("Check",
                 Button("4 Run Check", "CCCHECK", Icons.Check, "Send the drawing and check it against UDCPR 2020 / NBC 2016.", large: true)));
+            tab.Panels.Add(Panel("Live",
+                Button("Live", "CCLIVE", Icons.Refresh, "Pause or resume the live preview: margins and FSI re-measured as you draw, shown on the status bar."),
+                Button("Lens", "CCLENS", Icons.Eye, "Show or hide the buildable line, with outlines that cross it in red. Also: click the status bar line.")));
             tab.Panels.Add(Panel("Results",
                 Button("Results", "CCRESULTS", Icons.List, "Show the results palette."),
                 Button("Report", "CCREPORT", Icons.Book, "Open the full report (printable) in the browser."),

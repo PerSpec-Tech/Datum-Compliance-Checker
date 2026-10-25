@@ -97,6 +97,14 @@ namespace ComplianceChecker.AutoCAD
                 : $"\nCompliance: no ribbon to add the tab to (type RIBBON to show it, then CCRIBBON). Details in {Log.FilePath}");
         }
 
+        /// <summary>Pause or resume the live preview of margins and FSI while drawing.</summary>
+        [CommandMethod("CCLIVE")]
+        public void Live() => Doc?.Editor.WriteMessage("\nCompliance: " + LiveMode.Toggle());
+
+        /// <summary>Show or hide the lens: the buildable line, and outlines that cross it in red.</summary>
+        [CommandMethod("CCLENS")]
+        public void Lens() => Doc?.Editor.WriteMessage("\nCompliance: " + LiveMode.ToggleLens());
+
         [CommandMethod("CCCLEAR")]
         public void Clear()
         {

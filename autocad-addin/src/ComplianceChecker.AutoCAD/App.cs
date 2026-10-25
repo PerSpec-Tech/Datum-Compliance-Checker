@@ -56,6 +56,7 @@ namespace ComplianceChecker.AutoCAD
             AcApp.Idle -= OnFirstIdle;
             AcApp.SystemVariableChanged -= OnSysVar;
             Highlighter.Clear();
+            LiveMode.Stop();
         }
     }
 }

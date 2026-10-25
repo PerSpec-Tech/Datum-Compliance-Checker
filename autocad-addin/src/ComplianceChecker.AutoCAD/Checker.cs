@@ -147,6 +147,14 @@ namespace ComplianceChecker.AutoCAD
                     Log.Error("clouds", e);
                     ed.WriteMessage($"\nCompliance: couldn't draw the issue clouds ({e.Message}).");
                 }
+                try
+                {
+                    await LiveMode.StartAsync(doc, api, pid);
+                }
+                catch (Exception e)
+                {
+                    Log.Error("live start", e); // the check's results stand without the preview
+                }
                 var s = Report.Summary;
                 Log.Info($"report {reportId}: {s.Fail} fail, {s.Unverifiable} unverifiable, {clouds} clouds");
                 ed.WriteMessage($"\nCompliance: {s.Fail} fail · {s.Unverifiable} can't verify · {s.Pass} pass. "

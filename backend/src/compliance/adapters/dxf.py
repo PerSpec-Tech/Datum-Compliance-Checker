@@ -777,6 +777,33 @@ def drawing(path: str | Path, roles: dict[str, str] | None = None) -> dict[str, 
     return {"floors": out}
 
 
+def frames(path: str | Path, roles: dict[str, str] | None = None) -> dict[str, Any]:
+    """Where each floor plan sits in the drawing and how it was moved into plot coordinates
+    (P11.4, AutoCAD live mode): {scale, roles: {layer: role}, floors: [{name, nums, bounds,
+    shift}]}. `bounds` are the frame in drawing units; `shift` is in metres, so a point of the
+    drawing maps to the model at (x * scale + dx, y * scale + dy)."""
+    d = _load(Path(path), roles)
+    for sh in d.polys.get("floor", []):
+        sh.name = _name_inside(sh, d.texts, "floor")
+    floors = _floor_frames(d, [])
+    fps = sorted(d.polys.get("footprint", []), key=lambda x: -x.poly.area)
+    shifts = _floor_shifts(d, floors, fps[0].poly if fps else None, [])
+    s = d.scale
+    return {
+        "scale": s,
+        "roles": {k: v["role"] for k, v in d.layers.items() if v.get("role")},
+        "floors": [
+            {
+                "name": fr.name,
+                "nums": nums,
+                "bounds": [round(c / s, 6) for c in fr.poly.bounds],
+                "shift": [round(shifts[fr.handle][0], 6), round(shifts[fr.handle][1], 6)],
+            }
+            for fr, nums in floors
+        ],
+    }
+
+
 def _auto_frames(d: _Drawing, warnings: list[str]) -> list[_Shape]:
     """No _Floor frames: find the floor plans as clusters of room outlines (plans sit apart in
     model space) and name each from the nearest floor-name text. Unnamed plans are numbered left

@@ -94,6 +94,11 @@ public sealed class ApiClient
         return await resp.Content.ReadAsStringAsync(ct);
     }
 
+    /// <summary>Where each floor plan of the uploaded drawing sits and how it was moved into plot
+    /// coordinates, plus the layer roles (GET /drawing/frames; AutoCAD live mode, P11.4).</summary>
+    public Task<DrawingFrames> GetDrawingFramesAsync(string projectId, CancellationToken ct = default) =>
+        SendAsync<DrawingFrames>(HttpMethod.Get, $"api/projects/{Uri.EscapeDataString(projectId)}/drawing/frames", null, ct);
+
     /// <summary>Declare facts for the next check (PATCH /brief): path → value, e.g.
     /// "project.location" → {lat, lon}, "site.boundary" → [[x, y], …], "site.edges" → {e1: {kind, road_width_m}}.</summary>
     public Task<JsonElement> PatchBriefAsync(string projectId, IReadOnlyDictionary<string, object?> answers, CancellationToken ct = default) =>
@@ -229,6 +234,14 @@ public sealed record DrawingUpload(
     bool HasSiteBoundary = false,
     IReadOnlyList<LayerRole>? Layers = null,
     int Unmapped = 0);
+
+/// <summary>A drawing's floor plans: a point (x, y) of the drawing inside a floor's bounds is at
+/// (x * Scale + Shift[0], y * Scale + Shift[1]) in the model (metres, plot coordinates).</summary>
+public sealed record DrawingFrames(double Scale, IReadOnlyDictionary<string, string> Roles, IReadOnlyList<FloorFrame> Floors);
+
+/// <summary>One floor plan: its name, the floor numbers it stands for (a typical plan stands for several),
+/// its frame in drawing units [x0, y0, x1, y1] and its shift in metres.</summary>
+public sealed record FloorFrame(string? Name, IReadOnlyList<int> Nums, double[] Bounds, double[] Shift);
 
 /// <summary>One layer of the drawing: its role (null = not understood) and where the role came from
 /// (predcr, user, suggested by Nemotron, or convention).</summary>

@@ -287,7 +287,9 @@ def test_drawing_endpoint_serves_floor_vectors(tmp_path):
         c.post(f"/api/projects/{pid}/dxf", content=data)
         floors = c.get(f"/api/projects/{pid}/drawing").json()["floors"]
         model = c.get(f"/api/projects/{pid}/model").json()["model"]
+        frames = c.get(f"/api/projects/{pid}/drawing/frames").json()
     assert [f["nums"] for f in floors] == [[0], [1], list(range(2, 12))]
+    assert [f["nums"] for f in frames["floors"]] == [[0], [1], list(range(2, 12))]
     typical = floors[2]
     assert typical["paths"]["wall"] and typical["fills"] and typical["paths"]["furniture"]
     # The drawing sits where the model's rooms are (same per-floor alignment).
@@ -328,3 +330,31 @@ def test_floors_line_up_on_the_stair_core_when_a_floor_projects(tmp_path):
     balcony_room = next(s for s in model["spaces"] if s["name"] == "Balcony")
     fp_x0 = min(p[0] for p in model["building"]["footprint"])
     assert min(p[0] for p in balcony_room["polygon"]) == pytest.approx(fp_x0 - 1.5, abs=0.01)
+
+
+@pytest.mark.parametrize("name", NAMES)
+def test_frames_map_drawing_points_onto_the_model(name):
+    """AutoCAD live (P11.4): a room's drawing vertices × scale + its floor's shift = the model's
+    polygon, so the plug-in can measure edits in plot coordinates without the server."""
+    import ezdxf
+
+    from compliance.adapters.dxf import frames
+
+    path = REPO_ROOT / "fixtures" / "dxf" / f"{name}.dxf"
+    f = frames(path)
+    model, _ = read(path)
+    assert f["floors"] and all(len(fl["bounds"]) == 4 and fl["nums"] for fl in f["floors"])
+    assert "room" in f["roles"].values()
+    db = ezdxf.readfile(str(path)).entitydb
+    s = f["scale"]
+    for sp in model["spaces"][:10]:
+        pts = [(p[0], p[1]) for p in db[sp["source_id"]].get_points("xy")]
+        x0, y0 = pts[0]
+        fl = next(
+            fl for fl in f["floors"]
+            if fl["bounds"][0] <= x0 <= fl["bounds"][2] and fl["bounds"][1] <= y0 <= fl["bounds"][3]
+        )  # fmt: skip
+        moved = sorted(
+            (round(x * s + fl["shift"][0], 3), round(y * s + fl["shift"][1], 3)) for x, y in pts
+        )
+        assert moved == sorted((round(x, 3), round(y, 3)) for x, y in sp["polygon"][: len(pts)])

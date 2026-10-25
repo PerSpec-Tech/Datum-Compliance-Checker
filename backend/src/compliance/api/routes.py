@@ -304,6 +304,26 @@ def get_drawing(project_id: str, st: Store = Depends(store)) -> Any:
     return Response(_drawing_json(project_id, st), media_type="application/json")
 
 
+@router.get("/projects/{project_id}/drawing/frames")
+def get_drawing_frames(project_id: str, st: Store = Depends(store)) -> dict[str, Any]:
+    """Each floor plan's frame and alignment shift, and the layer roles (AutoCAD live, P11.4)."""
+    import json
+
+    from compliance.adapters.dxf import frames
+
+    project_or_404(project_id, st)
+    folder = drawing_dir(project_id, st)
+    path = folder / "drawing.dxf"
+    if not path.exists():
+        raise HTTPException(404, "This project has no 2D drawing.")
+    roles = {}
+    if (folder / "suggested.json").exists():
+        roles = _roles(json.loads((folder / "suggested.json").read_text("utf-8")))
+    if (folder / "roles.json").exists():
+        roles |= json.loads((folder / "roles.json").read_text("utf-8"))
+    return frames(path, roles)
+
+
 def _drawing_json(project_id: str, st: Store) -> bytes:
     import json
 
