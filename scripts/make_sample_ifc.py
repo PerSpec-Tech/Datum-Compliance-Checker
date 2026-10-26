@@ -51,6 +51,10 @@ from compliance.config import REPO_ROOT
 
 NAMES = ["compliant_house", "violating_apartment", "demo_apartment", "demo_house"]
 WEB_SAMPLES = {"demo_apartment"}  # what the web app offers under "Try a sample"
+# IfcGeometricRepresentationContext.TrueNorth per sample (degrees the plan is turned anticlockwise
+# from north). The tower's front (its south side in the model) faces Gokhale Path, which runs about
+# 11° west of north there, so its site setup starts lined up with the street.
+TRUE_NORTH = {"demo_apartment": -79.0}
 OUT = REPO_ROOT / "fixtures" / "ifc"
 WEB = REPO_ROOT / "web" / "public" / "samples"
 
@@ -356,6 +360,10 @@ def build(name: str) -> None:
     volume = ifcopenshell.api.unit.add_si_unit(f, unit_type="VOLUMEUNIT")
     ifcopenshell.api.unit.assign_unit(f, units=[length, area, volume])
     model_ctx = ifcopenshell.api.context.add_context(f, context_type="Model")
+    if name in TRUE_NORTH:
+        # north in model axes for a plan turned t anticlockwise from north: (sin t, cos t)
+        t = math.radians(TRUE_NORTH[name])
+        model_ctx.TrueNorth = f.createIfcDirection((round(math.sin(t), 6), round(math.cos(t), 6)))
     body = ifcopenshell.api.context.add_context(
         f,
         context_type="Model",

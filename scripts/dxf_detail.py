@@ -11,7 +11,7 @@ import math
 from ezdxf import const
 from ezdxf.enums import TextEntityAlignment
 from shapely.geometry import LineString, Point, Polygon, box
-from shapely.ops import linemerge, unary_union
+from shapely.ops import linemerge, substring, unary_union
 
 EXT_T, INT_T = 0.23, 0.115
 LAYERS = {
@@ -87,9 +87,11 @@ def _blocks(doc) -> None:
     if (b := blk("WC")) is not None:
         b.add_lwpolyline([(-0.22, 0.25), (0.22, 0.25), (0.22, 0.42), (-0.22, 0.42)], close=True)
         b.add_ellipse((0, -0.02), major_axis=(0, 0.27), ratio=0.68)
-    if (b := blk("BASIN")) is not None:
+    if (b := blk("BASIN")) is not None:  # counter-top basin: slab, bowl, drain and tap at the wall (+y)
         b.add_lwpolyline([(-0.28, -0.2), (0.28, -0.2), (0.28, 0.2), (-0.28, 0.2)], close=True)
-        b.add_ellipse((0, -0.02), major_axis=(0.2, 0), ratio=0.7)
+        b.add_lwpolyline([(-0.19, -0.14), (0.19, -0.14), (0.19, 0.1), (-0.19, 0.1)], close=True)
+        b.add_circle((0, -0.02), 0.025)
+        b.add_line((0, 0.1), (0, 0.17))
     if (b := blk("CAR")) is not None:
         b.add_lwpolyline([(-1.25, -2.5), (1.25, -2.5), (1.25, 2.5), (-1.25, 2.5)], close=True)
         b.add_lwpolyline([(-0.85, -2.1), (0.85, -2.1), (0.85, 2.1), (-0.85, 2.1)], close=True)
@@ -185,6 +187,7 @@ def floor(msp, spaces, doors, T, frame, title) -> None:
 
     # Windows: on the longest stretch of outer wall of each habitable room, kitchen or shop.
     door_lines = [d[0] for d in doors]
+    windows = []
     for s in spaces:
         if s["usage"]["value"] not in WINDOW_USES:
             continue
@@ -209,6 +212,7 @@ def floor(msp, spaces, doors, T, frame, title) -> None:
         mid = ((x0 + x1) / 2, (y0 + y1) / 2)
         cuts.append(_rect(mid, u, width / 2, 0.25))
         opening = _rect(mid, u, width / 2, EXT_T / 2)
+        windows.append(opening)
         _pl(msp, [T(p) for p in _ring(opening.exterior)], "_Window")
         for off in (-0.03, 0.03):
             a = (mid[0] - u[0] * width / 2 - u[1] * off, mid[1] - u[1] * width / 2 + u[0] * off)
@@ -233,7 +237,7 @@ def floor(msp, spaces, doors, T, frame, title) -> None:
         _text(msp, f"{p.area:.2f} m²", T((c.x, c.y - (0.22 if small else 0.32))), "TEXT", 0.14 if small else 0.18)
         if not small and abs(p.area - (x1 - x0) * (y1 - y0)) < 1e-6:
             _text(msp, f"{(x1 - x0):.2f} × {(y1 - y0):.2f}", T((c.x, c.y - 0.6)), "TEXT", 0.15)
-        _furnish(msp, s["usage"]["value"], p, T)
+        _furnish(msp, s["usage"]["value"], p, T, doors, windows)
 
     # Dimensions in mm: overall width and depth, and a chain along the front.
     ox0, oy0, ox1, oy1 = outline.bounds
@@ -257,33 +261,155 @@ def _moved(geom, T):
     return translate(geom, dx, dy)
 
 
-def _furnish(msp, use, p, T):
+# Furniture footprints (width along the wall, depth into the room) with the back at the block's +y.
+_SIZE = {"BED-D": (1.6, 2.0), "SOFA-3": (2.1, 0.84), "WC": (0.44, 0.69), "BASIN": (0.56, 0.4)}
+# Block rotation that puts the back (+y) against each wall of the room's bounding box.
+_WALL_ROT = {"top": 0.0, "left": 90.0, "bottom": 180.0, "right": 270.0}
+
+
+def _door_zones(p, doors):
+    """Where a room must stay clear: in front of each of its doors, as deep as the door is wide
+    (the swing on one side, the way through on the other)."""
+    zones = []
+    for line, width, _ in doors:
+        if p.exterior.distance(line.interpolate(0.5, normalized=True)) > 0.05:
+            continue
+        # `line` is the whole wall the door is on; the door itself is `width` wide at its middle.
+        half = min(0.5, (width / 2 + 0.05) / max(line.length, 1e-9))
+        opening = substring(line, 0.5 - half, 0.5 + half, normalized=True)
+        zones.append(opening.buffer(width + 0.1, cap_style=2).intersection(p))
+    return unary_union(zones) if zones else Polygon()
+
+
+def _door_walls(p, doors):
+    x0, y0, x1, y1 = p.bounds
+    sides = set()
+    for line, _, _ in doors:
+        m = line.interpolate(0.5, normalized=True)
+        if p.exterior.distance(m) > 0.05:
+            continue
+        for side, d in (("bottom", m.y - y0), ("top", y1 - m.y), ("left", m.x - x0), ("right", x1 - m.x)):
+            if abs(d) < 0.05:
+                sides.add(side)
+    return sides
+
+
+def _against(p, name, side, where):
+    """A block's insertion point and footprint with its back on `side`, at `where` along the wall
+    (0 = start, 0.5 = centred, 1 = end), clear of the wall by a few centimetres."""
+    x0, y0, x1, y1 = p.bounds
+    fw, fd = _SIZE[name]
+    gap = INT_T / 2 + 0.02
+    if side in ("top", "bottom"):
+        x = x0 + gap + fw / 2 + where * max(0.0, (x1 - x0) - 2 * gap - fw)
+        y = y1 - gap - fd / 2 if side == "top" else y0 + gap + fd / 2
+        foot = box(x - fw / 2, y - fd / 2, x + fw / 2, y + fd / 2)
+    else:
+        y = y0 + gap + fw / 2 + where * max(0.0, (y1 - y0) - 2 * gap - fw)
+        x = x0 + gap + fd / 2 if side == "left" else x1 - gap - fd / 2
+        foot = box(x - fd / 2, y - fw / 2, x + fd / 2, y + fw / 2)
+    return (x, y), foot
+
+
+def _place(p, name, avoid, door_walls, label, positions=(0.5,), opposite=True):
+    """The best spot for a block against a wall: inside the room, clear of `avoid` (door zones and
+    furniture already placed), preferring walls without a door (and the one facing the door), then
+    clear of the room's label, then centred. None if nothing fits."""
+    facing = {"top": "bottom", "bottom": "top", "left": "right", "right": "left"}
+    best = None
+    for side in ("top", "bottom", "left", "right"):
+        for where in positions:
+            (x, y), foot = _against(p, name, side, where)
+            if not p.buffer(1e-6).contains(foot) or foot.intersection(avoid).area > 1e-4:
+                continue
+            score = (
+                (0 if side not in door_walls else 2)
+                + (0 if not opposite or not door_walls or facing[side] in door_walls else 1)
+                + foot.intersection(label).area * 2
+                + abs(where - 0.5) * 0.6
+            )
+            if best is None or score < best[0]:
+                best = (score, (x, y), _WALL_ROT[side], foot)
+    return best[1:] if best else None
+
+
+def _furnish(msp, use, p, T, doors=(), windows=()):
     x0, y0, x1, y1 = p.bounds
     w, h = x1 - x0, y1 - y0
     cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+    zones = _door_zones(p, doors)
+    door_walls = _door_walls(p, doors)
+    # Nothing tall stands in front of a window (a kitchen counter under one is fine).
+    glass = unary_union([g.buffer(0.35) for g in windows]).intersection(p) if windows else Polygon()
+    blocked = zones.union(glass)
+    c = p.centroid
+    label = box(c.x - 0.9, c.y - 0.7, c.x + 0.9, c.y + 0.35)  # name, area and size texts
 
-    def put(name, x, y, rot=0.0):
-        msp.add_blockref(name, T((x, y)), dxfattribs={"layer": "FURNITURE", "rotation": rot})
+    def put(name, at, rot=0.0):
+        msp.add_blockref(name, T(at), dxfattribs={"layer": "FURNITURE", "rotation": rot})
 
+    def place(name, avoid, positions=(0.5,), opposite=True):
+        spot = _place(p, name, avoid, door_walls, label, positions, opposite)
+        if spot:
+            put(name, spot[0], spot[1])
+        return spot
+
+    along = (0.5, 0.25, 0.75, 0.0, 1.0)
     if use == "bedroom" and w >= 2.6 and h >= 2.6:
-        put("BED-D", cx, y1 - 1.15) if h >= w else put("BED-D", x1 - 1.15, cy, 90)
+        place("BED-D", blocked, along, opposite=False)
     elif use == "living" and w >= 2.6 and h >= 2.4:
-        put("SOFA-3", cx, y0 + 0.6)
+        place("SOFA-3", zones, along, opposite=False)  # low enough to sit under a window
     elif use == "habitable" and w >= 2.6 and h >= 2.6:
-        put("DINING-6", cx, cy)
+        # The table (long side along the room) in the free half: clear of doors and the label.
+        rot, hx, hy = (90.0, 0.9, 0.75) if h > w else (0.0, 0.75, 0.9)
+        grid = [(x0 + i * 0.1, y0 + j * 0.1) for i in range(int(w * 10) + 1) for j in range(int(h * 10) + 1)]
+        for x, y in sorted(grid, key=lambda q: math.hypot(q[0] - cx, q[1] - cy)):
+            foot = box(x - hx - 0.15, y - hy - 0.15, x + hx + 0.15, y + hy + 0.15)
+            if p.buffer(-0.1).contains(foot) and foot.intersection(zones).area < 1e-4 and foot.intersection(label).area < 1e-4:
+                put("DINING-6", (x, y), rot)
+                break
     elif use == "kitchen" and w >= 1.4 and h >= 1.4:
-        counter = Polygon([(x0, y0), (x1, y0), (x1, y0 + 0.6), (x0 + 0.6, y0 + 0.6), (x0 + 0.6, y1), (x0, y1)])
-        _pl(msp, [T(q) for q in _ring(counter.intersection(p).exterior)], "FURNITURE")
+        # A 600 mm counter along the two adjacent walls without a door (or the fewest), never in front of one.
+        gap = INT_T / 2 + 0.02
+        strips = {
+            "bottom": box(x0 + gap, y0 + gap, x1 - gap, y0 + gap + 0.6),
+            "top": box(x0 + gap, y1 - gap - 0.6, x1 - gap, y1 - gap),
+            "left": box(x0 + gap, y0 + gap, x0 + gap + 0.6, y1 - gap),
+            "right": box(x1 - gap - 0.6, y0 + gap, x1 - gap, y1 - gap),
+        }
+        pairs = [("bottom", "left"), ("left", "top"), ("top", "right"), ("right", "bottom")]
+        a, b = min(pairs, key=lambda s: (len(set(s) & door_walls), -sum(strips[k].difference(zones).area for k in s)))
+        counter = unary_union([strips[a], strips[b]]).difference(zones.buffer(0.05))
+        pieces = [g for g in getattr(counter, "geoms", [counter]) if g.geom_type == "Polygon" and g.area >= 0.72]
+        for g in pieces:
+            _pl(msp, [T(q) for q in _ring(g.exterior)], "FURNITURE")
+        if pieces:
+            # Sink and a two-burner hob on the longest run, so the counter reads as a kitchen.
+            run = max(pieces, key=lambda g: g.area)
+            rx0, ry0, rx1, ry1 = run.bounds
+            horizontal = rx1 - rx0 >= ry1 - ry0
+            length = (rx1 - rx0) if horizontal else (ry1 - ry0)
+
+            def at(t):  # a point on the run's centre line, t metres from its start
+                return (rx0 + t, (ry0 + ry1) / 2) if horizontal else ((rx0 + rx1) / 2, ry0 + t)
+
+            sx, sy = at(min(0.5, length / 2))
+            hw, hh = (0.25, 0.2) if horizontal else (0.2, 0.25)
+            _pl(msp, [T(q) for q in ((sx - hw, sy - hh), (sx + hw, sy - hh), (sx + hw, sy + hh), (sx - hw, sy + hh))], "FURNITURE")
+            msp.add_circle(T((sx, sy)), 0.05, dxfattribs={"layer": "FURNITURE"})
+            if length >= 1.6:
+                for t in (length - 0.65, length - 0.35):
+                    msp.add_circle(T(at(t)), 0.11, dxfattribs={"layer": "FURNITURE"})
     elif use in ("bathroom", "wc") and w >= 0.9 and h >= 1.2:
-        put("WC", cx, y1 - 0.45, 180)
-        if use == "bathroom" and h >= 1.8:
-            put("BASIN", cx, y0 + 0.3)
+        wc = place("WC", blocked, positions=(0.0, 1.0, 0.5))
+        if wc and use == "bathroom" and w * h >= 2.5:
+            place("BASIN", blocked.union(wc[2].buffer(0.15)), positions=(0.0, 1.0, 0.5), opposite=False)
     elif use == "parking" and w >= 5 and h >= 5:
         n = int((w - 1.0) // 2.5)
         for i in range(n):
             bay = box(x0 + 0.5 + i * 2.5, y1 - 5.5, x0 + 0.5 + (i + 1) * 2.5, y1 - 0.5)
             _pl(msp, [T(q) for q in _ring(bay.exterior)], "_Parking")
-            put("CAR", bay.centroid.x, bay.centroid.y)
+            put("CAR", (bay.centroid.x, bay.centroid.y))
 
 
 # ---------------------------------------------------------------------------- site plan and section

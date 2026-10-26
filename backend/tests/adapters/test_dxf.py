@@ -100,17 +100,21 @@ def test_same_results_as_3d_except_what_a_plan_cannot_show(name, rulebase):
 def test_apartment_finds_the_planted_issues_a_plan_can_show(rulebase):
     model, _ = read(REPO_ROOT / "fixtures" / "dxf" / "demo_apartment.dxf")
     model, _ = apply_brief(model, declared(fixture("demo_apartment")))
-    fails = sorted(
-        r["rule_id"]
+    fails = [
+        r
         for r in evaluate(model, rulebase.select(["nbc2016", "udcpr2020", "pmc"]), rulebase.tables)
         if r["status"] == "fail"
-    )
-    assert fails == [
+    ]
+    assert sorted({r["rule_id"] for r in fails}) == [
         "pmc.ch10.height-road-width",
         "pmc.tod.max-fsi", "pmc.tod.mixed-use-road-width", "pmc.tod.tenement-min-carpet",
         "udcpr2020.ch6.front-margin", "udcpr2020.ch6.side-rear-margin",
-        "udcpr2020.ch9.exit-door-width", "udcpr2020.ch9.stair-width-residential",
+        "udcpr2020.ch9.exit-door-width", "udcpr2020.ch9.habitable-height-min",
+        "udcpr2020.ch9.kitchen-height-min", "udcpr2020.ch9.stair-width-residential",
     ]  # fmt: skip
+    # The squeezed Floor 1 shows in the section (2.8 m floor to floor): only its rooms are low.
+    low = [r for r in fails if r["rule_id"].endswith("height-min")]
+    assert low and all(r["element"]["id"].startswith("L1-") for r in low)
 
 
 def test_layer_report_names_predcr_roles_and_unknown_layers(tmp_path):

@@ -557,3 +557,32 @@ def read(path: str | Path) -> tuple[dict[str, Any], list[str]]:
     if r.warnings:
         model["_notes"] = list(dict.fromkeys(r.warnings))
     return model, r.warnings
+
+
+def north_deg(path: str | Path) -> float | None:
+    """The model's true north as the site setup's rotation (degrees, anticlockwise: how far the
+    model's +y is turned from north towards west), from the model context's TrueNorth. None when
+    the file doesn't say."""
+    ifc = ifcopenshell.open(str(path))
+    for ctx in ifc.by_type("IfcGeometricRepresentationContext"):
+        if ctx.is_a("IfcGeometricRepresentationSubContext") or ctx.ContextType not in (
+            None,
+            "Model",
+        ):
+            continue
+        tn = getattr(ctx, "TrueNorth", None)
+        if tn is None:
+            continue
+        x, y = (list(tn.DirectionRatios) + [0.0, 0.0])[:2]
+        if abs(x) + abs(y) < 1e-9:
+            continue
+        return _angle(x, y)
+    return None
+
+
+def _angle(nx: float, ny: float) -> float:
+    """North (nx, ny) in model axes → rotation: the model vector R(-t)·(0, 1) = (sin t, cos t)."""
+    import math
+
+    t = math.degrees(math.atan2(nx, ny))
+    return round(((t + 180) % 360) - 180, 2)

@@ -156,6 +156,59 @@ def search(
     return places
 
 
+PHOTON = "https://photon.komoot.io/api/"
+# Photon place types, most precise first: an address is placed at once, an area is zoomed to.
+_PRECISE = {"house", "building", "street"}
+
+
+def suggest(
+    query: str, authority_id: str, store: Store | None = None, http: httpx.Client | None = None
+) -> list[dict[str, Any]]:
+    """Search-as-you-type suggestions inside the authority's area (web site setup).
+
+    Photon (OSM data, built for autocomplete) rather than Nominatim, whose usage policy forbids
+    autocomplete. Each place carries its extent [west, south, east, north] when it is an area,
+    so the map can zoom to a locality, and `precise` when it is an address or a street."""
+    a = next((x for x in authorities() if x["id"] == authority_id), None)
+    if a is None:
+        raise ValueError(f"unknown authority {authority_id!r}")
+    q = " ".join(query.split())
+    key = f"photon:{authority_id}:{q.lower()}"
+    if store is not None and (hit := store.cache_get(key, CACHE_AGE)) is not None:
+        return hit["places"]
+    b = a["bbox"]
+    client = http or httpx.Client(timeout=6)
+    resp = client.get(
+        PHOTON,
+        params={
+            "q": q, "limit": 6, "lang": "en",
+            "lat": (b["south"] + b["north"]) / 2, "lon": (b["west"] + b["east"]) / 2,
+            "bbox": f"{b['west']},{b['south']},{b['east']},{b['north']}",
+        },
+        headers={"User-Agent": get_settings().nominatim_user_agent},
+    )  # fmt: skip
+    resp.raise_for_status()
+    places, seen = [], set()
+    for f in resp.json().get("features", []):
+        p, (lon, lat) = f.get("properties", {}), f["geometry"]["coordinates"]
+        parts = [p.get("name") or " ".join(x for x in (p.get("housenumber"), p.get("street")) if x)]
+        parts += [p.get(k) for k in ("street", "district", "locality", "city") if p.get(k)]
+        label = ", ".join(dict.fromkeys(x for x in parts if x))
+        if not label or label in seen:
+            continue
+        seen.add(label)
+        ext = p.get("extent")  # [minLon, maxLat, maxLon, minLat]
+        places.append({
+            "label": label, "lat": round(lat, 6), "lon": round(lon, 6),
+            "kind": p.get("type") or p.get("osm_value") or "place",
+            "precise": (p.get("type") in _PRECISE) or ext is None,
+            "extent": [ext[0], ext[3], ext[2], ext[1]] if ext else None,
+        })  # fmt: skip
+    if store is not None:
+        store.cache_put(key, "photon", {"q": q, "authority": authority_id}, {"places": places})
+    return places
+
+
 def _matches(authority: dict[str, Any], address: dict[str, Any]) -> bool:
     m = authority.get("match") or {}
     names = {

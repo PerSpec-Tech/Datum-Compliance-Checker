@@ -6,12 +6,12 @@ Unlike the small test fixtures, these are complete buildings: every floor is til
 connect the rooms (the IFC generator places them in the walls between `from_space_id` and
 `to_space_id`), and the site carries everything the rules need, so a check asks no questions.
 
-demo_apartment  G+11 mixed-use tower (36.6 m) near a metro station (TOD zone), 10.5 m DP road, on a
+demo_apartment  G+11 mixed-use tower (36.4 m) near a metro station (TOD zone), 10.5 m DP road, on a
   50 × 51 m plot. Planted failures: over 36 m on a road under 12 m (PMC 10.1.1) · front margin
-  2.5 m < 3.0 · east side margin 7.0 m < 7.32 (H/5) · FSI 2.60 > 2.5 (TOD) · mixed use needs a
+  2.5 m < 3.0 · east side margin 7.0 m < 7.28 (H/5) · FSI 2.60 > 2.5 (TOD) · mixed use needs a
   12 m road · stair 1.0 m < 1.2 m (building over 15 m) · entrance door 0.85 m
-  < 0.90 m · Shop 2 clear height 2.9 m < 3.0 · Flat 302 Bedroom 2 clear height 2.6 m < 2.75 ·
-  Flat 105 studio carpet 24 sq.m < 25 sq.m (TOD).
+  < 0.90 m · Floor 1 built 2.8 m floor-to-floor, so every room is 2.6 m clear: habitable rooms
+  < 2.75 and kitchens < 2.75 · Flat 105 studio carpet 24 sq.m < 25 sq.m (TOD).
 demo_house      Two-storey bungalow on a 9 m road. Planted failures: east side margin 1.1 m < 1.5 m
   (Table 6-D) · entrance door 0.8 m < 0.9 m.
 """
@@ -166,11 +166,11 @@ def place(b, level, side, row, sid, name, u0, v0, u1, v1, h):
     return b.room(sid, name, level, x0, y0, x1, y1, h)
 
 
-def two_bhk(b, level, side, flat, corridor, bed2_h=2.8):
+def two_bhk(b, level, side, flat, corridor):
     p = f"{flat}-"
     n = f"Flat {flat}"
     living = place(b, level, side, "front", p + "LIV", f"{n} Living", 0, 0, 4.5, 5, 2.8)
-    bed2 = place(b, level, side, "front", p + "BR2", f"{n} Bedroom 2", 4.5, 0, 8.5, 3.5, bed2_h)
+    bed2 = place(b, level, side, "front", p + "BR2", f"{n} Bedroom 2", 4.5, 0, 8.5, 3.5, 2.8)
     passage = place(b, level, side, "front", p + "PAS", f"{n} Passage", 4.5, 3.5, 8.5, 5, 2.8)
     bed1 = place(b, level, side, "front", p + "BR1", f"{n} Bedroom 1", 0, 5, 4, 9, 2.8)
     bath = place(b, level, side, "front", p + "BTH", f"{n} Bath", 4, 5, 6, 7, 2.4)
@@ -237,20 +237,21 @@ def core(b, level, h):
 
 
 UPPER = 11  # floors above the ground floor (G+11)
+LOW_FLOOR = 2.8  # Floor 1 floor-to-floor (typical 3.0): with a 0.2 m slab, every room is 2.6 m clear
 
 
 def apartment() -> dict:
     b = Building("demo_apartment")
-    levels = [("L0", "Ground Floor", 0.0)] + [
-        (f"L{i}", f"Floor {i}", 3.6 + 3.0 * (i - 1)) for i in range(1, UPPER + 1)
-    ]
-    roof = 3.6 + 3.0 * UPPER  # 36.6 m: over 36 m on a 10.5 m road (PMC 10.1.1 needs 12 m)
+    # Ground 3.6 m, Floor 1 squeezed to 2.8 m, then 3.0 m storeys.
+    elevation = {0: 0.0, 1: 3.6, **{i: 3.6 + LOW_FLOOR + 3.0 * (i - 2) for i in range(2, UPPER + 1)}}
+    levels = [("L0", "Ground Floor", 0.0)] + [(f"L{i}", f"Floor {i}", elevation[i]) for i in range(1, UPPER + 1)]
+    roof = elevation[UPPER] + 3.0  # 36.4 m: over 36 m on a 10.5 m road (PMC 10.1.1 needs 12 m)
     f0, f1 = ROWS["front"]
 
     # Ground: two shops on the road, the residential entrance between them, stilt parking behind.
     shop1 = b.room("G-SH1", "Shop 1", "L0", W0, f0, W1, f1, 3.3)
     entrance = b.room("G-ENT", "Entrance Lobby", "L0", C0, f0, C1, f1, 3.3)
-    shop2 = b.room("G-SH2", "Shop 2", "L0", E0, f0, E1, f1, 2.9)  # mezzanine soffit: too low
+    shop2 = b.room("G-SH2", "Shop 2", "L0", E0, f0, E1, f1, 3.3)
     lobby = core(b, "L0", 3.3)
     parking = b.room("G-PRK", "Parking", "L0", W0, ROWS["rear_a"][0], E1, ROWS["rear_b"][1], 3.3)
     b.door("L0", shop1, None, 2.4, 2.4, exit_=True)
@@ -270,11 +271,15 @@ def apartment() -> dict:
         b.door(lv, front, lobby, 1.2)
         b.door(lv, lobby, rear, 1.2)
         two_bhk(b, lv, "W", f"{i}01", front)
-        two_bhk(b, lv, "E", f"{i}02", front, bed2_h=2.6 if i == 3 else 2.8)  # dropped ceiling
+        two_bhk(b, lv, "E", f"{i}02", front)
         one_bhk(b, lv, "W", "rear_a", f"{i}03", rear)
         one_bhk(b, lv, "E", "rear_a", f"{i}04", rear)
         (studio if i == 1 else one_bhk)(b, lv, "W", "rear_b", f"{i}05", rear)
         one_bhk(b, lv, "E", "rear_b", f"{i}06", rear)
+    # The squeezed storey: every room on Floor 1 loses 0.2 m (wet rooms with a dropped ceiling keep 2.4 m).
+    for sp in b.spaces:
+        if sp["level_id"] == "L1":
+            sp["clear_height_m"] = min(sp["clear_height_m"], LOW_FLOOR - 0.2)
 
     width = E1 - W0
     upper = width * (ROWS["rear_b"][1] - f0)

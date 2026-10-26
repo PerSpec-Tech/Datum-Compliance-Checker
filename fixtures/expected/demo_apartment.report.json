@@ -5,8 +5,8 @@
   "ruleset_version": "volatile",
   "created_at": "2000-01-01T00:00:00+00:00",
   "summary": {
-    "pass": 601,
-    "fail": 10,
+    "pass": 584,
+    "fail": 27,
     "unverifiable": 0,
     "not_applicable": 4,
     "advisory": 1
@@ -293,8 +293,8 @@
       },
       "status": "fail",
       "measured": 7.0,
-      "limit": 7.32,
-      "message": "Margin on this side is 7.00 m; minimum is 7.32 m (Table 6-D, or H/5 above its height limit).",
+      "limit": 7.279999999999999,
+      "message": "Margin on this side is 7.00 m; minimum is 7.28 m (Table 6-D, or H/5 above its height limit).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -344,7 +344,7 @@
         "checked": null
       },
       "fix_by": {
-        "amount": 0.32,
+        "amount": 0.28,
         "unit": "m",
         "direction": "increase"
       },
@@ -361,8 +361,8 @@
       },
       "status": "pass",
       "measured": 17.5,
-      "limit": 7.32,
-      "message": "Margin on this side is 17.50 m; minimum is 7.32 m (Table 6-D, or H/5 above its height limit).",
+      "limit": 7.279999999999999,
+      "message": "Margin on this side is 17.50 m; minimum is 7.28 m (Table 6-D, or H/5 above its height limit).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -425,8 +425,8 @@
       },
       "status": "pass",
       "measured": 24.3,
-      "limit": 7.32,
-      "message": "Margin on this side is 24.30 m; minimum is 7.32 m (Table 6-D, or H/5 above its height limit).",
+      "limit": 7.279999999999999,
+      "message": "Margin on this side is 24.30 m; minimum is 7.28 m (Table 6-D, or H/5 above its height limit).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -6818,10 +6818,10 @@
         "id": "101-BR1",
         "source_id": "demo-sp-101-BR1"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Clear height is 2.80 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "message": "Clear height is 2.60 m; minimum is 2.75 m (2.40 m if air-conditioned).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -6842,7 +6842,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -6854,10 +6858,10 @@
         "id": "101-BR2",
         "source_id": "demo-sp-101-BR2"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Clear height is 2.80 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "message": "Clear height is 2.60 m; minimum is 2.75 m (2.40 m if air-conditioned).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -6878,7 +6882,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -6890,10 +6898,10 @@
         "id": "101-LIV",
         "source_id": "demo-sp-101-LIV"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Clear height is 2.80 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "message": "Clear height is 2.60 m; minimum is 2.75 m (2.40 m if air-conditioned).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -6914,7 +6922,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -6926,10 +6938,10 @@
         "id": "102-BR1",
         "source_id": "demo-sp-102-BR1"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Clear height is 2.80 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "message": "Clear height is 2.60 m; minimum is 2.75 m (2.40 m if air-conditioned).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -6950,7 +6962,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -6962,10 +6978,10 @@
         "id": "102-BR2",
         "source_id": "demo-sp-102-BR2"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Clear height is 2.80 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "message": "Clear height is 2.60 m; minimum is 2.75 m (2.40 m if air-conditioned).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -6986,7 +7002,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -6998,10 +7018,10 @@
         "id": "102-LIV",
         "source_id": "demo-sp-102-LIV"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Clear height is 2.80 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "message": "Clear height is 2.60 m; minimum is 2.75 m (2.40 m if air-conditioned).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -7022,7 +7042,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -7034,10 +7058,10 @@
         "id": "103-BR",
         "source_id": "demo-sp-103-BR"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Clear height is 2.80 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "message": "Clear height is 2.60 m; minimum is 2.75 m (2.40 m if air-conditioned).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -7058,7 +7082,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -7070,10 +7098,10 @@
         "id": "103-LIV",
         "source_id": "demo-sp-103-LIV"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Clear height is 2.80 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "message": "Clear height is 2.60 m; minimum is 2.75 m (2.40 m if air-conditioned).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -7094,7 +7122,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -7106,10 +7138,10 @@
         "id": "104-BR",
         "source_id": "demo-sp-104-BR"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Clear height is 2.80 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "message": "Clear height is 2.60 m; minimum is 2.75 m (2.40 m if air-conditioned).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -7130,7 +7162,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -7142,10 +7178,10 @@
         "id": "104-LIV",
         "source_id": "demo-sp-104-LIV"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Clear height is 2.80 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "message": "Clear height is 2.60 m; minimum is 2.75 m (2.40 m if air-conditioned).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -7166,7 +7202,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -7178,10 +7218,10 @@
         "id": "105-LIV",
         "source_id": "demo-sp-105-LIV"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Clear height is 2.80 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "message": "Clear height is 2.60 m; minimum is 2.75 m (2.40 m if air-conditioned).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -7202,7 +7242,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -7214,10 +7258,10 @@
         "id": "106-BR",
         "source_id": "demo-sp-106-BR"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Clear height is 2.80 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "message": "Clear height is 2.60 m; minimum is 2.75 m (2.40 m if air-conditioned).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -7238,7 +7282,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -7250,10 +7298,10 @@
         "id": "106-LIV",
         "source_id": "demo-sp-106-LIV"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Clear height is 2.80 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "message": "Clear height is 2.60 m; minimum is 2.75 m (2.40 m if air-conditioned).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -7274,7 +7322,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -8438,10 +8490,10 @@
         "id": "302-BR2",
         "source_id": "demo-sp-302-BR2"
       },
-      "status": "fail",
-      "measured": 2.6,
+      "status": "pass",
+      "measured": 2.8,
       "limit": 2.75,
-      "message": "Clear height is 2.60 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "message": "Clear height is 2.80 m; minimum is 2.75 m (2.40 m if air-conditioned).",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -8462,11 +8514,7 @@
         "url": null,
         "checked": null
       },
-      "fix_by": {
-        "amount": 0.15,
-        "unit": "m",
-        "direction": "increase"
-      },
+      "fix_by": null,
       "guidance_note": null
     },
     {
@@ -12042,10 +12090,10 @@
         "id": "101-KIT",
         "source_id": "demo-sp-101-KIT"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Kitchen height is 2.80 m; minimum is 2.75 m.",
+      "message": "Kitchen height is 2.60 m; minimum is 2.75 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -12066,7 +12114,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -12078,10 +12130,10 @@
         "id": "102-KIT",
         "source_id": "demo-sp-102-KIT"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Kitchen height is 2.80 m; minimum is 2.75 m.",
+      "message": "Kitchen height is 2.60 m; minimum is 2.75 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -12102,7 +12154,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -12114,10 +12170,10 @@
         "id": "103-KIT",
         "source_id": "demo-sp-103-KIT"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Kitchen height is 2.80 m; minimum is 2.75 m.",
+      "message": "Kitchen height is 2.60 m; minimum is 2.75 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -12138,7 +12194,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -12150,10 +12210,10 @@
         "id": "104-KIT",
         "source_id": "demo-sp-104-KIT"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Kitchen height is 2.80 m; minimum is 2.75 m.",
+      "message": "Kitchen height is 2.60 m; minimum is 2.75 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -12174,7 +12234,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -12186,10 +12250,10 @@
         "id": "105-KIT",
         "source_id": "demo-sp-105-KIT"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Kitchen height is 2.80 m; minimum is 2.75 m.",
+      "message": "Kitchen height is 2.60 m; minimum is 2.75 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -12210,7 +12274,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -12222,10 +12290,10 @@
         "id": "106-KIT",
         "source_id": "demo-sp-106-KIT"
       },
-      "status": "pass",
-      "measured": 2.8,
+      "status": "fail",
+      "measured": 2.5999999999999996,
       "limit": 2.75,
-      "message": "Kitchen height is 2.80 m; minimum is 2.75 m.",
+      "message": "Kitchen height is 2.60 m; minimum is 2.75 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -12246,7 +12314,11 @@
         "url": null,
         "checked": null
       },
-      "fix_by": null,
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
       "guidance_note": null
     },
     {
@@ -14238,10 +14310,10 @@
         "id": "G-SH2",
         "source_id": "demo-sp-G-SH2"
       },
-      "status": "fail",
-      "measured": 2.9,
+      "status": "pass",
+      "measured": 3.3,
       "limit": 3.0,
-      "message": "Shop height is 2.90 m; minimum is 3.00 m.",
+      "message": "Shop height is 3.30 m; minimum is 3.00 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -14262,11 +14334,7 @@
         "url": null,
         "checked": null
       },
-      "fix_by": {
-        "amount": 0.1,
-        "unit": "m",
-        "direction": "increase"
-      },
+      "fix_by": null,
       "guidance_note": null
     },
     {
@@ -18081,9 +18149,9 @@
         "source_id": "demo-sp-101-BR1"
       },
       "status": "pass",
-      "measured": 2.8,
+      "measured": 2.5999999999999996,
       "limit": 4.5,
-      "message": "Clear height is 2.80 m; maximum is 4.50 m.",
+      "message": "Clear height is 2.60 m; maximum is 4.50 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -18117,9 +18185,9 @@
         "source_id": "demo-sp-101-BR2"
       },
       "status": "pass",
-      "measured": 2.8,
+      "measured": 2.5999999999999996,
       "limit": 4.5,
-      "message": "Clear height is 2.80 m; maximum is 4.50 m.",
+      "message": "Clear height is 2.60 m; maximum is 4.50 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -18153,9 +18221,9 @@
         "source_id": "demo-sp-101-LIV"
       },
       "status": "pass",
-      "measured": 2.8,
+      "measured": 2.5999999999999996,
       "limit": 4.5,
-      "message": "Clear height is 2.80 m; maximum is 4.50 m.",
+      "message": "Clear height is 2.60 m; maximum is 4.50 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -18189,9 +18257,9 @@
         "source_id": "demo-sp-102-BR1"
       },
       "status": "pass",
-      "measured": 2.8,
+      "measured": 2.5999999999999996,
       "limit": 4.5,
-      "message": "Clear height is 2.80 m; maximum is 4.50 m.",
+      "message": "Clear height is 2.60 m; maximum is 4.50 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -18225,9 +18293,9 @@
         "source_id": "demo-sp-102-BR2"
       },
       "status": "pass",
-      "measured": 2.8,
+      "measured": 2.5999999999999996,
       "limit": 4.5,
-      "message": "Clear height is 2.80 m; maximum is 4.50 m.",
+      "message": "Clear height is 2.60 m; maximum is 4.50 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -18261,9 +18329,9 @@
         "source_id": "demo-sp-102-LIV"
       },
       "status": "pass",
-      "measured": 2.8,
+      "measured": 2.5999999999999996,
       "limit": 4.5,
-      "message": "Clear height is 2.80 m; maximum is 4.50 m.",
+      "message": "Clear height is 2.60 m; maximum is 4.50 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -18297,9 +18365,9 @@
         "source_id": "demo-sp-103-BR"
       },
       "status": "pass",
-      "measured": 2.8,
+      "measured": 2.5999999999999996,
       "limit": 4.5,
-      "message": "Clear height is 2.80 m; maximum is 4.50 m.",
+      "message": "Clear height is 2.60 m; maximum is 4.50 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -18333,9 +18401,9 @@
         "source_id": "demo-sp-103-LIV"
       },
       "status": "pass",
-      "measured": 2.8,
+      "measured": 2.5999999999999996,
       "limit": 4.5,
-      "message": "Clear height is 2.80 m; maximum is 4.50 m.",
+      "message": "Clear height is 2.60 m; maximum is 4.50 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -18369,9 +18437,9 @@
         "source_id": "demo-sp-104-BR"
       },
       "status": "pass",
-      "measured": 2.8,
+      "measured": 2.5999999999999996,
       "limit": 4.5,
-      "message": "Clear height is 2.80 m; maximum is 4.50 m.",
+      "message": "Clear height is 2.60 m; maximum is 4.50 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -18405,9 +18473,9 @@
         "source_id": "demo-sp-104-LIV"
       },
       "status": "pass",
-      "measured": 2.8,
+      "measured": 2.5999999999999996,
       "limit": 4.5,
-      "message": "Clear height is 2.80 m; maximum is 4.50 m.",
+      "message": "Clear height is 2.60 m; maximum is 4.50 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -18441,9 +18509,9 @@
         "source_id": "demo-sp-105-LIV"
       },
       "status": "pass",
-      "measured": 2.8,
+      "measured": 2.5999999999999996,
       "limit": 4.5,
-      "message": "Clear height is 2.80 m; maximum is 4.50 m.",
+      "message": "Clear height is 2.60 m; maximum is 4.50 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -18477,9 +18545,9 @@
         "source_id": "demo-sp-106-BR"
       },
       "status": "pass",
-      "measured": 2.8,
+      "measured": 2.5999999999999996,
       "limit": 4.5,
-      "message": "Clear height is 2.80 m; maximum is 4.50 m.",
+      "message": "Clear height is 2.60 m; maximum is 4.50 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -18513,9 +18581,9 @@
         "source_id": "demo-sp-106-LIV"
       },
       "status": "pass",
-      "measured": 2.8,
+      "measured": 2.5999999999999996,
       "limit": 4.5,
-      "message": "Clear height is 2.80 m; maximum is 4.50 m.",
+      "message": "Clear height is 2.60 m; maximum is 4.50 m.",
       "missing_inputs": [],
       "facts_used": [
         {
@@ -19701,9 +19769,9 @@
         "source_id": "demo-sp-302-BR2"
       },
       "status": "pass",
-      "measured": 2.6,
+      "measured": 2.8,
       "limit": 4.5,
-      "message": "Clear height is 2.60 m; maximum is 4.50 m.",
+      "message": "Clear height is 2.80 m; maximum is 4.50 m.",
       "missing_inputs": [],
       "facts_used": [
         {

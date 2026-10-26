@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "_notes": [
-    "G+11 mixed-use tower (36.6 m) near a metro station (TOD zone), 10.5 m DP road, on a\n  50 × 51 m plot. Planted failures: over 36 m on a road under 12 m (PMC 10.1.1) · front margin\n  2.5 m < 3.0 · east side margin 7.0 m < 7.32 (H/5) · FSI 2.60 > 2.5 (TOD) · mixed use needs a\n  12 m road · stair 1.0 m < 1.2 m (building over 15 m) · entrance door 0.85 m\n  < 0.90 m · Shop 2 clear height 2.9 m < 3.0 · Flat 302 Bedroom 2 clear height 2.6 m < 2.75 ·\n  Flat 105 studio carpet 24 sq.m < 25 sq.m (TOD)."
+    "G+11 mixed-use tower (36.4 m) near a metro station (TOD zone), 10.5 m DP road, on a\n  50 × 51 m plot. Planted failures: over 36 m on a road under 12 m (PMC 10.1.1) · front margin\n  2.5 m < 3.0 · east side margin 7.0 m < 7.28 (H/5) · FSI 2.60 > 2.5 (TOD) · mixed use needs a\n  12 m road · stair 1.0 m < 1.2 m (building over 15 m) · entrance door 0.85 m\n  < 0.90 m · Floor 1 built 2.8 m floor-to-floor, so every room is 2.6 m clear: habitable rooms\n  < 2.75 and kitchens < 2.75 · Flat 105 studio carpet 24 sq.m < 25 sq.m (TOD)."
   ],
   "meta": {
     "source_kind": "manual",
@@ -244,70 +244,70 @@
       "id": "L2",
       "source_id": "demo-lvl-L2",
       "name": "Floor 2",
-      "elevation_m": 6.6,
+      "elevation_m": 6.4,
       "is_basement": false
     },
     {
       "id": "L3",
       "source_id": "demo-lvl-L3",
       "name": "Floor 3",
-      "elevation_m": 9.6,
+      "elevation_m": 9.4,
       "is_basement": false
     },
     {
       "id": "L4",
       "source_id": "demo-lvl-L4",
       "name": "Floor 4",
-      "elevation_m": 12.6,
+      "elevation_m": 12.4,
       "is_basement": false
     },
     {
       "id": "L5",
       "source_id": "demo-lvl-L5",
       "name": "Floor 5",
-      "elevation_m": 15.6,
+      "elevation_m": 15.4,
       "is_basement": false
     },
     {
       "id": "L6",
       "source_id": "demo-lvl-L6",
       "name": "Floor 6",
-      "elevation_m": 18.6,
+      "elevation_m": 18.4,
       "is_basement": false
     },
     {
       "id": "L7",
       "source_id": "demo-lvl-L7",
       "name": "Floor 7",
-      "elevation_m": 21.6,
+      "elevation_m": 21.4,
       "is_basement": false
     },
     {
       "id": "L8",
       "source_id": "demo-lvl-L8",
       "name": "Floor 8",
-      "elevation_m": 24.6,
+      "elevation_m": 24.4,
       "is_basement": false
     },
     {
       "id": "L9",
       "source_id": "demo-lvl-L9",
       "name": "Floor 9",
-      "elevation_m": 27.6,
+      "elevation_m": 27.4,
       "is_basement": false
     },
     {
       "id": "L10",
       "source_id": "demo-lvl-L10",
       "name": "Floor 10",
-      "elevation_m": 30.6,
+      "elevation_m": 30.4,
       "is_basement": false
     },
     {
       "id": "L11",
       "source_id": "demo-lvl-L11",
       "name": "Floor 11",
-      "elevation_m": 33.6,
+      "elevation_m": 33.4,
       "is_basement": false
     }
   ],
@@ -330,8 +330,8 @@
         33.5
       ]
     ],
-    "roof_top_m": 36.6,
-    "highest_point_m": 36.6
+    "roof_top_m": 36.4,
+    "highest_point_m": 36.4
   },
   "spaces": [
     {
@@ -410,7 +410,7 @@
         "note": "from room name"
       },
       "area_m2": 76.5,
-      "clear_height_m": 2.9,
+      "clear_height_m": 3.3,
       "polygon": [
         [
           34.5,
@@ -666,7 +666,7 @@
         "note": "from room name"
       },
       "area_m2": 15.3,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           32.8,
@@ -698,7 +698,7 @@
         "note": "from room name"
       },
       "area_m2": 17.5,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           24.3,
@@ -730,7 +730,7 @@
         "note": "from room name"
       },
       "area_m2": 12.5,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           27.8,
@@ -762,7 +762,7 @@
         "note": "from room name"
       },
       "area_m2": 33.5,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           30.3,
@@ -794,7 +794,7 @@
         "note": "from room name"
       },
       "area_m2": 6.25,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           37.0,
@@ -826,7 +826,7 @@
         "note": "from room name"
       },
       "area_m2": 6.25,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           37.0,
@@ -858,7 +858,7 @@
         "note": "from room name"
       },
       "area_m2": 17.5,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           39.5,
@@ -890,7 +890,7 @@
         "note": "from room name"
       },
       "area_m2": 28.9,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           32.8,
@@ -922,7 +922,7 @@
         "note": "from room name"
       },
       "area_m2": 22.5,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           24.3,
@@ -954,7 +954,7 @@
         "note": "from room name"
       },
       "area_m2": 14.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           28.8,
@@ -986,7 +986,7 @@
         "note": "from room name"
       },
       "area_m2": 6.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           28.8,
@@ -1018,7 +1018,7 @@
         "note": "from room name"
       },
       "area_m2": 16.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           24.3,
@@ -1114,7 +1114,7 @@
         "note": "from room name"
       },
       "area_m2": 10.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           30.3,
@@ -1146,7 +1146,7 @@
         "note": "from room name"
       },
       "area_m2": 22.5,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           38.5,
@@ -1178,7 +1178,7 @@
         "note": "from room name"
       },
       "area_m2": 14.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           34.5,
@@ -1210,7 +1210,7 @@
         "note": "from room name"
       },
       "area_m2": 6.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           34.5,
@@ -1242,7 +1242,7 @@
         "note": "from room name"
       },
       "area_m2": 16.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           39.0,
@@ -1338,7 +1338,7 @@
         "note": "from room name"
       },
       "area_m2": 10.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           34.5,
@@ -1370,7 +1370,7 @@
         "note": "from room name"
       },
       "area_m2": 20.25,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           24.3,
@@ -1402,7 +1402,7 @@
         "note": "from room name"
       },
       "area_m2": 10.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           28.8,
@@ -1434,7 +1434,7 @@
         "note": "from room name"
       },
       "area_m2": 8.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           28.8,
@@ -1466,7 +1466,7 @@
         "note": "from room name"
       },
       "area_m2": 18.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           24.3,
@@ -1530,7 +1530,7 @@
         "note": "from room name"
       },
       "area_m2": 8.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           30.8,
@@ -1562,7 +1562,7 @@
         "note": "from room name"
       },
       "area_m2": 20.25,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           38.5,
@@ -1594,7 +1594,7 @@
         "note": "from room name"
       },
       "area_m2": 10.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           34.5,
@@ -1626,7 +1626,7 @@
         "note": "from room name"
       },
       "area_m2": 8.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           34.5,
@@ -1658,7 +1658,7 @@
         "note": "from room name"
       },
       "area_m2": 18.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           38.5,
@@ -1722,7 +1722,7 @@
         "note": "from room name"
       },
       "area_m2": 8.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           34.5,
@@ -1754,7 +1754,7 @@
         "note": "from room name"
       },
       "area_m2": 18.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           24.3,
@@ -1786,7 +1786,7 @@
         "note": "from room name"
       },
       "area_m2": 3.75,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           28.8,
@@ -1850,7 +1850,7 @@
         "note": "from room name"
       },
       "area_m2": 10.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           30.3,
@@ -1882,7 +1882,7 @@
         "note": "from room name"
       },
       "area_m2": 38.25,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           24.3,
@@ -1914,7 +1914,7 @@
         "note": "from room name"
       },
       "area_m2": 20.25,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           38.5,
@@ -1946,7 +1946,7 @@
         "note": "from room name"
       },
       "area_m2": 10.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           34.5,
@@ -1978,7 +1978,7 @@
         "note": "from room name"
       },
       "area_m2": 8.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           34.5,
@@ -2010,7 +2010,7 @@
         "note": "from room name"
       },
       "area_m2": 18.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           38.5,
@@ -2074,7 +2074,7 @@
         "note": "from room name"
       },
       "area_m2": 8.0,
-      "clear_height_m": 2.8,
+      "clear_height_m": 2.5999999999999996,
       "polygon": [
         [
           34.5,
@@ -4090,7 +4090,7 @@
         "note": "from room name"
       },
       "area_m2": 14.0,
-      "clear_height_m": 2.6,
+      "clear_height_m": 2.8,
       "polygon": [
         [
           34.5,

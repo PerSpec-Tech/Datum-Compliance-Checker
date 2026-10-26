@@ -52,16 +52,22 @@ export default function ElementThumb({
   model,
   group,
   floors,
+  members,
   width = 240,
   height = 170,
 }: {
   model: BuildingModel;
   group: Group;
   floors?: DrawingFloor[];
+  /** Several rooms at once (a bunch): all of them in red on their floor. */
+  members?: Group[];
   width?: number;
   height?: number;
 }) {
-  const t = target(model, group);
+  const many = members?.map((g) => model.spaces.find((s) => s.id === g.id)).filter((s) => s?.polygon);
+  const t: Target | null = many?.length
+    ? { level: many[0]!.level_id, polys: many.map((s) => s!.polygon!), segs: [] }
+    : target(model, group);
   if (!t) return null;
 
   const num = Number(/^L(-?\d+)$/.exec(t.level ?? "")?.[1] ?? NaN);

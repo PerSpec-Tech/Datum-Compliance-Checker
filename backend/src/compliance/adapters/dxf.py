@@ -859,3 +859,18 @@ def _spacing(treads: list[LineString]) -> float | None:
 def _level_name(n: int) -> str:
     names = {v: k for k, v in _ORD.items()}
     return f"{names[n].title()} Floor" if n in names else f"Floor {n}"
+
+
+def north_deg(path: str | Path) -> float | None:
+    """North from the drawing's geographic location (AutoCAD GEOGRAPHICLOCATION, kept by DXFOUT),
+    as the site setup's rotation in degrees. None when the drawing isn't geolocated."""
+    from compliance.adapters.ifc import _angle
+
+    doc = ezdxf.readfile(str(path))
+    geodata = doc.modelspace().get_geodata()
+    if geodata is None:
+        return None
+    n = geodata.dxf.get("north_direction")
+    if n is None or abs(n[0]) + abs(n[1]) < 1e-9:
+        return None
+    return _angle(n[0], n[1])

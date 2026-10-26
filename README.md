@@ -10,7 +10,7 @@ Built by [PerSpec](https://getperspec.com) for the Nebius × NVIDIA Global AI Ha
 
 ## Try it
 
-- **Hosted app: <https://compliance.getperspec.com>.** No login. Click **mixed-use tower near a metro station** (a G+11 IFC building; 10 issues, including the height on a 10.5 m road) or **two-storey bungalow** (a 2D PreDCR-layered DXF; set the site on the map, then 2 issues).
+- **Hosted app: <https://compliance.getperspec.com>.** No login. Click **mixed-use tower near a metro station** (a G+11 IFC building: too tall for its 10.5 m road, and Floor 1 built too low) or **two-storey bungalow** (a 2D PreDCR-layered DXF; set the site on the map, then 2 issues).
 - **Revit 2026 and AutoCAD 2026 plug-ins:** download them from **pair Revit · AutoCAD** in the app. They connect to the hosted app by default.
 - **Locally:** see [Run it locally](#run-it-locally).
 
@@ -39,7 +39,7 @@ All model calls go through Nebius Token Factory's OpenAI-compatible API ([backen
 | `agent` | Nemotron 3 Super | Compiling clause text into rules, writing plain-language explanations |
 | `reviewer` | Nemotron 3 Ultra | Reviewing compiled rules against the clause text before a person sees them |
 
-Structured output uses JSON Schema (with one repair attempt and a tool-calling fallback), and reasoning is switched on or off per call. Every call is logged with tokens and latency; the app's **About** page shows the live totals. Prompts are versioned files in [backend/prompts/](backend/prompts/).
+Structured output uses JSON Schema (with one repair attempt and a tool-calling fallback), and reasoning is switched on or off per call. Every call is logged with tokens and latency (`GET /api/usage`). Prompts are versioned files in [backend/prompts/](backend/prompts/).
 
 ## Architecture
 
@@ -99,7 +99,7 @@ just make-samples        # regenerate the sample IFC and DXF files and their thu
 ## Sources and data
 
 - UDCPR 2020 (Maharashtra, consolidated Jan 2025) is the primary rulebook; NBC 2016 is the fallback. Source PDFs are not redistributed: [sources/manifest.yaml](sources/manifest.yaml) lists the documents and, where they are public, their download links.
-- Metro stations, land use and map tiles: © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, ODbL. Addresses via Nominatim; land use via the Overpass API.
+- Metro stations, land use and map tiles: © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors, ODbL. Address suggestions via [Photon](https://photon.komoot.io) (komoot), searches and place names via Nominatim; land use via the Overpass API.
 - IFC handling uses [IfcOpenShell](https://ifcopenshell.org/) (LGPL-3.0); DXF handling uses [ezdxf](https://ezdxf.mozman.de/) (MIT).
 - Revit and AutoCAD are trademarks of Autodesk, Inc. This project is not affiliated with or endorsed by Autodesk.
 

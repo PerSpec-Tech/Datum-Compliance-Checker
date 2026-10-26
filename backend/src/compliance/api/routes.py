@@ -599,6 +599,45 @@ def geocode(
         ) from e
 
 
+@router.get("/suggest")
+def suggest(
+    q: str = Query(min_length=3, max_length=200), authority: str = "pmc", st: Store = Depends(store)
+) -> list[dict[str, Any]]:
+    """Address suggestions as you type (site setup), with each area's extent for the map."""
+    import httpx
+
+    from compliance.agents.authority import suggest as photon
+
+    try:
+        return photon(q, authority, st)
+    except ValueError as e:
+        raise HTTPException(404, str(e)) from e
+    except httpx.HTTPError as e:
+        raise HTTPException(
+            502, "Suggestions are unavailable right now. Press Enter to search."
+        ) from e
+
+
+@router.get("/projects/{project_id}/orientation")
+def orientation(project_id: str, st: Store = Depends(store)) -> dict[str, Any]:
+    """North as the file states it (IFC TrueNorth, or a DXF's geographic location), so the site
+    setup can skip turning the plan by hand. rotation_deg is null when the file doesn't say."""
+    from compliance.adapters import dxf, ifc
+
+    project_or_404(project_id, st)
+    drawing = drawing_dir(project_id, st) / "drawing.dxf"
+    latest = st.latest_model(project_id)
+    deg, source = None, None
+    try:
+        if drawing.exists():
+            deg, source = dxf.north_deg(drawing), "the drawing's geographic location"
+        elif latest is not None and (path := ifc_path(latest[0], st)).exists():
+            deg, source = ifc.north_deg(path), "the IFC's true north"
+    except Exception:  # noqa: BLE001 - an unreadable north is just not known
+        deg = None
+    return {"rotation_deg": deg, "source": source if deg is not None else None}
+
+
 @router.get("/locate")
 def locate(
     lat: float = Query(ge=-90, le=90),

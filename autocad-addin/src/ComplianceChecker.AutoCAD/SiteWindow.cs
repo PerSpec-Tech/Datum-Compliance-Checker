@@ -39,7 +39,9 @@ namespace ComplianceChecker.AutoCAD
         private readonly SiteState _s;
         private readonly TextBlock _location = new() { TextWrapping = TextWrapping.Wrap };
         private readonly TextBox _query = new() { MinWidth = 260, Padding = new Thickness(4, 3, 4, 3) };
-        private readonly ListBox _places = new() { MaxHeight = 120, Visibility = Visibility.Collapsed, Margin = new Thickness(0, 6, 0, 0) };
+        private readonly ListBox _places = new() { MaxHeight = 160, Visibility = Visibility.Collapsed, Margin = new Thickness(0, 6, 0, 0) };
+        private readonly System.Windows.Threading.DispatcherTimer _typing = new() { Interval = TimeSpan.FromMilliseconds(300) };
+        private string? _picked; // the address a pick filled in: not suggested again
         private readonly StackPanel _facts = new();
         private readonly TextBlock _status = new() { Foreground = Muted, TextWrapping = TextWrapping.Wrap };
 
@@ -67,12 +69,23 @@ namespace ComplianceChecker.AutoCAD
             search.Children.Add(go);
             search.Children.Add(_query);
             body.Children.Add(search);
-            body.Children.Add(Hint("Street, area or landmark in Pune; or “18.5165, 73.8420”. AutoCAD’s own location (GEOGRAPHICLOCATION) is used when the drawing has one."));
+            body.Children.Add(Hint("Start typing a street, society or landmark in Pune and pick a suggestion; or type “18.5165, 73.8420”. AutoCAD’s own location (GEOGRAPHICLOCATION) is used when the drawing has one."));
             body.Children.Add(_places);
             _places.SelectionChanged += async (_, _) =>
             {
                 if (_places.SelectedItem is ListBoxItem { Tag: Place p })
                     await SetLocationAsync(p.Lat, p.Lon, p.Label);
+            };
+            // Suggestions as you type, a moment after the last key.
+            _typing.Tick += async (_, _) =>
+            {
+                _typing.Stop();
+                await SuggestAsync();
+            };
+            _query.TextChanged += (_, _) =>
+            {
+                _typing.Stop();
+                _typing.Start();
             };
 
             body.Children.Add(Heading("Plot"));
@@ -163,11 +176,45 @@ namespace ComplianceChecker.AutoCAD
             }
         }
 
+        private async Task SuggestAsync()
+        {
+            string q = _query.Text.Trim();
+            if (q.Length < 3 || char.IsDigit(q[0]) || q == _picked)
+                return;
+            try
+            {
+                IReadOnlyList<PlaceSuggestion> found = await _api.SuggestAsync(q);
+                if (_query.Text.Trim() != q)
+                    return; // typed on meanwhile
+                _places.Items.Clear();
+                foreach (PlaceSuggestion p in found)
+                    _places.Items.Add(new ListBoxItem
+                    {
+                        Content = p.Precise ? p.Label : p.Label + "  (area: its centre)",
+                        Tag = new Place(p.Label, p.Lat, p.Lon),
+                    });
+                _places.Visibility = found.Count > 0 ? Visibility.Visible : Visibility.Collapsed;
+                _status.Text = found.Count == 0 ? "No suggestion yet; press Find to search." : "";
+            }
+            catch (Exception)
+            {
+                // suggestions are a convenience: Find still searches
+            }
+        }
+
         private async Task SetLocationAsync(double lat, double lon, string? label)
         {
             _s.Lat = lat;
             _s.Lon = lon;
             _s.LocationNote = label;
+            if (label is not null)
+            {
+                _picked = label;
+                _typing.Stop();
+                _query.Text = label;
+                _typing.Stop();
+                _places.Visibility = Visibility.Collapsed;
+            }
             _s.LocationChanged = true;
             ShowLocation();
             await DescribeAsync(lat, lon);

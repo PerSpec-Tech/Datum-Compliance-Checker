@@ -7,7 +7,6 @@ import NewCheckPage from "./features/upload/NewCheckPage";
 const BriefPage = lazy(() => import("./features/brief/BriefPage"));
 const ReportPage = lazy(() => import("./features/report/ReportPage"));
 const RulesPage = lazy(() => import("./features/rules/RulesPage"));
-const AboutPage = lazy(() => import("./features/about/AboutPage"));
 const PairPage = lazy(() => import("./features/about/PairPage"));
 const WorkspacePage = lazy(() => import("./features/workspace/WorkspacePage"));
 
@@ -15,7 +14,6 @@ const NAV: { to: string; label: string; icon: IconName; end?: boolean }[] = [
   { to: "/", label: "new check", icon: "upload", end: true },
   { to: "/revit", label: "pair Revit · AutoCAD", icon: "plug" },
   { to: "/rules", label: "rules", icon: "book" },
-  { to: "/about", label: "usage & about", icon: "gauge" },
 ];
 
 // The tool's glyph: a checklist with a tick (§16). Monochrome; used for the favicon too.
@@ -91,6 +89,7 @@ export default function App() {
           <p className="font-mono text-2xs leading-5 text-fg-3" title="A design aid, not a permit. Every result cites its clause.">
             PMC · UDCPR 2020
           </p>
+          <p className="mt-1 text-2xs leading-4 text-fg-3">A design aid, not a permit. Maps © OpenStreetMap contributors.</p>
           <div className="mt-2 flex items-center justify-between">
             <p className="text-xs font-semibold tracking-[-0.02em] text-fg-2">
               perspec<span className="stop">.</span>
@@ -108,7 +107,7 @@ export default function App() {
             <Route path="/reports/:reportId" element={<ReportPage />} />
             <Route path="/rules" element={<RulesPage />} />
             <Route path="/rules/:ruleId" element={<RulesPage />} />
-            <Route path="/about" element={<AboutPage />} />
+            <Route path="/about" element={<Navigate to="/" replace />} />
             <Route path="/revit" element={<PairPage />} />
             <Route path="*" element={<p className="text-fg-2">page not found.</p>} />
           </Routes>

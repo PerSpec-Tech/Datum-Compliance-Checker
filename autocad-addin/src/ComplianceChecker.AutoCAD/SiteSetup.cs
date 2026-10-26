@@ -21,6 +21,11 @@ namespace ComplianceChecker.AutoCAD
         public double? Lon { get; set; }
         public string? LocationNote { get; set; }
         public bool LocationChanged { get; set; }
+        /// <summary>North from AutoCAD's geographic location, as the web map's rotation (degrees), and
+        /// the drawing point (metres) that sits at Lat/Lon.</summary>
+        public double? RotationDeg { get; set; }
+        public double[]? Anchor { get; set; }
+        public (double Lat, double Lon)? AnchorAt { get; set; }
 
         /// <summary>A plot picked in the drawing (drawing units); null = the drawing's own plot.</summary>
         public List<Point2d>? PickedPlot { get; set; }
@@ -56,8 +61,15 @@ namespace ComplianceChecker.AutoCAD
             state.PlotNote = markup.HasPlot ? $"From the drawing: {Describe(markup.Sides, scale)}" : "No plot boundary in the drawing yet.";
             if (markup.Location is { } loc)
                 (state.Lat, state.Lon, state.LocationNote) = (loc.Lat, loc.Lon, "from the project");
-            else if (GeoLocation(doc.Database, Centre(markup.Sides)) is { } geo)
-                (state.Lat, state.Lon, state.LocationNote, state.LocationChanged) = (geo.Lat, geo.Lon, "from AutoCAD's geographic location", true);
+            if (GeoLocation(doc.Database, Centre(markup.Sides)) is { } geo)
+            {
+                if (state.Lat is null)
+                    (state.Lat, state.Lon, state.LocationNote, state.LocationChanged) = (geo.Lat, geo.Lon, "from AutoCAD's geographic location", true);
+                Point2d c = Centre(markup.Sides);
+                (state.RotationDeg, state.Anchor, state.AnchorAt) = (geo.RotationDeg, new[] { Math.Round(c.X * scale, 3), Math.Round(c.Y * scale, 3) }, (geo.Lat, geo.Lon));
+                if (geo.RotationDeg is { } r)
+                    Log.Info($"north from GEOGRAPHICLOCATION: {r:0.##}°");
+            }
 
             try
             {
@@ -108,6 +120,11 @@ namespace ComplianceChecker.AutoCAD
             var answers = new Dictionary<string, object?>(s.Facts);
             if (s.LocationChanged && s.Lat is { } lat && s.Lon is { } lon)
                 answers["project.location"] = new { lat, lon };
+            // The drawing's own north places it on the web map without turning it by hand.
+            // (Only while the location is AutoCAD's own: an address searched here moves the building.)
+            if (s.RotationDeg is { } rot && s.Anchor is { } anchor && s.AnchorAt is { } at
+                && s.Lat is { } plat && s.Lon is { } plon && Math.Abs(plat - at.Lat) < 1e-4 && Math.Abs(plon - at.Lon) < 1e-4)
+                answers["site.placement"] = new { lat = at.Lat, lon = at.Lon, rotation_deg = rot, anchor };
             if (s.PickedPlot is { } plot)
                 answers["site.boundary"] = plot.Select(p => new[] { Math.Round(p.X * scale, 3), Math.Round(p.Y * scale, 3) }).ToList();
             var edges = s.Tags.ToDictionary(
@@ -207,8 +224,9 @@ namespace ComplianceChecker.AutoCAD
 
         // ------------------------------------------------------------------ helpers
 
-        /// <summary>AutoCAD's own geographic location (GEOGRAPHICLOCATION), at a point of the drawing.</summary>
-        private static (double Lat, double Lon)? GeoLocation(Database db, Point2d at)
+        /// <summary>AutoCAD's own geographic location (GEOGRAPHICLOCATION), at a point of the drawing,
+        /// and north as the web map's rotation: the drawing's north vector (sin t, cos t) gives t.</summary>
+        private static (double Lat, double Lon, double? RotationDeg)? GeoLocation(Database db, Point2d at)
         {
             try
             {
@@ -217,7 +235,9 @@ namespace ComplianceChecker.AutoCAD
                 using Transaction tr = db.TransactionManager.StartOpenCloseTransaction();
                 var geo = (GeoLocationData)tr.GetObject(db.GeoDataObject, OpenMode.ForRead);
                 Point3d lonLat = geo.TransformToLonLatAlt(new Point3d(at.X, at.Y, 0));
-                return (lonLat.Y, lonLat.X);
+                Vector2d n = geo.NorthDirectionVector;
+                double? rot = n.Length > 1e-9 ? Math.Round(Math.Atan2(n.X, n.Y) * 180 / Math.PI, 2) : null;
+                return (lonLat.Y, lonLat.X, rot);
             }
             catch (System.Exception e)
             {

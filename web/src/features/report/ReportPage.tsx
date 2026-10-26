@@ -7,7 +7,7 @@ import { Chip, ErrorBox, Icon, Skeleton, SourceBadge, StatusMark, fmt } from "..
 import { applyTheme, storedTheme } from "../../lib/theme";
 import ElementThumb from "./ElementThumb";
 import FsiCard from "./FsiCard";
-import { KIND_LABEL, groupResults, type Group } from "./groups";
+import { KIND_LABEL, bunchGroups, groupResults, isBunch, type Bunch, type Group } from "./groups";
 
 // P12.5: the report as a document (D30 compliance memo). Failures first, each with a plan
 // thumbnail of the element; then what can't be verified yet; passes only on request. Prints to
@@ -126,9 +126,13 @@ export default function ReportPage() {
 
           <Section title={fails.length ? `${s.fail} to fix, on ${fails.length} element${fails.length === 1 ? "" : "s"}` : "nothing to fix"}>
             {fails.length === 0 && <p className="text-sm text-fg-2">Every clause that applies and can be checked passes.</p>}
-            {fails.map((g) => (
-              <Entry key={g.key} g={g} model={m} floors={drawing.data?.floors} only={["fail"]} />
-            ))}
+            {bunchGroups(fails).map((g) =>
+              isBunch(g) ? (
+                <BunchEntry key={g.key} b={g} model={m} floors={drawing.data?.floors} />
+              ) : (
+                <Entry key={g.key} g={g} model={m} floors={drawing.data?.floors} only={["fail"]} />
+              ),
+            )}
           </Section>
 
           {unsure.length > 0 && (
@@ -284,6 +288,42 @@ function Entry({
             needs: <span className="font-mono">{missing.join(", ")}</span>
           </p>
         )}
+      </div>
+    </article>
+  );
+}
+
+// Many rooms failing the same way on one floor: the floor once, each rule once, then the rooms.
+function BunchEntry({ b, model, floors }: { b: Bunch; model?: BuildingModel; floors?: DrawingFloor[] }) {
+  const byRule = new Map<string, { r: Result; rooms: string[] }>();
+  for (const g of b.members)
+    for (const r of g.results.filter((x) => x.status === "fail")) {
+      const e = byRule.get(r.rule_id) ?? { r, rooms: [] };
+      e.rooms.push(g.name);
+      byRule.set(r.rule_id, e);
+    }
+  return (
+    <article className="doc-entry flex flex-col gap-4 sm:flex-row">
+      {model && <ElementThumb model={model} group={b.members[0]} members={b.members} floors={floors} />}
+      <div className="min-w-0 flex-1">
+        <p>
+          <span className="h2">
+            {b.floor || "rooms"} · {b.members.length} rooms
+          </span>
+          <span className="ml-2 text-xs text-fg-3">{b.title}</span>
+        </p>
+        <ul className="mt-2 divide-y divide-line-subtle border-y border-line-subtle">
+          {[...byRule.values()].map(({ r, rooms }) => (
+            <li key={r.rule_id}>
+              <ul>
+                <Line r={r} excerpt />
+              </ul>
+              <p className="pb-2.5 pl-7 text-xs text-fg-2">
+                {rooms.length} room{rooms.length === 1 ? "" : "s"}: {rooms.join(", ")}
+              </p>
+            </li>
+          ))}
+        </ul>
       </div>
     </article>
   );

@@ -90,3 +90,45 @@ export function worstBy(results: Result[], key: (r: Result) => string | null | u
   }
   return m;
 }
+
+/** Rooms on one floor that fail in the same way (a whole storey built too low), shown as one entry. */
+export interface Bunch {
+  key: string;
+  floor: string;
+  title: string;
+  worst: Status;
+  members: Group[];
+}
+
+export const isBunch = (x: Group | Bunch): x is Bunch => "members" in x;
+
+// Minimum-height rules differ by room use (habitable, kitchen, shop…) but share one cause: a low storey.
+const topic = (ruleId: string) => (/height-min$/.test(ruleId) ? "height-min" : ruleId);
+
+/** Groups in order, with rooms that fail the same way on the same floor (at least `min`) folded into a bunch. */
+export function bunchGroups(groups: Group[], min = 3): (Group | Bunch)[] {
+  const sig = (g: Group) =>
+    g.kind === "spaces"
+      ? `${g.detail}|${[...new Set(g.results.filter((r) => r.status === "fail" || r.status === "unverifiable").map((r) => `${topic(r.rule_id)}:${r.status}`))].sort().join(",")}`
+      : null;
+  const bunches = new Map<string, Group[]>();
+  for (const g of groups) {
+    const s = sig(g);
+    if (s) bunches.set(s, [...(bunches.get(s) ?? []), g]);
+  }
+  const out: (Group | Bunch)[] = [];
+  const done = new Set<string>();
+  for (const g of groups) {
+    const s = sig(g);
+    const members = s ? bunches.get(s)! : [];
+    if (!s || members.length < min) {
+      out.push(g);
+    } else if (!done.has(s)) {
+      done.add(s);
+      const first = g.results.find((r) => r.status === g.worst) ?? g.results[0];
+      const title = first && topic(first.rule_id) === "height-min" ? "clear height below the minimum" : first?.title ?? "same issue";
+      out.push({ key: `bunch:${s}`, floor: g.detail, title, worst: g.worst, members });
+    }
+  }
+  return out;
+}

@@ -108,6 +108,10 @@ public sealed class ApiClient
     public async Task<IReadOnlyList<Place>> GeocodeAsync(string query, string authority = "pmc", CancellationToken ct = default) =>
         await SendAsync<List<Place>>(HttpMethod.Get, $"api/geocode?q={Uri.EscapeDataString(query)}&authority={Uri.EscapeDataString(authority)}", null, ct);
 
+    /// <summary>Address suggestions as you type (GET /suggest): addresses are Precise, areas are not.</summary>
+    public async Task<IReadOnlyList<PlaceSuggestion>> SuggestAsync(string query, string authority = "pmc", CancellationToken ct = default) =>
+        await SendAsync<List<PlaceSuggestion>>(HttpMethod.Get, $"api/suggest?q={Uri.EscapeDataString(query)}&authority={Uri.EscapeDataString(authority)}", null, ct);
+
     /// <summary>Which authority covers a point, and a short place name (GET /locate).</summary>
     public Task<Located> LocateAsync(double lat, double lon, CancellationToken ct = default) =>
         SendAsync<Located>(HttpMethod.Get, FormattableString.Invariant($"api/locate?lat={lat}&lon={lon}"), null, ct);
@@ -220,6 +224,9 @@ public sealed record JobEvent(string Stage, double? Pct = null, string? Msg = nu
 }
 
 public sealed record Place(string Label, double Lat, double Lon);
+
+/// <summary>An address suggestion: a precise place (address, street) or an area (its centre).</summary>
+public sealed record PlaceSuggestion(string Label, double Lat, double Lon, string? Kind = null, bool Precise = true);
 
 public sealed record Located(string? AuthorityId, string? Note, string? Label);
 

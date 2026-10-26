@@ -177,6 +177,36 @@
 :root[data-theme="light"] .map-dark {
   filter: grayscale(1) contrast(1.05) brightness(1.02);
 }
+/* Site setup: lengths while drawing, side names, the rotate handle. */
+.leaflet-tooltip.map-measure,
+.leaflet-tooltip.map-side {
+  padding: 1px 5px;
+  border: 1px solid var(--border-default);
+  border-radius: 2px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font: 500 10px/14px "JetBrains Mono", ui-monospace, monospace;
+  box-shadow: none;
+}
+.leaflet-tooltip.map-measure {
+  border-color: #d22b10;
+  color: #d22b10;
+}
+.leaflet-tooltip.map-measure::before,
+.leaflet-tooltip.map-side::before {
+  display: none;
+}
+.map-rotate {
+  display: grid;
+  place-items: center;
+  border: 2px solid #d22b10;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  color: #d22b10;
+  font-size: 15px;
+  line-height: 1;
+  cursor: grab;
+}
 .leaflet-control-attribution {
   background: var(--bg-surface) !important;
   color: var(--text-tertiary) !important;

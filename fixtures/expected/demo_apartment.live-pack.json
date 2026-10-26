@@ -32,7 +32,7 @@
         51
       ],
       "kind": "neighbour",
-      "margin_m": 7.32,
+      "margin_m": 7.279999999999999,
       "rule_id": "udcpr2020.ch6.side-rear-margin",
       "clause_ref": "6.2.3 (b)",
       "margin_by_height": [
@@ -750,7 +750,7 @@
         51
       ],
       "kind": "neighbour",
-      "margin_m": 7.32,
+      "margin_m": 7.279999999999999,
       "rule_id": "udcpr2020.ch6.side-rear-margin",
       "clause_ref": "6.2.3 (b)",
       "margin_by_height": [
@@ -1468,7 +1468,7 @@
         0
       ],
       "kind": "neighbour",
-      "margin_m": 7.32,
+      "margin_m": 7.279999999999999,
       "rule_id": "udcpr2020.ch6.side-rear-margin",
       "clause_ref": "6.2.3 (b)",
       "margin_by_height": [
@@ -2178,19 +2178,19 @@
   ],
   "envelope": [
     [
-      7.32,
+      7.28,
       3.0
     ],
     [
-      7.32,
-      43.68
+      7.28,
+      43.72
     ],
     [
-      42.68,
-      43.68
+      42.72,
+      43.72
     ],
     [
-      42.68,
+      42.72,
       3.0
     ]
   ],
@@ -2209,7 +2209,7 @@
     ]
   },
   "height": {
-    "current_m": 36.6,
+    "current_m": 36.4,
     "step_m": 0.1,
     "max_m": 70.0
   },

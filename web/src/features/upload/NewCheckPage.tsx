@@ -12,8 +12,8 @@ const SAMPLES = [
   {
     file: "demo_apartment.ifc",
     name: "mixed-use tower near a metro station",
-    facts: "IFC · G+11 · 36.6 m · 66 flats · 10 issues",
-    blurb: "Site and planning facts are modelled. 10 issues to find, the height among them.",
+    facts: "IFC · G+11 · 36.4 m · 66 flats · 27 fails",
+    blurb: "Site and planning facts are modelled. Too tall for its road, and Floor 1 is built too low.",
   },
   {
     file: "demo_house.dxf",
@@ -65,11 +65,9 @@ export default function NewCheckPage() {
   }
 
   async function open(l: Loaded) {
+    // Every file goes through the site setup first; it starts the check.
     setBusy("opening the workspace");
-    if (l.location) {
-      const { job_id } = await api.startCheck(l.id);
-      navigate(`/w/${l.id}?job=${job_id}`);
-    } else navigate(`/w/${l.id}`);
+    navigate(`/w/${l.id}?site=1`);
   }
 
   async function sample(file: string, name: string) {

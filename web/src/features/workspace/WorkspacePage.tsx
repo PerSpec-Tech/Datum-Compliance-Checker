@@ -6,12 +6,12 @@ import type { Status } from "../../api/types";
 import { ErrorBox, Icon, STATUS_META, Spinner, StatusMark } from "../../components/ui";
 import ThemeToggle from "../../components/ThemeToggle";
 import { rememberProject } from "../../lib/recent";
-import { groupResults, worstBy, type Group } from "../report/groups";
+import { bunchGroups, groupResults, isBunch, worstBy, type Group } from "../report/groups";
 import PlanViewer from "../viewer/PlanViewer";
 import { gapTo } from "../viewer/SetbackLayer";
 import Viewer from "../viewer/Viewer";
 import IssueCard from "./IssueCard";
-import SiteDialog from "./SiteDialog";
+import SiteWizard from "../site/SiteWizard";
 
 // P12.4: one full-screen workspace, like Revit or AutoCAD. The drawing is the screen; the top bar
 // holds the view and the filters; failures show first, passes only on request; clicking an element
@@ -55,12 +55,13 @@ export default function WorkspacePage() {
   const open = card ? groups.find((g) => g.key === card.key) ?? issues.find((g) => g.key === card.key) : undefined;
   const needsSite = !!m && (!m.project.location.value || !m.site.boundary || m.site.edges.some((e) => !e.kind.value));
 
-  // A new project that doesn't know where it is opens on "set the site".
+  // A project that hasn't been checked yet opens on the site setup, 2D or 3D. What the file
+  // already says is filled in there, so a complete model is one click from its check.
   const asked = useRef(false);
   useEffect(() => {
     if (asked.current || !m || !project.data || reportId || params.get("job")) return;
     asked.current = true;
-    if (!m.project.location.value) setSite(true);
+    setSite(true);
   }, [m, project.data, reportId, params]);
 
   useEffect(() => {
@@ -284,7 +285,7 @@ export default function WorkspacePage() {
       </footer>
 
       {site && m && project.data && (
-        <SiteDialog projectId={projectId} model={m} brief={project.data.brief} busy={busy} onClose={() => setSite(false)} onSave={(a) => void check(a)} />
+        <SiteWizard projectId={projectId} model={m} brief={project.data.brief} busy={busy} onClose={() => setSite(false)} onSave={(a) => void check(a)} />
       )}
     </Shell>
   );
@@ -299,27 +300,63 @@ function place(card: Card, host: HTMLDivElement | null): React.CSSProperties {
   return { left, top, maxHeight: h };
 }
 
+// Rooms on one floor that fail in the same way (a whole storey built too low) are one row, opened
+// to list the rooms; each room still opens its own card.
 function IssueList({ groups, selected, allClear, onPick }: { groups: Group[]; selected?: string; allClear: boolean; onPick: (g: Group) => void }) {
+  const [openRows, setOpenRows] = useState<Set<string>>(new Set());
+  const list = useMemo(() => bunchGroups(groups), [groups]);
+  const toggle = (key: string) =>
+    setOpenRows((s) => {
+      const n = new Set(s);
+      if (n.has(key)) n.delete(key);
+      else n.add(key);
+      return n;
+    });
+  const item = (g: Group, indent = false) => {
+    const fails = g.results.filter((x) => x.status === "fail").length;
+    return (
+      <li key={g.key}>
+        <button
+          onClick={() => onPick(g)}
+          className={`flex w-full items-center gap-2 py-2 pr-3 text-left text-sm hover:bg-surface-raised ${indent ? "pl-8" : "pl-3"} ${g.key === selected ? "bg-surface-raised" : ""}`}
+        >
+          <StatusMark status={g.worst} short />
+          <span className="min-w-0 flex-1">
+            <span className="block truncate">{g.name}</span>
+            {g.detail && !indent && <span className="block truncate text-2xs text-fg-3">{g.detail}</span>}
+          </span>
+          {fails > 1 && <span className="num text-xs text-danger">{fails}</span>}
+        </button>
+      </li>
+    );
+  };
   return (
     <aside className="absolute bottom-3 left-3 top-14 z-[550] flex w-64 flex-col overflow-hidden rounded-md border border-line-subtle bg-surface/95 backdrop-blur">
-      <p className="label border-b border-line-subtle px-3 py-2">{allClear ? "no issues" : `${groups.length} to look at`}</p>
+      <p className="label border-b border-line-subtle px-3 py-2">{allClear ? "no issues" : `${list.length} to look at`}</p>
       <ul className="min-h-0 flex-1 overflow-y-auto">
         {allClear && <li className="px-3 py-3 text-xs text-fg-2">Every clause that applies passes. Turn on “show passes” to see them.</li>}
-        {groups.map((g) => {
-          const fails = g.results.filter((x) => x.status === "fail").length;
+        {list.map((row) => {
+          if (!isBunch(row)) return item(row);
+          const isOpen = openRows.has(row.key) || row.members.some((m) => m.key === selected);
           return (
-            <li key={g.key}>
+            <li key={row.key}>
               <button
-                onClick={() => onPick(g)}
-                className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-surface-raised ${g.key === selected ? "bg-surface-raised" : ""}`}
+                onClick={() => toggle(row.key)}
+                aria-expanded={isOpen}
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-surface-raised"
               >
-                <StatusMark status={g.worst} short />
+                <StatusMark status={row.worst} short />
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate">{g.name}</span>
-                  {g.detail && <span className="block truncate text-2xs text-fg-3">{g.detail}</span>}
+                  <span className="block truncate">
+                    {row.floor || "rooms"} · {row.members.length} rooms
+                  </span>
+                  <span className="block truncate text-2xs text-fg-3">{row.title.toLowerCase()}</span>
                 </span>
-                {fails > 1 && <span className="num text-xs text-danger">{fails}</span>}
+                <span className={`text-fg-3 transition-transform ${isOpen ? "rotate-90" : ""}`}>
+                  <Icon name="chevron" size={14} />
+                </span>
               </button>
+              {isOpen && <ul className="border-l border-line-subtle">{row.members.map((m) => item(m, true))}</ul>}
             </li>
           );
         })}

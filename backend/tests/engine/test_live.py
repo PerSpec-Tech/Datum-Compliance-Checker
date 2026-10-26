@@ -95,7 +95,7 @@ def test_margin_table_follows_height(rulebase):
     _, _, pack = pack_for("demo_apartment", rulebase)
     side = next(e for e in pack["edges"] if e["edge_id"] == "e2")
     assert side["margin_by_height"][round(20 / STEP_M)] == pytest.approx(4.0)
-    assert side["margin_by_height"][round(36.6 / STEP_M)] == pytest.approx(side["margin_m"])
+    assert side["margin_by_height"][round(36.4 / STEP_M)] == pytest.approx(side["margin_m"])
     road = next(e for e in pack["edges"] if e["edge_id"] == "e1")
     assert road["margin_by_height"] == []  # constant
 

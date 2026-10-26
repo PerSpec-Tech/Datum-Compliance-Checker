@@ -113,19 +113,6 @@ export interface CompileResult {
   history: unknown[];
 }
 
-export interface Usage {
-  models: {
-    role: string;
-    model: string;
-    calls: number;
-    ok_calls: number;
-    prompt_tokens: number;
-    completion_tokens: number;
-    avg_latency_ms: number;
-  }[];
-  search: { kind: string; calls: number; live_calls: number }[];
-}
-
 export interface Mesh {
   guid: string;
   parent: string | null;
@@ -146,6 +133,18 @@ export interface Place {
   label: string;
   lat: number;
   lon: number;
+}
+
+/** An address suggestion as you type: an address or street is `precise`; an area has its extent. */
+export interface Suggest extends Place {
+  kind: string;
+  precise: boolean;
+  extent: [number, number, number, number] | null; // west, south, east, north
+}
+
+export interface Orientation {
+  rotation_deg: number | null;
+  source: string | null;
 }
 
 export interface Located {
@@ -176,6 +175,9 @@ export const api = {
   geocode: (q: string, authority: string) =>
     request<Place[]>(`/geocode?${new URLSearchParams({ q, authority })}`),
   locate: (lat: number, lon: number) => request<Located>(`/locate?lat=${lat}&lon=${lon}`),
+  suggest: (q: string, authority: string, signal?: AbortSignal) =>
+    request<Suggest[]>(`/suggest?${new URLSearchParams({ q, authority })}`, { signal }),
+  orientation: (id: string) => request<Orientation>(`/projects/${id}/orientation`),
   livePack: (id: string) => request<LivePack>(`/projects/${id}/live-pack`),
   suggestions: (id: string, lat: number, lon: number) =>
     request<Suggestion[]>(`/projects/${id}/suggestions?lat=${lat}&lon=${lon}`),
@@ -216,7 +218,6 @@ export const api = {
     authority: string;
     review: boolean;
   }) => request<CompileResult>("/rules/compile", json("POST", body)),
-  usage: () => request<Usage>("/usage"),
   bcfUrl: (reportId: string) => `/api/reports/${reportId}/bcf`,
   eventsUrl: (jobId: string) => `/api/jobs/${jobId}/events`,
 };
