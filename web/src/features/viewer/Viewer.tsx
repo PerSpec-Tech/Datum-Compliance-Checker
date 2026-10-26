@@ -15,13 +15,20 @@ const NEUTRAL = 0x9a9aa1;
 interface Props {
   modelVersion: string;
   statusByGuid: Map<string, Status>;
-  selectedGuid: string | null;
+  /** What the open result is about: elements, a plot side, or the whole building. */
+  focus: FocusTarget | null;
   onPick?: (guid: string) => void;
   /** Shows the setbacks from this project's live pack (P12.2). */
   projectId?: string;
 }
 
-export default function Viewer({ modelVersion, statusByGuid, selectedGuid, onPick, projectId }: Props) {
+/** Where the camera goes for a result. */
+export type FocusTarget =
+  | { kind: "elements"; guids: string[] }
+  | { kind: "edge"; a: number[]; b: number[] }
+  | { kind: "building"; view: "front" | "top" };
+
+export default function Viewer({ modelVersion, statusByGuid, focus, onPick, projectId }: Props) {
   const mesh = useQuery({ queryKey: ["mesh", modelVersion], queryFn: () => api.mesh(modelVersion), retry: false });
   const pack = useQuery({
     queryKey: ["live-pack", projectId],
@@ -34,7 +41,7 @@ export default function Viewer({ modelVersion, statusByGuid, selectedGuid, onPic
   const host = useRef<HTMLDivElement>(null);
   const scene = useRef<{
     view: (kind: "fit" | "top" | "front" | "iso") => void;
-    focus: (guid: string | null) => void;
+    focus: (target: FocusTarget | null) => void;
     xray: (on: boolean) => void;
     setbacks: (pack: LivePack | null) => void;
     dispose: () => void;
@@ -53,9 +60,10 @@ export default function Viewer({ modelVersion, statusByGuid, selectedGuid, onPic
     return () => scene.current?.dispose();
   }, [mesh.data, statusByGuid, theme]);
 
+  const focusKey = JSON.stringify(focus);
   useEffect(() => {
-    scene.current?.focus(selectedGuid);
-  }, [selectedGuid, mesh.data, statusByGuid]);
+    scene.current?.focus(focus);
+  }, [focusKey, mesh.data, statusByGuid]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     scene.current?.xray(xray);
@@ -256,6 +264,22 @@ function build(
 
   const all = new THREE.Box3();
   meshes.forEach((m) => all.expandByObject(m));
+  const building = all.clone(); // the building alone (all also takes in the plot)
+  let marker: THREE.Object3D | null = null;
+  const addMarker = (o: THREE.Object3D) => {
+    marker = o;
+    scene.add(o);
+  };
+  const dropMarker = () => {
+    if (!marker) return;
+    scene.remove(marker);
+    marker.traverse((o) => {
+      const mm = o as THREE.Mesh;
+      mm.geometry?.dispose();
+      (mm.material as THREE.Material | undefined)?.dispose();
+    });
+    marker = null;
+  };
   contextMeshes.filter((m) => m.userData.label === "Plot").forEach((m) => all.expandByObject(m));
   let anim: { p0: THREE.Vector3; p1: THREE.Vector3; t0: THREE.Vector3; t1: THREE.Vector3; start: number } | null = null;
   const frame = (box: THREE.Box3, tight: boolean, from = new THREE.Vector3(0.9, -1.3, 0.9), glide = false) => {
@@ -448,16 +472,55 @@ function build(
       userMoved = true;
       frame(kind === "fit" ? all : box, false, dir, true);
     },
-    focus(guid: string | null) {
+    focus(t: FocusTarget | null) {
       meshes.forEach((m) => {
         const mat = m.material as THREE.MeshStandardMaterial;
         mat.emissive.setHex(0x000000);
       });
-      const targets = guid ? byGuid.get(guid) : undefined;
+      renderer.clippingPlanes = [];
+      dropMarker();
+      if (!t) return;
+      const centre = building.getCenter(new THREE.Vector3());
+      // Look from outside, on the side of the building where the issue is (not always one corner).
+      const outward = (p: THREE.Vector3, up: number) => {
+        const v = new THREE.Vector3(p.x - centre.x, p.y - centre.y, 0);
+        if (v.length() < 1.5) v.set(0.5, -0.8, 0);
+        v.normalize();
+        return new THREE.Vector3(v.x, v.y, up);
+      };
+      if (t.kind === "edge") {
+        // A plot side: drawn red on the ground and looked at from outside the plot.
+        const a = new THREE.Vector3(t.a[0], t.a[1], 0.08), b = new THREE.Vector3(t.b[0], t.b[1], 0.08);
+        const len = a.distanceTo(b);
+        const bar = new THREE.Mesh(new THREE.BoxGeometry(len, 0.6, 0.12), new THREE.MeshBasicMaterial({ color: 0xd22b10 }));
+        bar.position.copy(a).add(b).multiplyScalar(0.5);
+        bar.rotation.z = Math.atan2(b.y - a.y, b.x - a.x);
+        addMarker(bar);
+        const mid = bar.position.clone();
+        const view = new THREE.Box3().setFromPoints([a, b]).expandByVector(new THREE.Vector3(4, 4, 0));
+        view.max.z = 6; // the side and the margin beside it, not the whole tower
+        focused = view;
+        userMoved = false;
+        frame(view, false, outward(mid, 0.9), true);
+        return;
+      }
+      if (t.kind === "building") {
+        // Height: the building from the front with its height marked; other whole-building results from above.
+        if (t.view === "front") {
+          const h = building.max.z - building.min.z;
+          const post = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.35, h), new THREE.MeshBasicMaterial({ color: 0xd22b10 }));
+          post.position.set(building.max.x + 1.5, building.min.y - 1.5, building.min.z + h / 2);
+          addMarker(post);
+        }
+        focused = building.clone();
+        userMoved = false;
+        frame(building, false, t.view === "front" ? new THREE.Vector3(0.25, -1, 0.15) : new THREE.Vector3(0, -0.001, 1), true);
+        return;
+      }
+      const targets = t.guids.flatMap((g) => byGuid.get(g) ?? []);
       // A section cut just above the element: the floors above disappear, so a room is seen in its
       // own floor, from above, instead of the camera flying in among the walls.
-      renderer.clippingPlanes = [];
-      if (!targets) return;
+      if (!targets.length) return;
       const box = new THREE.Box3();
       targets.forEach((m) => {
         (m.material as THREE.MeshStandardMaterial).emissive.setHex(0x505057);
@@ -466,15 +529,20 @@ function build(
       // An element through several storeys (a stair) is shown at its lowest storey.
       if (box.max.z - box.min.z > 4.5) box.max.z = box.min.z + 3.2;
       renderer.clippingPlanes = [new THREE.Plane(new THREE.Vector3(0, 0, -1), box.max.z + 0.05)];
+      // The element itself drawn in ink, so it stands out even among other failures of the same colour.
+      const ink = new THREE.Group();
+      targets.forEach((m) => ink.add(new THREE.LineSegments(new THREE.EdgesGeometry(m.geometry, 30), new THREE.LineBasicMaterial({ color: light ? 0x0a0a0b : 0xf2f2f3 }))));
+      addMarker(ink);
       const room = targets.some((m) => m.userData.isSpace);
       // A room: its part of the floor, from above. A door, stair or other element: close up.
       const view = room ? box.clone().expandByVector(new THREE.Vector3(4, 4, 0)) : box.clone().expandByVector(new THREE.Vector3(1.2, 1.2, 0.3));
       focused = view;
       userMoved = false;
-      frame(view, !room, room ? new THREE.Vector3(0.5, -0.8, 1.6) : new THREE.Vector3(0.7, -1.0, 1.1), true);
+      frame(view, !room, outward(box.getCenter(new THREE.Vector3()), room ? 1.8 : 1.1), true);
     },
     dispose() {
       dropEnvelope();
+      dropMarker();
       cancelAnimationFrame(raf);
       ro.disconnect();
       controls.dispose();

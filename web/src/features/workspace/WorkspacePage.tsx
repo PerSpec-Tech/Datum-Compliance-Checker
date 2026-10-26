@@ -2,14 +2,14 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { api, type JobEvent } from "../../api/client";
-import type { Status } from "../../api/types";
+import type { BuildingModel, Status } from "../../api/types";
 import { ErrorBox, Icon, STATUS_META, Spinner, StatusMark } from "../../components/ui";
 import ThemeToggle from "../../components/ThemeToggle";
 import { rememberProject } from "../../lib/recent";
 import { bunchGroups, groupResults, isBunch, worstBy, type Group } from "../report/groups";
 import PlanViewer from "../viewer/PlanViewer";
 import { gapTo } from "../viewer/SetbackLayer";
-import Viewer from "../viewer/Viewer";
+import Viewer, { type FocusTarget } from "../viewer/Viewer";
 import IssueCard from "./IssueCard";
 import SiteWizard from "../site/SiteWizard";
 
@@ -37,6 +37,8 @@ export default function WorkspacePage() {
   const [card, setCard] = useState<Card | null>(() => (params.get("el") ? { key: params.get("el")!, x: null, y: null } : null));
   const [site, setSite] = useState(params.get("site") === "1");
   const [job, setJob] = useState<Job | null>(null);
+  // An opened group of rooms (a low storey): the camera shows them all.
+  const [bunchFocus, setBunchFocus] = useState<string[] | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const pointer = useRef<{ x: number; y: number } | null>(null);
@@ -222,7 +224,7 @@ export default function WorkspacePage() {
             modelVersion={model.data.model_version}
             projectId={projectId}
             statusByGuid={byGuid}
-            selectedGuid={open?.guid ?? null}
+            focus={bunchFocus ? { kind: "elements", guids: bunchFocus } : open && m ? focusFor(open, m) : null}
             onPick={(guid) => {
               const g = groups.find((x) => x.guid === guid) ?? issues.find((x) => x.guid === guid);
               if (g) pick(g.key);
@@ -238,9 +240,16 @@ export default function WorkspacePage() {
         {list && r && (
           <IssueList
             groups={issues}
+            onBunch={(members) => {
+              setBunchFocus(members ? members.map((g) => g.guid).filter((x): x is string => !!x) : null);
+              if (members) setCard(null);
+            }}
             selected={open?.key}
             allClear={counts?.fail === 0 && counts?.unverifiable === 0}
-            onPick={(g) => setCard({ key: g.key, x: null, y: null })}
+            onPick={(g) => {
+              setBunchFocus(null);
+              setCard({ key: g.key, x: null, y: null });
+            }}
           />
         )}
 
@@ -314,14 +323,36 @@ function place(card: Card, host: HTMLDivElement | null, inset = 0): React.CSSPro
 
 // Rooms on one floor that fail in the same way (a whole storey built too low) are one row, opened
 // to list the rooms; each room still opens its own card.
-function IssueList({ groups, selected, allClear, onPick }: { groups: Group[]; selected?: string; allClear: boolean; onPick: (g: Group) => void }) {
+function IssueList({
+  groups,
+  selected,
+  allClear,
+  onPick,
+  onBunch,
+}: {
+  groups: Group[];
+  selected?: string;
+  allClear: boolean;
+  onPick: (g: Group) => void;
+  onBunch: (members: Group[] | null) => void;
+}) {
   const [openRows, setOpenRows] = useState<Set<string>>(new Set());
   const list = useMemo(() => bunchGroups(groups), [groups]);
-  const toggle = (key: string) =>
+  // A room picked elsewhere (on the model) opens its group once; closing it stays closed.
+  useEffect(() => {
+    const row = list.find((r) => isBunch(r) && r.members.some((m) => m.key === selected));
+    if (row) setOpenRows((s) => (s.has(row.key) ? s : new Set(s).add(row.key)));
+  }, [selected, list]);
+  const toggle = (key: string, members: Group[]) =>
     setOpenRows((s) => {
       const n = new Set(s);
-      if (n.has(key)) n.delete(key);
-      else n.add(key);
+      if (n.has(key)) {
+        n.delete(key);
+        onBunch(null);
+      } else {
+        n.add(key);
+        onBunch(members);
+      }
       return n;
     });
   const item = (g: Group, indent = false) => {
@@ -349,11 +380,11 @@ function IssueList({ groups, selected, allClear, onPick }: { groups: Group[]; se
         {allClear && <li className="px-3 py-3 text-xs text-fg-2">Every clause that applies passes. Turn on “show passes” to see them.</li>}
         {list.map((row) => {
           if (!isBunch(row)) return item(row);
-          const isOpen = openRows.has(row.key) || row.members.some((m) => m.key === selected);
+          const isOpen = openRows.has(row.key);
           return (
             <li key={row.key}>
               <button
-                onClick={() => toggle(row.key)}
+                onClick={() => toggle(row.key, row.members)}
                 aria-expanded={isOpen}
                 className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-surface-raised"
               >
@@ -375,6 +406,29 @@ function IssueList({ groups, selected, allClear, onPick }: { groups: Group[]; se
       </ul>
     </aside>
   );
+}
+
+/** Where the 3D camera goes for an open result. */
+function focusFor(g: Group, m: BuildingModel): FocusTarget | null {
+  // (A flat may carry its own id, an IfcZone with no geometry: its rooms are what to show.)
+  if (g.guid && g.kind !== "units") return { kind: "elements", guids: [g.guid] };
+  if (g.kind === "site.edges") {
+    const e = m.site.edges.find((x) => x.id === g.id);
+    return e ? { kind: "edge", a: e.a, b: e.b } : null;
+  }
+  if (g.kind === "units") {
+    // A flat: its rooms (named after it, on its floor).
+    const u = m.units.find((x) => x.id === g.id);
+    const base = u?.name.replace(/\s*\(.*\)\s*$/, "") ?? ""; // "Flat 105 (studio)" → "Flat 105"
+    const guids = u
+      ? m.spaces.filter((s) => s.level_id === u.level_id && (s.name === base || s.name.startsWith(`${base} `)) && s.source_id).map((s) => s.source_id!)
+      : [];
+    return guids.length ? { kind: "elements", guids } : null;
+  }
+  if (g.kind === "building" || g.kind === "site") {
+    return { kind: "building", view: g.results.some((r) => /height/.test(r.rule_id)) ? "front" : "top" };
+  }
+  return null;
 }
 
 // The project's name (click to rename; saved on the server) and a copy-link button.
