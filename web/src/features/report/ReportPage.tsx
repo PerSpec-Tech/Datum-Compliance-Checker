@@ -377,11 +377,16 @@ function Line({ r, excerpt = false }: { r: Result; excerpt?: boolean }) {
 }
 
 // PerSpec's mark and wordmark (web/public/brand). Black artwork: inverted in the dark theme.
+// The PerSpec wordmark, as on getperspec.com: "perspec" in the UI face (DM Sans), lower case, with
+// the full stop in Corazon, the suite's one accent (UI guidelines). Set as text, never an image.
 function Brand({ className = "", size = 28 }: { className?: string; size?: number }) {
   return (
-    <span className={`flex items-center gap-2.5 ${className}`} aria-label="PerSpec">
-      <img src="/brand/perspec-mark.png" alt="" style={{ height: size }} className="brand-art" />
-      <img src="/brand/perspec-wordmark.png" alt="PERSPEC" style={{ height: size * 0.32 }} className="brand-art" />
+    <span
+      className={`block font-semibold leading-none text-fg ${className}`}
+      style={{ fontSize: size * 0.68, letterSpacing: "-0.03em" }}
+      aria-label="perspec"
+    >
+      perspec<span className="stop">.</span>
     </span>
   );
 }
