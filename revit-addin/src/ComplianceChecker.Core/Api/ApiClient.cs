@@ -99,6 +99,18 @@ public sealed class ApiClient
     public Task<DrawingFrames> GetDrawingFramesAsync(string projectId, CancellationToken ct = default) =>
         SendAsync<DrawingFrames>(HttpMethod.Get, $"api/projects/{Uri.EscapeDataString(projectId)}/drawing/frames", null, ct);
 
+    /// <summary>The project's saved answers (GET /projects/{id} → brief): path → value.</summary>
+    public async Task<IReadOnlyDictionary<string, JsonElement>> GetBriefAsync(string projectId, CancellationToken ct = default)
+    {
+        JsonElement project = await SendAsync<JsonElement>(HttpMethod.Get, $"api/projects/{Uri.EscapeDataString(projectId)}", null, ct);
+        var answers = new Dictionary<string, JsonElement>();
+        if (project.TryGetProperty("brief", out JsonElement brief) && brief.ValueKind == JsonValueKind.Object)
+            foreach (JsonProperty fact in brief.EnumerateObject())
+                if (fact.Value.ValueKind == JsonValueKind.Object && fact.Value.TryGetProperty("value", out JsonElement value))
+                    answers[fact.Name] = value.Clone();
+        return answers;
+    }
+
     /// <summary>Declare facts for the next check (PATCH /brief): path → value, e.g.
     /// "project.location" → {lat, lon}, "site.boundary" → [[x, y], …], "site.edges" → {e1: {kind, road_width_m}}.</summary>
     public Task<JsonElement> PatchBriefAsync(string projectId, IReadOnlyDictionary<string, object?> answers, CancellationToken ct = default) =>

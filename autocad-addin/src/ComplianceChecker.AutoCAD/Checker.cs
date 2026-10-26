@@ -58,6 +58,15 @@ namespace ComplianceChecker.AutoCAD
             pid = await api.CreateProjectAsync(name);
             ProjectLink.Write(doc, pid);
             Upload = await api.UploadDxfAsync(pid, dxf);
+            // A new project for a drawing that already has a site (another computer or server): bring it along.
+            try
+            {
+                await SiteStore.ReplayAsync(doc, api, pid);
+            }
+            catch (Exception e)
+            {
+                Log.Error("site replay", e);
+            }
             return pid;
         }
 
@@ -112,6 +121,15 @@ namespace ComplianceChecker.AutoCAD
                     }
                     Upload = window.Result ?? Upload;
                 }
+                // A drawing that doesn't know where it is goes to the site setup first (which checks after).
+                if (!HasLocation(await api.GetModelJsonAsync(pid)))
+                {
+                    ed.WriteMessage("\nCompliance: this drawing has no location yet. Opening the site setup…");
+                    ResultsPalette.SetStatus("Set the site first: where it is, the plot and the road.");
+                    _busy = false;
+                    await SiteSetup.RunAsync(doc, api);
+                    return;
+                }
                 ResultsPalette.SetStatus("Checking…");
                 ed.WriteMessage("\nCompliance: checking…");
                 string job = await api.StartCheckAsync(pid);
@@ -155,6 +173,14 @@ namespace ComplianceChecker.AutoCAD
                 {
                     Log.Error("live start", e); // the check's results stand without the preview
                 }
+                try
+                {
+                    await SiteStore.PullAsync(doc, api, pid); // a site set on the web comes into the drawing
+                }
+                catch (Exception e)
+                {
+                    Log.Error("site pull", e);
+                }
                 var s = Report.Summary;
                 Log.Info($"report {reportId}: {s.Fail} fail, {s.Unverifiable} unverifiable, {clouds} clouds");
                 ed.WriteMessage($"\nCompliance: {s.Fail} fail · {s.Unverifiable} can't verify · {s.Pass} pass. "
@@ -169,6 +195,20 @@ namespace ComplianceChecker.AutoCAD
             finally
             {
                 _busy = false;
+            }
+        }
+
+        private static bool HasLocation(string modelJson)
+        {
+            try
+            {
+                using var json = System.Text.Json.JsonDocument.Parse(modelJson);
+                return json.RootElement.GetProperty("model").GetProperty("project").GetProperty("location")
+                    .GetProperty("value").ValueKind == System.Text.Json.JsonValueKind.Object;
+            }
+            catch (Exception)
+            {
+                return true; // unreadable: let the server say what's missing
             }
         }
 

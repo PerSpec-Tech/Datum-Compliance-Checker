@@ -387,12 +387,20 @@ def read(path: str | Path) -> tuple[dict[str, Any], list[str]]:
         el for el in ifc.by_type("IfcSlab") if getattr(el, "PredefinedType", None) == "ROOF"
     ]
     roof_top = max((z[1] for el in roofs if (z := r.z_range(el))), default=None)
-    if roof_top is None and storeys:
-        roof_top = levels[-1]["elevation_m"]
     highest = max(
         (z[1] for el in ifc.by_type("IfcElement") if storey_of(el) and (z := r.z_range(el))),
         default=roof_top,
     )  # building elements only: roads and neighbouring context sit on the site
+    if roof_top is None:
+        # No roof element: the top of the building's own elements, not the top floor's level
+        # (which would leave out the whole top storey).
+        roof_top = (
+            highest if highest is not None else (levels[-1]["elevation_m"] if storeys else None)
+        )
+        if roof_top is not None:
+            r.warnings.append(
+                "No roof in the model: the building height is taken from its highest element."
+            )
 
     # ------------------------------------------------------------------ stairs
     stairs = []

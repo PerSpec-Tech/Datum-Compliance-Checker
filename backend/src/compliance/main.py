@@ -64,7 +64,18 @@ def _serve_web(app: FastAPI) -> None:
     dist = REPO_ROOT / "web" / "dist"
     if not (dist / "index.html").exists():
         return
-    app.mount("/assets", StaticFiles(directory=dist / "assets"), name="assets")
+    class Assets(StaticFiles):
+        """Built files carry a content hash in their name, so they can be cached for good."""
+
+        async def get_response(self, path: str, scope):  # type: ignore[no-untyped-def]
+            resp = await super().get_response(path, scope)
+            resp.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+            return resp
+
+    app.mount("/assets", Assets(directory=dist / "assets"), name="assets")
+    # The page itself is always re-checked, so a new build (new asset names) is picked up at once
+    # instead of a browser running a cached old app.
+    fresh = {"Cache-Control": "no-cache"}
 
     @app.get("/{path:path}", include_in_schema=False)
     def spa(path: str) -> FileResponse:
@@ -72,8 +83,8 @@ def _serve_web(app: FastAPI) -> None:
             raise HTTPException(404, "Not found.")
         file = dist / path
         if path and file.is_file() and dist in file.resolve().parents:
-            return FileResponse(file)
-        return FileResponse(dist / "index.html")
+            return FileResponse(file, headers=fresh)
+        return FileResponse(dist / "index.html", headers=fresh)
 
 
 def _default_runner(store: Store, rulebase: Callable[[], RuleBase]) -> JobRunner:

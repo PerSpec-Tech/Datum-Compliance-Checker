@@ -36,7 +36,7 @@ namespace ComplianceChecker.AutoCAD
         public string PlotNote { get; set; } = "";
     }
 
-    internal enum SiteAction { Cancel, Save, PickPlot, PickRoad, Browser }
+    internal enum SiteAction { Cancel, Save, SaveOnly, PickPlot, PickRoad, Browser }
 
     /// <summary>
     /// CCSITE inside AutoCAD (P11.2): location (AutoCAD's own geographic location, an address search
@@ -98,12 +98,26 @@ namespace ComplianceChecker.AutoCAD
                         case SiteAction.Browser:
                             Checker.OpenInBrowser($"/w/{Uri.EscapeDataString(pid)}?site=1");
                             return;
+                        case SiteAction.SaveOnly:
                         case SiteAction.Save:
-                            await api.PatchBriefAsync(pid, Answers(state, scale));
-                            Log.Info($"site saved for {pid}");
+                        {
+                            // Saved twice: on the server project, and in the drawing (it travels with the DWG).
+                            var answers = Answers(state, scale);
+                            await api.PatchBriefAsync(pid, answers);
+                            SiteStore.Merge(doc, answers);
+                            Log.Info($"site saved for {pid} ({answers.Count} answers)");
                             ClearLabels();
-                            await Checker.CheckAsync(doc);
+                            if (window.Action == SiteAction.Save)
+                            {
+                                await Checker.CheckAsync(doc);
+                            }
+                            else
+                            {
+                                ed.WriteMessage("\nCompliance: site saved in the project and in this drawing (save the DWG to keep it). Run Check when you're ready.");
+                                ResultsPalette.SetStatus("Site saved. Run Check when you're ready.");
+                            }
                             return;
+                        }
                         default:
                             return;
                     }

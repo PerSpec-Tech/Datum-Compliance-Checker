@@ -196,6 +196,12 @@
 .leaflet-tooltip.map-side::before {
   display: none;
 }
+.map-corner {
+  border: 2px solid #d22b10;
+  border-radius: 2px;
+  background: var(--bg-surface);
+  cursor: move;
+}
 .map-rotate {
   display: grid;
   place-items: center;

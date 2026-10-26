@@ -95,7 +95,7 @@ def model(b: Building, *, project: dict, site: dict, levels, footprint, roof, gf
              "counts_to_far": {"value": True, "source": "model"}}
             for i, (lid, name, _) in enumerate(levels)
         ],  # fmt: skip
-        "stairs": [stair],
+        "stairs": stair if isinstance(stair, list) else [stair],
         "doors": b.doors,
         "units": b.units,
     }
@@ -167,72 +167,95 @@ def place(b, level, side, row, sid, name, u0, v0, u1, v1, h):
 
 
 def two_bhk(b, level, side, flat, corridor):
+    """Front row (8.5 × 9, the front and one side on the façade): every habitable room and the
+    kitchen get a window; bath and WC sit on a ventilation shaft."""
     p = f"{flat}-"
     n = f"Flat {flat}"
-    living = place(b, level, side, "front", p + "LIV", f"{n} Living", 0, 0, 4.5, 5, 2.8)
-    bed2 = place(b, level, side, "front", p + "BR2", f"{n} Bedroom 2", 4.5, 0, 8.5, 3.5, 2.8)
-    passage = place(b, level, side, "front", p + "PAS", f"{n} Passage", 4.5, 3.5, 8.5, 5, 2.8)
-    bed1 = place(b, level, side, "front", p + "BR1", f"{n} Bedroom 1", 0, 5, 4, 9, 2.8)
-    bath = place(b, level, side, "front", p + "BTH", f"{n} Bath", 4, 5, 6, 7, 2.4)
-    wc = place(b, level, side, "front", p + "WC", f"{n} WC", 4, 7, 6, 9, 2.4)
-    kitchen = place(b, level, side, "front", p + "KIT", f"{n} Kitchen", 6, 5, 8.5, 9, 2.8)
+    bed2 = place(b, level, side, "front", p + "BR2", f"{n} Bedroom 2", 0, 0, 3.5, 4.5, 2.8)
+    kitchen = place(b, level, side, "front", p + "KIT", f"{n} Kitchen", 3.5, 0, 6.0, 4.5, 2.8)
+    bed1 = place(b, level, side, "front", p + "BR1", f"{n} Bedroom 1", 6.0, 0, 8.5, 4.5, 2.8)
+    living = place(b, level, side, "front", p + "LIV", f"{n} Living", 0, 4.5, 3.5, 9, 2.8)
+    passage = place(b, level, side, "front", p + "PAS", f"{n} Passage", 3.5, 4.5, 8.5, 6.0, 2.8)
+    bath = place(b, level, side, "front", p + "BTH", f"{n} Bath", 3.5, 6.0, 5.5, 9, 2.4)
+    place(b, level, side, "front", p + "SFT", f"{n} Shaft", 5.5, 6.0, 6.3, 9, 2.4)
+    wc = place(b, level, side, "front", p + "WC", f"{n} WC", 6.3, 6.0, 7.6, 9, 2.4)
+    store = place(b, level, side, "front", p + "STO", f"{n} Store", 7.6, 6.0, 8.5, 9, 2.4)
     b.door(level, passage, corridor, 1.0)
-    b.door(level, passage, living, 0.9)
-    b.door(level, passage, bed2, 0.9)
-    b.door(level, passage, kitchen, 0.9)
-    b.door(level, passage, bath, 0.75)
-    b.door(level, living, bed1, 0.9)
-    b.door(level, bed1, wc, 0.75)
+    b.door(level, living, passage, 0.9)
+    b.door(level, bed2, living, 0.9)
+    b.door(level, kitchen, passage, 0.9)
+    b.door(level, bed1, passage, 0.9)
+    b.door(level, bath, passage, 0.75)
+    b.door(level, wc, passage, 0.75)
+    b.door(level, store, passage, 0.6)
     b.unit(flat, n, level, 66.0)
 
 
 def one_bhk(b, level, side, row, flat, corridor):
+    """Rear rows (8.5 × 8.5, one side on the façade): living, kitchen and bedroom along it; the
+    bedroom's own bath on a shaft."""
     p = f"{flat}-"
     n = f"Flat {flat}"
-    living = place(b, level, side, row, p + "LIV", f"{n} Living", 0, 0, 4.5, 4.5, 2.8)
-    kitchen = place(b, level, side, row, p + "KIT", f"{n} Kitchen", 4.5, 0, 8.5, 2.5, 2.8)
-    passage = place(b, level, side, row, p + "PAS", f"{n} Passage", 4.5, 2.5, 8.5, 4.5, 2.8)
-    bed = place(b, level, side, row, p + "BR", f"{n} Bedroom", 0, 4.5, 4.5, 8.5, 2.8)
-    bath = place(b, level, side, row, p + "BTH", f"{n} Bath", 4.5, 4.5, 6.5, 8.5, 2.4)
-    util = place(b, level, side, row, p + "UTL", f"{n} Utility", 6.5, 4.5, 8.5, 8.5, 2.8)
+    living = place(b, level, side, row, p + "LIV", f"{n} Living", 0, 0, 8.5, 3.5, 2.8)
+    kitchen = place(b, level, side, row, p + "KIT", f"{n} Kitchen", 0, 3.5, 3.5, 5.5, 2.8)
+    passage = place(b, level, side, row, p + "PAS", f"{n} Passage", 3.5, 3.5, 8.5, 5.5, 2.8)
+    bed = place(b, level, side, row, p + "BR", f"{n} Bedroom", 0, 5.5, 4.5, 8.5, 2.8)
+    bath = place(b, level, side, row, p + "BTH", f"{n} Bath", 4.5, 5.5, 6.5, 8.5, 2.4)
+    place(b, level, side, row, p + "SFT", f"{n} Shaft", 6.5, 5.5, 7.3, 8.5, 2.4)
+    store = place(b, level, side, row, p + "STO", f"{n} Store", 7.3, 5.5, 8.5, 8.5, 2.4)
     b.door(level, passage, corridor, 1.0)
-    b.door(level, passage, living, 0.9)
-    b.door(level, passage, kitchen, 0.9)
-    b.door(level, passage, bath, 0.75)
-    b.door(level, passage, util, 0.75)
-    b.door(level, living, bed, 0.9)
+    b.door(level, living, passage, 1.2)  # archway
+    b.door(level, kitchen, passage, 0.9)
+    b.door(level, bed, passage, 0.9)
+    b.door(level, bath, bed, 0.75)
+    b.door(level, store, passage, 0.6)
     b.unit(flat, n, level, 59.0)
 
 
 def studio(b, level, side, row, flat, corridor):
+    """Floor 1's small flat (24 sq.m carpet: under the TOD minimum, planted) beside the society
+    store, which opens off the corridor."""
     p = f"{flat}-"
     n = f"Flat {flat}"
-    living = place(b, level, side, row, p + "LIV", f"{n} Living", 0, 0, 4.5, 4, 2.8)
-    kitchen = place(b, level, side, row, p + "KIT", f"{n} Kitchen", 4.5, 0, 6, 2.5, 2.8)
-    bath = place(b, level, side, row, p + "BTH", f"{n} Bath", 4.5, 2.5, 6, 4, 2.4)
-    passage = place(b, level, side, row, p + "PAS", f"{n} Passage", 6, 0, 8.5, 4, 2.8)
-    store = place(b, level, side, row, p + "STO", f"Society Store {level}", 0, 4, 8.5, 8.5, 2.8)
+    living = place(b, level, side, row, p + "LIV", f"{n} Living", 0, 0, 4.5, 4.0, 2.8)
+    kitchen = place(b, level, side, row, p + "KIT", f"{n} Kitchen", 0, 4.0, 2.5, 5.5, 2.8)
+    bath = place(b, level, side, row, p + "BTH", f"{n} Bath", 4.5, 0, 6.0, 2.0, 2.4)
+    place(b, level, side, row, p + "SFT", f"{n} Shaft", 6.0, 0, 6.8, 2.0, 2.4)
+    store = place(b, level, side, row, p + "STO", f"{n} Store", 6.8, 0, 8.5, 2.0, 2.4)
+    passage = place(b, level, side, row, p + "PAS", f"{n} Passage", 4.5, 2.0, 8.5, 4.0, 2.8)
+    society = place(b, level, side, row, p + "SOC", f"Society Store {level}", 2.5, 4.0, 8.5, 8.5, 2.8)
+    meters = place(b, level, side, row, p + "MTR", f"Meter Room {level}", 0, 5.5, 2.5, 8.5, 2.8)
     b.door(level, passage, corridor, 1.0)
-    b.door(level, passage, kitchen, 0.75)
-    b.door(level, passage, bath, 0.75)
+    b.door(level, living, passage, 0.9)
     b.door(level, kitchen, living, 0.9)
-    b.door(level, passage, store, 1.0)
+    b.door(level, bath, passage, 0.75)
+    b.door(level, store, passage, 0.6)
+    b.door(level, society, corridor, 1.0)
+    b.door(level, meters, society, 0.9)
     b.unit(flat, f"{n} (studio)", level, 24.0)
+
+
+# The core across the building: Stair 1 (the planted 1.0 m flights), two lifts on their own lobby,
+# the main lobby between the corridors, Stair 2 (1.5 m flights) and the electrical room.
+STAIR2 = (37.2, 43.0, 13.3, 16.5)
 
 
 def core(b, level, h):
     c0, c1 = ROWS["core"]
-    services = b.room(f"{level}-SRV", f"Services {level}", level, W0, c0, W0 + 3.5, c1, h)
-    stair = b.room(f"{level}-STR", f"Staircase {level}", level, W0 + 3.5, c0, W0 + 6.0, c1, h)
-    lobby = b.room(f"{level}-LOB", f"Lift Lobby {level}", level, W0 + 6.0, c0, W0 + 12.7, c1, h)
-    lift = b.room(f"{level}-LFT", f"Lift {level}", level, W0 + 12.7, c0, W0 + 15.2, 14.0, h)
-    elec = b.room(f"{level}-ELE", f"Electrical Room {level}", level, W0 + 12.7, 14.0, W0 + 15.2, c1, h)
-    store = b.room(f"{level}-STO", f"Store {level}", level, W0 + 15.2, c0, E1, c1, h)
-    b.door(level, lobby, stair, 1.0)
-    b.door(level, stair, services, 0.9)
-    b.door(level, lobby, lift, 1.0)
-    b.door(level, lobby, elec, 0.9)
-    b.door(level, elec, store, 0.9)
+    stair = b.room(f"{level}-STR", f"Staircase {level}", level, W0, c0, W0 + 2.5, c1, h)
+    lift1 = b.room(f"{level}-LF1", f"Lift 1 {level}", level, 26.8, c0, 29.0, 14.0, h)
+    lift2 = b.room(f"{level}-LF2", f"Lift 2 {level}", level, 29.0, c0, 31.2, 14.0, h)
+    llob = b.room(f"{level}-LLB", f"Lift Lobby {level}", level, 26.8, 14.0, 31.2, c1, h)
+    lobby = b.room(f"{level}-LOB", f"Lobby {level}", level, 31.2, c0, 37.2, c1, h)
+    x0, x1, y0, y1 = STAIR2
+    stair2 = b.room(f"{level}-ST2", f"Staircase 2 {level}", level, x0, y0, x1, y1, h)
+    elec = b.room(f"{level}-ELE", f"Electrical Room {level}", level, 37.2, c0, E1, y0, h)
+    b.door(level, llob, stair, 1.0)
+    b.door(level, lift1, llob, 1.0)
+    b.door(level, lift2, llob, 1.0)
+    b.door(level, llob, lobby, 1.5)  # archway
+    b.door(level, stair2, lobby, 1.2)
+    b.door(level, elec, lobby, 0.9)
     return lobby
 
 
@@ -249,18 +272,18 @@ def apartment() -> dict:
     f0, f1 = ROWS["front"]
 
     # Ground: two shops on the road, the residential entrance between them, stilt parking behind.
-    shop1 = b.room("G-SH1", "Shop 1", "L0", W0, f0, W1, f1, 3.3)
-    entrance = b.room("G-ENT", "Entrance Lobby", "L0", C0, f0, C1, f1, 3.3)
-    shop2 = b.room("G-SH2", "Shop 2", "L0", E0, f0, E1, f1, 3.3)
+    shop1 = b.room("G-SH1", "Shop 1", "L0", W0, f0, 31.3, f1, 3.3)
+    entrance = b.room("G-ENT", "Entrance Lobby", "L0", 31.3, f0, 36.0, f1, 3.3)
+    shop2 = b.room("G-SH2", "Shop 2", "L0", 36.0, f0, E1, f1, 3.3)
     lobby = core(b, "L0", 3.3)
     parking = b.room("G-PRK", "Parking", "L0", W0, ROWS["rear_a"][0], E1, ROWS["rear_b"][1], 3.3)
     b.door("L0", shop1, None, 2.4, 2.4, exit_=True)
     b.door("L0", shop2, None, 2.4, 2.4, exit_=True)
     b.door("L0", entrance, None, 0.85, 2.1, exit_=True)  # too narrow for an exit
-    b.door("L0", entrance, lobby, 1.5)
+    b.door("L0", entrance, lobby, 2.0)  # archway into the core
     b.door("L0", lobby, parking, 1.2)
-    b.unit("SH1", "Shop 1", "L0", 72.0, "commercial")
-    b.unit("SH2", "Shop 2", "L0", 72.0, "commercial")
+    b.unit("SH1", "Shop 1", "L0", 60.0, "commercial")
+    b.unit("SH2", "Shop 2", "L0", 60.0, "commercial")
 
     for i in range(1, UPPER + 1):
         lv = f"L{i}"
@@ -284,11 +307,18 @@ def apartment() -> dict:
     width = E1 - W0
     upper = width * (ROWS["rear_b"][1] - f0)
     gfa = {"L0": width * (ROWS["core"][1] - f0), **{f"L{i}": upper for i in range(1, UPPER + 1)}}
-    stair = {
-        "id": "ST1", "source_id": "demo-st-1", "base_level_id": "L0", "top_level_id": f"L{UPPER}",
-        "min_run_width_m": 1.0, "riser_m": 0.1875, "tread_m": 0.25,
-        "is_exit": {"value": True, "source": "model", "note": "Pset_StairCommon.FireExit"},
-    }  # fmt: skip
+    stairs = [
+        {
+            "id": "ST1", "source_id": "demo-st-1", "base_level_id": "L0", "top_level_id": f"L{UPPER}",
+            "min_run_width_m": 1.0, "riser_m": 0.1875, "tread_m": 0.25,
+            "is_exit": {"value": True, "source": "model", "note": "Pset_StairCommon.FireExit"},
+        },
+        {
+            "id": "ST2", "source_id": "demo-st-2", "base_level_id": "L0", "top_level_id": f"L{UPPER}",
+            "min_run_width_m": 1.5, "riser_m": 0.1875, "tread_m": 0.25,
+            "is_exit": {"value": True, "source": "model", "note": "Pset_StairCommon.FireExit"},
+        },
+    ]  # fmt: skip
     return model(
         b,
         project=project_facts("Demo — mixed-use building near a metro station", 18.5165,
@@ -298,7 +328,7 @@ def apartment() -> dict:
         footprint=rect(W0, f0, E1, ROWS["rear_b"][1]),
         roof=roof,
         gfa=gfa,
-        stair=stair,
+        stair=stairs,
         notes=[__doc__.split("demo_apartment", 1)[1].split("demo_house", 1)[0].strip()],
     )
 

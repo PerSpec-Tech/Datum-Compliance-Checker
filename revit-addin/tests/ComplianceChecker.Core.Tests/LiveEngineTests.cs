@@ -63,8 +63,8 @@ public class LiveEngineTests
         Assert.Equal(new[] { "udcpr2020.ch9.exit-door-width", "udcpr2020.ch9.habitable-height-min",
                              "udcpr2020.ch9.kitchen-height-min", "udcpr2020.ch9.stair-width-residential" },
             s.Thresholds.Select(t => t.RuleId).Distinct().OrderBy(x => x).ToArray());
-        // Floor 1 is the squeezed storey: 13 habitable rooms and 6 kitchens at 2.6 m clear, nothing else low.
-        Assert.Equal(19, s.Thresholds.Count(t => t.RuleId.EndsWith("height-min")));
+        // Floor 1 is the squeezed storey: 14 habitable rooms and 6 kitchens at 2.6 m clear, nothing else low.
+        Assert.Equal(20, s.Thresholds.Count(t => t.RuleId.EndsWith("height-min")));
         Assert.Equal(-263.5, s.FsiLeftM2!.Value, 1);
         Assert.Contains("m² over", s.StripText());
     }

@@ -1,4 +1,4 @@
-import { useState, type DragEvent } from "react";
+import { useEffect, useState, type DragEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LAYER_ROLES, api, type UploadResult } from "../../api/client";
 import { FieldError, Icon, Spinner, Title } from "../../components/ui";
@@ -12,7 +12,7 @@ const SAMPLES = [
   {
     file: "demo_apartment.ifc",
     name: "mixed-use tower near a metro station",
-    facts: "IFC · G+11 · 36.4 m · 66 flats · 27 fails",
+    facts: "IFC · G+11 · 36.4 m · 66 flats · 28 fails",
     blurb: "Site and planning facts are modelled. Too tall for its road, and Floor 1 is built too low.",
   },
   {
@@ -202,7 +202,8 @@ function ModelStep({
         </span>
         <span className="min-w-0 flex-1">
           <span className="block text-base font-medium">{busy ?? "drop a model here"}</span>
-          <span className="mt-1 flex flex-wrap gap-2 text-xs text-fg-2">
+          {busy && <Elapsed />}
+          <span className={`mt-1 flex-wrap gap-2 text-xs text-fg-2 ${busy ? "hidden" : "flex"}`}>
             <span className="flex items-center gap-1.5 rounded-sm border border-line-subtle px-2 py-1">
               <Icon name="cube" size={14} /> IFC from Revit, ArchiCAD…
             </span>
@@ -258,7 +259,12 @@ function ModelStep({
 
       {recent.length > 0 && (
         <>
-          <p className="label mt-10">recent projects</p>
+          <p className="label mt-10 flex items-center justify-between">
+            recent projects
+            <Link to="/projects" className="flex items-center gap-1 normal-case text-fg-2 hover:text-fg">
+              all projects <Icon name="arrow" size={12} />
+            </Link>
+          </p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {recent.slice(0, 8).map((r) => (
               <Link
@@ -379,5 +385,20 @@ function Row({ k, v }: { k: string; v: React.ReactNode }) {
       <span className="w-20 shrink-0 text-xs text-fg-2">{k}</span>
       <span className="min-w-0 flex-1">{v}</span>
     </div>
+  );
+}
+
+/** Seconds since a slow step started, so a big model being read doesn't look frozen. */
+function Elapsed() {
+  const [s, setS] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setS((x) => x + 1), 1000);
+    return () => clearInterval(t);
+  }, []);
+  return (
+    <span className="mt-1 block font-mono text-xs text-fg-3">
+      {Math.floor(s / 60)}:{String(s % 60).padStart(2, "0")}
+      {s >= 8 ? " · a large model takes a minute or two (a 50 MB Revit export about 1½ min)" : ""}
+    </span>
   );
 }

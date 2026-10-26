@@ -116,4 +116,20 @@ public class ApiClientTests
         Assert.Equal(13, report.Summary.Fail);
         Assert.Contains(report.Results, r => r.RuleId == "pmc.tod.max-fsi" && r.FixBy is { Amount: 0.7 });
     }
+
+    [Fact]
+    public async Task GetBrief_returns_the_saved_answers_by_path()
+    {
+        const string reply = "{\"id\":\"p1\",\"name\":\"Bungalow\",\"brief\":{" +
+            "\"project.location\":{\"value\":{\"lat\":18.52,\"lon\":73.84},\"source\":\"declared\"}," +
+            "\"site.edges\":{\"value\":{\"e1\":{\"kind\":\"road\",\"road_width_m\":9}},\"source\":\"declared\"}}}";
+        var h = new FakeHandler(r => r.RequestUri!.AbsolutePath == "/api/projects/p1" ? Json(reply) : Json("{}", HttpStatusCode.NotFound));
+        var api = new ApiClient("http://server:8000", "secret", new HttpClient(h));
+
+        var brief = await api.GetBriefAsync("p1");
+
+        Assert.Equal(new[] { "project.location", "site.edges" }, brief.Keys.OrderBy(k => k).ToArray());
+        Assert.Equal(18.52, brief["project.location"].GetProperty("lat").GetDouble());
+        Assert.Equal("road", brief["site.edges"].GetProperty("e1").GetProperty("kind").GetString());
+    }
 }

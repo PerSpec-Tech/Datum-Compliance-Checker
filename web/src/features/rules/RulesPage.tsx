@@ -92,8 +92,8 @@ function StatusChip({ r }: { r: Pick<RuleSummary, "status"> }) {
   return r.status === "verified" ? (
     <Chip title="Checked against the source by a person">verified</Chip>
   ) : (
-    <Chip predicted title="Compiled from the clause text; not yet verified by a person">
-      draft
+    <Chip predicted title="Transcribed from the clause text with its page and tested on sample buildings; not yet reviewed by a licensed professional">
+      awaiting review
     </Chip>
   );
 }
@@ -247,6 +247,10 @@ function CompileBox() {
 
 function CompileOutput({ res }: { res: CompileResult }) {
   const verdict = res.review?.verdict;
+  // The server sends notes as text or a list, and the reviewer's points as `notes` (or `issues`).
+  const list = (x: unknown): string[] => (Array.isArray(x) ? x.map((i) => (typeof i === "string" ? i : JSON.stringify(i))) : x ? [String(x)] : []);
+  const notes = list(res.notes);
+  const reviewNotes = list(res.review?.issues ?? res.review?.notes);
   return (
     <div className="mt-5 space-y-4 border-t border-line-subtle pt-5">
       <div className="flex flex-wrap items-center gap-3 text-sm">
@@ -266,19 +270,19 @@ function CompileOutput({ res }: { res: CompileResult }) {
           ))}
         </ul>
       )}
-      {res.review?.issues && res.review.issues.length > 0 && (
+      {reviewNotes.length > 0 && (
         <div>
           <p className="label">reviewer notes</p>
           <ul className="space-y-1 text-sm text-fg-2">
-            {res.review.issues.map((i) => (
-              <li key={String(i)}>— {typeof i === "string" ? i : JSON.stringify(i)}</li>
+            {reviewNotes.map((i) => (
+              <li key={i}>— {i}</li>
             ))}
           </ul>
         </div>
       )}
-      {res.notes.length > 0 && (
+      {notes.length > 0 && (
         <ul className="space-y-0.5 text-xs text-fg-3">
-          {res.notes.map((n) => (
+          {notes.map((n) => (
             <li key={n}>{n}</li>
           ))}
         </ul>

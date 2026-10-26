@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { api, type DrawingFloor } from "../../api/client";
 import type { BuildingModel, Result, Source, Status } from "../../api/types";
-import { Chip, ErrorBox, Icon, Skeleton, SourceBadge, StatusMark, fmt } from "../../components/ui";
+import { ErrorBox, Icon, Skeleton, SourceBadge, StatusMark, fmt } from "../../components/ui";
+import { rememberProject } from "../../lib/recent";
 import { applyTheme, storedTheme } from "../../lib/theme";
 import ElementThumb from "./ElementThumb";
 import FsiCard from "./FsiCard";
@@ -27,6 +28,11 @@ export default function ReportPage() {
   const loc = m?.project.location.value;
   const place = useQuery({ queryKey: ["locate", loc?.lat, loc?.lon], queryFn: () => api.locate(loc!.lat, loc!.lon), enabled: !!loc, staleTime: Infinity });
   const [passes, setPasses] = useState(false);
+  // A report opened from Revit or AutoCAD adds its project to this browser's projects list.
+  const project = useQuery({ queryKey: ["project", projectId], queryFn: () => api.project(projectId!), enabled: !!projectId });
+  useEffect(() => {
+    if (project.data) rememberProject({ id: project.data.id, name: project.data.name, reportId });
+  }, [project.data, reportId]);
 
   // Print in the light theme, whatever is on screen.
   useEffect(() => {
@@ -112,7 +118,8 @@ export default function ReportPage() {
             </div>
             <p className="mt-4 text-xs text-fg-3">
               A design-time pre-check, not a permit. Every result quotes its clause; pass and fail are decided by the rule engine from the
-              model and the facts below, never by the AI.
+              model and the facts below, never by the AI. The rules are transcribed from the bylaw text with clause and page and tested on
+              sample buildings; they have not yet been reviewed by a licensed professional.
             </p>
           </header>
 
@@ -341,7 +348,6 @@ function Line({ r, excerpt = false }: { r: Result; excerpt?: boolean }) {
           <p className="text-sm">{r.title}</p>
           <p className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-fg-3">
             <span className="font-mono">{r.clause.ref}</span> · {r.clause.source}
-            {r.rule_status === "draft" && <Chip predicted>draft</Chip>}
           </p>
         </div>
         {shown && (

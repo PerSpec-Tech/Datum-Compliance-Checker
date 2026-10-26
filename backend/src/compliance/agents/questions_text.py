@@ -7,6 +7,7 @@ decides that). If the answer doesn't line up one-to-one, the templates are kept.
 from __future__ import annotations
 
 import json
+import re
 from typing import Any
 
 from compliance.llm.client import LLMClient
@@ -32,6 +33,7 @@ SCHEMA = {
     },
 }
 MAX_LEN = 300
+_TAIL = re.compile(r"[\s\"'{}\[\],]+$")
 
 
 def reword(questions: list[dict[str, Any]], llm: LLMClient, *, job_id: str | None = None) -> int:
@@ -54,9 +56,12 @@ def reword(questions: list[dict[str, Any]], llm: LLMClient, *, job_id: str | Non
         return 0  # model reordered, merged or dropped questions: keep the templates
     changed = 0
     for q, o in zip(questions, out, strict=True):
-        text = o["prompt"].strip()
-        # Keep the template if the rewrite is clipped or telegraphic (much shorter).
-        if max(40, len(q["prompt"]) // 2) <= len(text) <= MAX_LEN and text != q["prompt"]:
+        # JSON scraps the model sometimes leaves at the end ('…compliance.},{'), then whitespace.
+        text = _TAIL.sub("", o["prompt"]).strip()
+        # Keep the template if the rewrite is clipped or telegraphic (much shorter), or has
+        # brackets left inside it.
+        clean = not any(c in text for c in "{}[]")
+        if clean and max(40, len(q["prompt"]) // 2) <= len(text) <= MAX_LEN and text != q["prompt"]:
             q["prompt"] = text
             changed += 1
     return changed

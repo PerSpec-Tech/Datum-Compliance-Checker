@@ -5,8 +5,8 @@
   "ruleset_version": "volatile",
   "created_at": "2000-01-01T00:00:00+00:00",
   "summary": {
-    "pass": 584,
-    "fail": 27,
+    "pass": 588,
+    "fail": 28,
     "unverifiable": 0,
     "not_applicable": 4,
     "advisory": 1
@@ -484,50 +484,6 @@
       "severity": "critical",
       "element": {
         "kind": "doors",
-        "id": "D006",
-        "source_id": "demo-dr-D006"
-      },
-      "status": "pass",
-      "measured": 2.4,
-      "limit": 0.9,
-      "message": "Exit door is 2.40 m wide; minimum is 0.90 m.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "doors[D006].is_exit",
-          "value": true,
-          "source": "inferred"
-        },
-        {
-          "path": "project.occupancy",
-          "value": {
-            "group": "A",
-            "subdivision": "A-4"
-          },
-          "source": "declared"
-        }
-      ],
-      "clause": {
-        "ref": "9.29.1 (ii)",
-        "excerpt": "No exit doorway shall be less than 90 cm. in width except assembly buildings where door width shall be not less than 200 cm. Doorway shall be not less than 200 cm. in height.",
-        "source": "udcpr2020 p.165",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.exit-door-width",
-      "title": "Minimum exit door width",
-      "severity": "critical",
-      "element": {
-        "kind": "doors",
         "id": "D007",
         "source_id": "demo-dr-D007"
       },
@@ -575,6 +531,50 @@
         "id": "D008",
         "source_id": "demo-dr-D008"
       },
+      "status": "pass",
+      "measured": 2.4,
+      "limit": 0.9,
+      "message": "Exit door is 2.40 m wide; minimum is 0.90 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "doors[D008].is_exit",
+          "value": true,
+          "source": "inferred"
+        },
+        {
+          "path": "project.occupancy",
+          "value": {
+            "group": "A",
+            "subdivision": "A-4"
+          },
+          "source": "declared"
+        }
+      ],
+      "clause": {
+        "ref": "9.29.1 (ii)",
+        "excerpt": "No exit doorway shall be less than 90 cm. in width except assembly buildings where door width shall be not less than 200 cm. Doorway shall be not less than 200 cm. in height.",
+        "source": "udcpr2020 p.165",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.exit-door-width",
+      "title": "Minimum exit door width",
+      "severity": "critical",
+      "element": {
+        "kind": "doors",
+        "id": "D009",
+        "source_id": "demo-dr-D009"
+      },
       "status": "fail",
       "measured": 0.85,
       "limit": 0.9,
@@ -582,7 +582,7 @@
       "missing_inputs": [],
       "facts_used": [
         {
-          "path": "doors[D008].is_exit",
+          "path": "doors[D009].is_exit",
           "value": true,
           "source": "inferred"
         },
@@ -660,6 +660,50 @@
         "unit": "m",
         "direction": "increase"
       },
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.stair-width-residential",
+      "title": "Minimum staircase width (residential)",
+      "severity": "critical",
+      "element": {
+        "kind": "stairs",
+        "id": "ST2",
+        "source_id": "demo-st-2"
+      },
+      "status": "pass",
+      "measured": 1.5,
+      "limit": 1.5,
+      "message": "Stair is 1.50 m wide; minimum is 1.50 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "project.occupancy",
+          "value": {
+            "group": "A",
+            "subdivision": "A-4"
+          },
+          "source": "declared"
+        },
+        {
+          "path": "project.building_type",
+          "value": "mixed_use",
+          "source": "declared"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-G (Regulation 9.28.8)",
+        "excerpt": "The minimum width of staircases / corridors for various buildings shall be as below. Residential Buildings: a) Individual Housing upto G + 2 storeys 0.75; b) Multi-storied Residential Building upto 15 m. height 1.00; c) above 15 m. & upto 24 m. height 1.20; d) above 24 m. height 1.50.",
+        "source": "udcpr2020 p.165",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
       "guidance_note": null
     },
     {
@@ -6203,42 +6247,6 @@
       "severity": "major",
       "element": {
         "kind": "doors",
-        "id": "D006",
-        "source_id": "demo-dr-D006"
-      },
-      "status": "pass",
-      "measured": 2.4,
-      "limit": 2.0,
-      "message": "Exit door is 2.40 m high; minimum is 2.00 m.",
-      "missing_inputs": [],
-      "facts_used": [
-        {
-          "path": "doors[D006].is_exit",
-          "value": true,
-          "source": "inferred"
-        }
-      ],
-      "clause": {
-        "ref": "9.29.1 (ii)",
-        "excerpt": "No exit doorway shall be less than 90 cm. in width except assembly buildings where door width shall be not less than 200 cm. Doorway shall be not less than 200 cm. in height.",
-        "source": "udcpr2020 p.165",
-        "retrieved": "2026-10-19"
-      },
-      "rule_status": "draft",
-      "freshness": {
-        "status": "unchecked",
-        "url": null,
-        "checked": null
-      },
-      "fix_by": null,
-      "guidance_note": null
-    },
-    {
-      "rule_id": "udcpr2020.ch9.exit-door-height",
-      "title": "Minimum exit door height",
-      "severity": "major",
-      "element": {
-        "kind": "doors",
         "id": "D007",
         "source_id": "demo-dr-D007"
       },
@@ -6279,13 +6287,49 @@
         "source_id": "demo-dr-D008"
       },
       "status": "pass",
+      "measured": 2.4,
+      "limit": 2.0,
+      "message": "Exit door is 2.40 m high; minimum is 2.00 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "doors[D008].is_exit",
+          "value": true,
+          "source": "inferred"
+        }
+      ],
+      "clause": {
+        "ref": "9.29.1 (ii)",
+        "excerpt": "No exit doorway shall be less than 90 cm. in width except assembly buildings where door width shall be not less than 200 cm. Doorway shall be not less than 200 cm. in height.",
+        "source": "udcpr2020 p.165",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.exit-door-height",
+      "title": "Minimum exit door height",
+      "severity": "major",
+      "element": {
+        "kind": "doors",
+        "id": "D009",
+        "source_id": "demo-dr-D009"
+      },
+      "status": "pass",
       "measured": 2.1,
       "limit": 2.0,
       "message": "Exit door is 2.10 m high; minimum is 2.00 m.",
       "missing_inputs": [],
       "facts_used": [
         {
-          "path": "doors[D008].is_exit",
+          "path": "doors[D009].is_exit",
           "value": true,
           "source": "inferred"
         }
@@ -7227,6 +7271,46 @@
         {
           "path": "spaces[105-LIV].usage",
           "value": "living",
+          "source": "inferred"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": {
+        "amount": 0.15,
+        "unit": "m",
+        "direction": "increase"
+      },
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.habitable-height-min",
+      "title": "Minimum height of habitable rooms",
+      "severity": "major",
+      "element": {
+        "kind": "spaces",
+        "id": "105-MTR",
+        "source_id": "demo-sp-105-MTR"
+      },
+      "status": "fail",
+      "measured": 2.5999999999999996,
+      "limit": 2.75,
+      "message": "Clear height is 2.60 m; minimum is 2.75 m (2.40 m if air-conditioned).",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[105-MTR].usage",
+          "value": "habitable",
           "source": "inferred"
         }
       ],
@@ -14377,6 +14461,45 @@
       "guidance_note": null
     },
     {
+      "rule_id": "udcpr2020.ch9.stair-riser-max",
+      "title": "Maximum riser height",
+      "severity": "major",
+      "element": {
+        "kind": "stairs",
+        "id": "ST2",
+        "source_id": "demo-st-2"
+      },
+      "status": "pass",
+      "measured": 0.1875,
+      "limit": 0.19,
+      "message": "Riser is 0.188 m; maximum is 0.19 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "project.occupancy",
+          "value": {
+            "group": "A",
+            "subdivision": "A-4"
+          },
+          "source": "declared"
+        }
+      ],
+      "clause": {
+        "ref": "9.29.3 (v)",
+        "excerpt": "The maximum height of riser shall be 19 cm. in the case of residential buildings and 15 cm. in the case of other buildings. They shall be limited to 15 per flight.",
+        "source": "udcpr2020 p.166",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
       "rule_id": "udcpr2020.ch9.stair-tread-min",
       "title": "Minimum tread width",
       "severity": "major",
@@ -14384,6 +14507,45 @@
         "kind": "stairs",
         "id": "ST1",
         "source_id": "demo-st-1"
+      },
+      "status": "pass",
+      "measured": 0.25,
+      "limit": 0.25,
+      "message": "Tread is 0.250 m; minimum is 0.25 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "project.occupancy",
+          "value": {
+            "group": "A",
+            "subdivision": "A-4"
+          },
+          "source": "declared"
+        }
+      ],
+      "clause": {
+        "ref": "9.29.3 (iv)",
+        "excerpt": "The minimum width of tread without nosing shall be 25 cm. for an internal staircase for residential buildings. In the case of other buildings, the minimum tread shall be 30 cm.",
+        "source": "udcpr2020 p.166",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.stair-tread-min",
+      "title": "Minimum tread width",
+      "severity": "major",
+      "element": {
+        "kind": "stairs",
+        "id": "ST2",
+        "source_id": "demo-st-2"
       },
       "status": "pass",
       "measured": 0.25,
@@ -18517,6 +18679,42 @@
         {
           "path": "spaces[105-LIV].usage",
           "value": "living",
+          "source": "inferred"
+        }
+      ],
+      "clause": {
+        "ref": "Table No. 9-A (Regulation 9.2.2)",
+        "excerpt": "The minimum and maximum height of a habitable room shall be given in Table No. 9-A hereunder. Flat Roof - a) Any habitable room: minimum 2.75 m., maximum 4.5 m.; d) Shops: minimum 3.00 m., maximum 4.5 m.",
+        "source": "udcpr2020 p.153",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.habitable-height-max",
+      "title": "Maximum height of habitable rooms",
+      "severity": "minor",
+      "element": {
+        "kind": "spaces",
+        "id": "105-MTR",
+        "source_id": "demo-sp-105-MTR"
+      },
+      "status": "pass",
+      "measured": 2.5999999999999996,
+      "limit": 4.5,
+      "message": "Clear height is 2.60 m; maximum is 4.50 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[105-MTR].usage",
+          "value": "habitable",
           "source": "inferred"
         }
       ],

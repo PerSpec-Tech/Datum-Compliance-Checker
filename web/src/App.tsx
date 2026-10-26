@@ -8,10 +8,12 @@ const BriefPage = lazy(() => import("./features/brief/BriefPage"));
 const ReportPage = lazy(() => import("./features/report/ReportPage"));
 const RulesPage = lazy(() => import("./features/rules/RulesPage"));
 const PairPage = lazy(() => import("./features/about/PairPage"));
+const ProjectsPage = lazy(() => import("./features/projects/ProjectsPage"));
 const WorkspacePage = lazy(() => import("./features/workspace/WorkspacePage"));
 
 const NAV: { to: string; label: string; icon: IconName; end?: boolean }[] = [
   { to: "/", label: "new check", icon: "upload", end: true },
+  { to: "/projects", label: "projects", icon: "list" },
   { to: "/revit", label: "pair Revit · AutoCAD", icon: "plug" },
   { to: "/rules", label: "rules", icon: "book" },
 ];
@@ -105,6 +107,7 @@ export default function App() {
             <Route path="/p/:projectId/brief" element={<BriefPage />} />
             <Route path="/p/:projectId/jobs/:jobId" element={<ToWorkspace />} />
             <Route path="/reports/:reportId" element={<ReportPage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/rules" element={<RulesPage />} />
             <Route path="/rules/:ruleId" element={<RulesPage />} />
             <Route path="/about" element={<Navigate to="/" replace />} />

@@ -24,7 +24,7 @@ export interface SiteDraft {
   boundary: number[][] | null; // drawn here; null = the model's own plot
   tags: Record<string, EdgeTag>;
 }
-export type Tool = "place" | "draw" | "align" | "none";
+export type Tool = "place" | "draw" | "none";
 /** Where the map should look: a point (address) or an area's extent; `key` changes to trigger it. */
 export interface Focus {
   lat: number;
@@ -59,19 +59,6 @@ function en(a: L.LatLng, b: L.LatLng): [number, number] {
 
 /** Normalise an angle to (-180, 180]. */
 export const norm = (deg: number) => +((((deg + 180) % 360) + 360) % 360 - 180).toFixed(1);
-
-/**
- * The rotation that lays a model side (a → b) along a street drawn on the map at `bearing`
- * (degrees anticlockwise from east). Of the two answers (the plan either way round) the one
- * nearer the current rotation wins.
- */
-export function alignRotation(a: number[], b: number[], bearing: number, current: number): number {
-  const side = (Math.atan2(b[1] - a[1], b[0] - a[0]) * 180) / Math.PI;
-  const t = norm(bearing - side);
-  const other = norm(t + 180);
-  const d = (x: number) => Math.abs(norm(x - current));
-  return d(t) <= d(other) ? t : other;
-}
 
 /** The plot's sides as the check will see them: the drawn plot's, else the model's. */
 export function sides(model: BuildingModel, draft: SiteDraft) {
@@ -118,7 +105,7 @@ export default function SiteMap({
   focus,
   selected,
   onSelect,
-  onAlign,
+  corners = false,
   onDrawn,
   center = PUNE,
   className = "h-[440px]",
@@ -135,7 +122,8 @@ export default function SiteMap({
   selected?: string | null;
   onSelect?: (id: string | null) => void;
   /** Align tool: the street's bearing in degrees, anticlockwise from east. */
-  onAlign?: (bearing: number) => void;
+  /** Show the drawn plot's corners as handles that can be dragged. */
+  corners?: boolean;
   onDrawn?: () => void;
   center?: LatLon;
   className?: string;
@@ -147,8 +135,8 @@ export default function SiteMap({
   const [points, setPoints] = useState<L.LatLng[]>([]);
   const [zoom, setZoom] = useState(draft.placement ? 18 : 12);
   const [hint, setHint] = useState<string | null>(null);
-  const state = useRef({ draft, onChange, tool, points, model, onAlign, onDrawn, onSelect });
-  state.current = { draft, onChange, tool, points, model, onAlign, onDrawn, onSelect };
+  const state = useRef({ draft, onChange, tool, points, model, onDrawn, onSelect });
+  state.current = { draft, onChange, tool, points, model, onDrawn, onSelect };
 
   const footprint = model.building.footprint ?? null;
   const plot = draft.boundary ?? model.site.boundary ?? null;
@@ -180,15 +168,6 @@ export default function SiteMap({
         else setPoints((d) => [...d, e.latlng]);
         return;
       }
-      if (s.tool === "align") {
-        if (!s.points.length) setPoints([e.latlng]);
-        else {
-          const [de, dn] = en(s.points[0], e.latlng);
-          if (Math.hypot(de, dn) > 2) s.onAlign?.((Math.atan2(dn, de) * 180) / Math.PI);
-          setPoints([]);
-        }
-        return;
-      }
       if (s.tool !== "place") return;
       const pl = s.draft.placement ?? startPlacement(s.model, { lat: e.latlng.lat, lon: e.latlng.lng });
       s.onChange({ ...s.draft, placement: { ...pl, lat: +e.latlng.lat.toFixed(7), lon: +e.latlng.lng.toFixed(7) } });
@@ -201,7 +180,7 @@ export default function SiteMap({
       if (!g) return;
       g.clearLayers();
       const last = s.points[s.points.length - 1];
-      if (!last || (s.tool !== "draw" && s.tool !== "align")) return;
+      if (!last || s.tool !== "draw") return;
       L.polyline([last, e.latlng], { color: "#d22b10", weight: 2, dashArray: "3 5", interactive: false }).addTo(g);
       const metres = m.distance(last, e.latlng);
       L.tooltip({ permanent: true, direction: "right", offset: [10, 0], className: "map-measure" })
@@ -224,7 +203,7 @@ export default function SiteMap({
 
   // Keys while drawing: Backspace takes the last corner back, Enter finishes, Escape starts again.
   useEffect(() => {
-    if (tool !== "draw" && tool !== "align") return;
+    if (tool !== "draw") return;
     const onKey = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement)?.tagName === "INPUT") return;
       if (e.key === "Backspace") setPoints((d) => d.slice(0, -1));
@@ -296,7 +275,7 @@ export default function SiteMap({
         const text = `${e.id} · ${len.toFixed(1)} m${t.kind ? ` · ${t.kind === "road" ? `road ${t.road_width_m ?? "?"} m` : t.kind.replace("_", " ")}` : ""}`;
         line.bindTooltip(text, labels ? { permanent: true, direction: "center", className: "map-side" } : { sticky: true });
         line.on("click", (ev: L.LeafletMouseEvent) => {
-          if (state.current.tool === "draw" || state.current.tool === "align") return;
+          if (state.current.tool === "draw") return;
           L.DomEvent.stop(ev);
           state.current.onSelect?.(e.id);
         });
@@ -363,6 +342,40 @@ export default function SiteMap({
     [],
   );
 
+  // A drawn plot's corners as handles: drag one to adjust the plot (any shape). While dragging only
+  // a preview moves; the plot is updated on release, keeping its side tags (the sides stay the same).
+  const cornerLayer = useRef<L.LayerGroup | null>(null);
+  useEffect(() => {
+    const m = map.current, pl = draft.placement, ring = draft.boundary;
+    cornerLayer.current?.remove();
+    cornerLayer.current = null;
+    if (!m || !corners || !pl || !ring) return;
+    const g = L.layerGroup().addTo(m);
+    cornerLayer.current = g;
+    const geo = ring.map((p) => L.latLng(...toGeo(p, pl)));
+    const preview = L.polygon(geo, { color: "#d22b10", weight: 2, dashArray: "4 4", fill: false, interactive: false });
+    geo.forEach((at, i) => {
+      const handle = L.marker(at, {
+        draggable: true,
+        icon: L.divIcon({ className: "map-corner", iconSize: [14, 14] }),
+        title: `corner ${i + 1}: drag to adjust`,
+      }).addTo(g);
+      handle.on("dragstart", () => preview.addTo(g));
+      handle.on("drag", () => {
+        geo[i] = handle.getLatLng();
+        preview.setLatLngs(geo);
+      });
+      handle.on("dragend", () => {
+        const s = state.current;
+        const next = s.draft.boundary!.map((p, k) => (k === i ? toModel(handle.getLatLng(), s.draft.placement!) : p));
+        s.onChange({ ...s.draft, boundary: next });
+      });
+    });
+    return () => {
+      g.remove();
+    };
+  }, [corners, draft.boundary, draft.placement]);
+
   const finishRef = useRef(() => {});
   finishRef.current = () => {
     const pl = draft.placement;
@@ -376,14 +389,13 @@ export default function SiteMap({
   // A short line under the map: what the current tool wants next.
   useEffect(() => {
     if (tool === "draw") setHint(points.length < 3 ? "click each corner of the plot · Backspace undoes a corner" : "click the first corner (or double-click) to close the plot");
-    else if (tool === "align") setHint(points.length ? "now click a second point further along the same street edge" : "click a point on the street edge in front of the plot");
     else setHint(null);
   }, [tool, points.length]);
 
   const pl = draft.placement;
   return (
     <div className={`relative overflow-hidden rounded-md border border-line-subtle ${className}`}>
-      <div ref={host} className={`absolute inset-0 ${tool === "draw" || tool === "align" ? "cursor-crosshair" : ""}`} />
+      <div ref={host} className={`absolute inset-0 ${tool === "draw" ? "cursor-crosshair" : ""}`} />
       <div className="pointer-events-none absolute right-3 top-3 z-[500] flex flex-col items-center rounded-sm border border-line-subtle bg-surface px-1.5 py-1 text-fg-2">
         <svg width="12" height="16" viewBox="0 0 12 16" fill="none" stroke="currentColor" strokeWidth="1.25" aria-hidden>
           <path d="M6 1l4 13-4-3-4 3 4-13z" />

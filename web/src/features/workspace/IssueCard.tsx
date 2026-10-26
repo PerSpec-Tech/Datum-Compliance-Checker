@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { BuildingModel, CheckReport, Question, Result } from "../../api/types";
-import { Chip, Icon, StatusMark, Spinner, fmt } from "../../components/ui";
+import { Icon, StatusMark, Spinner, fmt } from "../../components/ui";
 import { OCCUPANCY, RESIDENTIAL_SUB, Scalar, getPath } from "../brief/BriefPage";
 import { KIND_LABEL, type Group } from "../report/groups";
 
@@ -163,11 +163,6 @@ function ResultLine({ r }: { r: Result }) {
             <span className="font-mono" title={r.clause.source}>
               {r.clause.ref}
             </span>
-            {r.rule_status === "draft" && (
-              <Chip predicted title="Compiled from the clause text; not yet verified by a person">
-                draft
-              </Chip>
-            )}
           </span>
         </span>
         {shown && (

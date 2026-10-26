@@ -105,13 +105,15 @@ namespace ComplianceChecker.AutoCAD
             body.Children.Add(Hint("Suggested from the rooms and the location; pick a value to confirm it. Unconfirmed suggestions are still used, marked as inferred."));
 
             var save = Icons.Button(Icons.Check, "Save and check", (_, _) => Close(SiteAction.Save));
+            var saveOnly = Icons.Button(Icons.Save, "Save", (_, _) => Close(SiteAction.SaveOnly));
+            saveOnly.ToolTip = "Save the site in the project and in this drawing; check later";
             var web = Icons.Button(Icons.Book, "Map in browser", (_, _) => Close(SiteAction.Browser));
             var cancel = Icons.Button(Icons.Cross, "Cancel", (_, _) => Close(SiteAction.Cancel));
             cancel.IsCancel = true;
             var footer = new DockPanel { Margin = new Thickness(18, 10, 18, 14), LastChildFill = false };
             DockPanel.SetDock(_status, Dock.Left);
             footer.Children.Add(_status);
-            foreach (Button b in new[] { cancel, web, save })
+            foreach (Button b in new[] { cancel, web, saveOnly, save })
             {
                 DockPanel.SetDock(b, Dock.Right);
                 footer.Children.Add(b);

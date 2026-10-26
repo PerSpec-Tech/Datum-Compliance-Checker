@@ -442,7 +442,7 @@ def _furnish(msp, use, p, T, doors=(), windows=()):
         return spot
 
     along = (0.5, 0.25, 0.75, 0.0, 1.0)
-    if use == "bedroom" and w >= 2.6 and h >= 2.6:
+    if use == "bedroom" and w >= 2.4 and h >= 2.4:
         place("BED-D", blocked, along, opposite=False)
     elif use == "living" and w >= 2.6 and h >= 2.4:
         sofa = place("SOFA-3", zones, along, opposite=False)  # low enough to sit under a window

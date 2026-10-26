@@ -99,6 +99,13 @@ export default function WorkspacePage() {
     return () => es.close();
   }, [job?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Save the site without checking: the project keeps it; the check can run later.
+  async function saveSite(answers: Record<string, unknown>) {
+    if (Object.keys(answers).length) await api.patchBrief(projectId, answers);
+    await qc.invalidateQueries({ queryKey: ["project", projectId] });
+    await qc.invalidateQueries({ queryKey: ["model", projectId] });
+  }
+
   async function check(answers?: Record<string, unknown>) {
     setBusy(true);
     setError(null);
@@ -131,23 +138,27 @@ export default function WorkspacePage() {
 
   const fsi = r?.fsi;
   const fsiOver = fsi && fsi.max_permissible != null && fsi.used != null && fsi.used > fsi.max_permissible;
-  const short = pack.data && m?.building.footprint
-    ? pack.data.edges.filter((e) => e.margin_m != null && gapTo(e.a, e.b, m.building.footprint!) + 0.005 < e.margin_m).length
+  // Margins are only "clear" when every side has one to measure against (untagged sides have none).
+  const known = pack.data?.edges.filter((e) => e.margin_m != null) ?? [];
+  const short = pack.data && m?.building.footprint && known.length > 0 && known.length === pack.data.edges.length
+    ? known.filter((e) => gapTo(e.a, e.b, m.building.footprint!) + 0.005 < e.margin_m!).length
     : null;
 
   return (
     <Shell>
       {/* ------------------------------------------------------------- top bar */}
       <header className="flex h-12 shrink-0 items-center gap-2 border-b border-line-subtle bg-canvas px-3">
-        <Link to="/" className="flex items-center gap-2 pr-2 text-fg" title="New check">
+        <Link to="/projects" className="flex items-center gap-2 pr-2 text-fg" title="Projects">
           <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
             <path d="M3 4h9M3 8h6M3 12h4" />
             <path d="M10 13l2.5 2.5L17 10" />
           </svg>
         </Link>
-        <span className="max-w-[220px] truncate text-sm font-medium" title={m?.project.name}>
-          {m?.project.name ?? project.data?.name ?? "…"}
-        </span>
+        <ProjectName
+          id={projectId}
+          name={project.data?.name ?? m?.project.name ?? "…"}
+          onRenamed={() => void qc.invalidateQueries({ queryKey: ["project", projectId] })}
+        />
         <Sep />
         {!dxf && m && (
           <Seg>
@@ -235,7 +246,7 @@ export default function WorkspacePage() {
 
         {open && r && (
           <div className="pointer-events-none absolute inset-3 z-[600]">
-            <div className="pointer-events-auto absolute w-[min(380px,100%)]" style={place(card!, canvas.current)}>
+            <div className="pointer-events-auto absolute w-[min(380px,100%)]" style={place(card!, canvas.current, view === "2d" ? 44 : 0)}>
               <IssueCard
                 key={open.key}
                 group={open}
@@ -285,18 +296,19 @@ export default function WorkspacePage() {
       </footer>
 
       {site && m && project.data && (
-        <SiteWizard projectId={projectId} model={m} brief={project.data.brief} busy={busy} onClose={() => setSite(false)} onSave={(a) => void check(a)} />
+        <SiteWizard projectId={projectId} model={m} brief={project.data.brief} busy={busy} onClose={() => setSite(false)} onSave={(a) => void check(a)} onSaveOnly={saveSite} />
       )}
     </Shell>
   );
 }
 
 // The card opens beside the click, kept inside the canvas; from the list it docks at the right.
-function place(card: Card, host: HTMLDivElement | null): React.CSSProperties {
-  if (card.x === null || card.y === null || !host) return { right: 0, top: 0, maxHeight: "100%" };
+// In 2D it stays below the floor tabs (`inset`).
+function place(card: Card, host: HTMLDivElement | null, inset = 0): React.CSSProperties {
+  if (card.x === null || card.y === null || !host) return { right: 0, top: inset, maxHeight: `calc(100% - ${inset}px)` };
   const w = 380, h = Math.min(420, host.clientHeight - 24);
   const left = card.x + 16 + w > host.clientWidth - 12 ? Math.max(0, card.x - w - 16) : card.x + 4;
-  const top = Math.max(0, Math.min(card.y - 24, host.clientHeight - 24 - h));
+  const top = Math.max(inset, Math.min(card.y - 24, host.clientHeight - 24 - h));
   return { left, top, maxHeight: h };
 }
 
@@ -362,6 +374,58 @@ function IssueList({ groups, selected, allClear, onPick }: { groups: Group[]; se
         })}
       </ul>
     </aside>
+  );
+}
+
+// The project's name (click to rename; saved on the server) and a copy-link button.
+function ProjectName({ id, name, onRenamed }: { id: string; name: string; onRenamed: () => void }) {
+  const [edit, setEdit] = useState(false);
+  const [text, setText] = useState(name);
+  const [copied, setCopied] = useState(false);
+  useEffect(() => setText(name), [name]);
+  async function save() {
+    setEdit(false);
+    if (!text.trim() || text.trim() === name) return setText(name);
+    const r = await api.renameProject(id, text);
+    rememberProject({ id, name: r.name });
+    onRenamed();
+  }
+  return (
+    <span className="flex items-center gap-1">
+      {edit ? (
+        <input
+          className="input h-7 w-[220px] py-0 text-sm"
+          value={text}
+          autoFocus
+          onChange={(e) => setText(e.target.value)}
+          onBlur={() => void save()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") void save();
+            if (e.key === "Escape") {
+              setText(name);
+              setEdit(false);
+            }
+          }}
+          aria-label="project name"
+        />
+      ) : (
+        <button className="max-w-[220px] truncate text-sm font-medium hover:underline" title="Rename" onClick={() => setEdit(true)}>
+          {name}
+        </button>
+      )}
+      <button
+        className="btn-ghost h-7 px-1.5"
+        title={copied ? "Link copied" : "Copy this project's link (it opens the saved project on any device)"}
+        onClick={() => {
+          void navigator.clipboard?.writeText(`${window.location.origin}/w/${id}`);
+          setCopied(true);
+          setTimeout(() => setCopied(false), 1500);
+        }}
+        aria-label="copy link"
+      >
+        <Icon name={copied ? "check" : "link"} size={13} />
+      </button>
+    </span>
   );
 }
 

@@ -107,8 +107,8 @@ export interface CompileResult {
   errors: string[];
   dry_run: unknown;
   attempts: number;
-  notes: string[];
-  review: { verdict?: string; issues?: string[]; [k: string]: unknown } | null;
+  notes: string | string[];
+  review: { verdict?: string; issues?: string[]; notes?: string[]; [k: string]: unknown } | null;
   review_history: unknown[];
   history: unknown[];
 }
@@ -140,6 +140,17 @@ export interface Suggest extends Place {
   kind: string;
   precise: boolean;
   extent: [number, number, number, number] | null; // west, south, east, north
+}
+
+export interface ProjectSummary {
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+  source_kind: "ifc" | "dxf" | "revit" | string | null;
+  location: { lat: number; lon: number } | null;
+  site: { location: boolean; plot: boolean; sides: boolean };
+  last_check: { report_id: string; at: string; fail?: number; unverifiable?: number; pass?: number } | null;
 }
 
 export interface Orientation {
@@ -178,6 +189,8 @@ export const api = {
   suggest: (q: string, authority: string, signal?: AbortSignal) =>
     request<Suggest[]>(`/suggest?${new URLSearchParams({ q, authority })}`, { signal }),
   orientation: (id: string) => request<Orientation>(`/projects/${id}/orientation`),
+  projectSummaries: (ids: string[]) => request<ProjectSummary[]>(`/project-summaries?ids=${ids.map(encodeURIComponent).join(",")}`),
+  renameProject: (id: string, name: string) => request<{ id: string; name: string }>(`/projects/${id}`, json("PATCH", { name })),
   livePack: (id: string) => request<LivePack>(`/projects/${id}/live-pack`),
   suggestions: (id: string, lat: number, lon: number) =>
     request<Suggestion[]>(`/projects/${id}/suggestions?lat=${lat}&lon=${lon}`),

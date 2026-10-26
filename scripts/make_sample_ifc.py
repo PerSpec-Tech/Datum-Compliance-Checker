@@ -296,10 +296,13 @@ def dogleg_stair(f, body, builder, s, stair, storeys, levels, m):
     built = 0
     for i in range(lo, hi):
         lv, nxt = levels[i], levels[i + 1]
-        room = next(
+        # The stairs in order, matched to the level's stair rooms from west to east.
+        rooms = sorted(
             (sp for sp in m["spaces"] if sp["level_id"] == lv["id"] and sp["usage"]["value"] == "stair"),
-            None,
+            key=lambda sp: min(p[0] for p in sp["polygon"]),
         )
+        k = m["stairs"].index(s)
+        room = rooms[k] if k < len(rooms) else None
         if room is None:
             continue
         xs = [p[0] for p in room["polygon"]]

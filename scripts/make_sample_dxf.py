@@ -136,7 +136,6 @@ def build(name: str) -> None:
     fpy = [p[1] for p in fp]
     fw = max(fpx) - min(fpx)
     units_by_id = {u["name"].split(" (")[0]: u for u in m["units"]}
-    stair = m["stairs"][0] if m["stairs"] else None
     for k, (nums, fname) in enumerate(zip(groups, names, strict=True)):
         lv = levels[nums[0]]
         dx = W + 15 + k * (fw + 15) - min(fpx)
@@ -226,11 +225,20 @@ def build(name: str) -> None:
             poly(msp, [T(p) for p in rect], "_Door")
             door_lines.append((line, d["width_m"], a))
 
-        # Staircase: the stair room with one tread line per riser, in two flights.
-        st = next((s for s in spaces if s["usage"]["value"] == "stair"), None)
-        if stair and st and nums[0] < len(levels) - 1:
+        # Staircases: each stair room (west to east, matched to the stairs in order) with one tread
+        # line per riser, in two flights, running along the room's long side.
+        rooms = sorted((s for s in spaces if s["usage"]["value"] == "stair"), key=lambda s: min(p[0] for p in s["polygon"]))
+        for stair, st in zip(m["stairs"], rooms, strict=False):
+            if nums[0] >= len(levels) - 1:
+                break
             sx = [p[0] for p in st["polygon"]]
             sy = [p[1] for p in st["polygon"]]
+            along_y = (max(sy) - min(sy)) >= (max(sx) - min(sx))
+            a0, a1, b0 = (min(sx), max(sx), min(sy)) if along_y else (min(sy), max(sy), min(sx))
+
+            def S(a, b, along_y=along_y):  # a across the run, b along it → plan
+                return T((a, b) if along_y else (b, a))
+
             poly(msp, [T(p) for p in st["polygon"]], "_Staircase")
             rise = levels[nums[0] + 1]["elevation_m"] - lv["elevation_m"]
             n = math.ceil(rise / stair["riser_m"] - 1e-9)
@@ -238,17 +246,17 @@ def build(name: str) -> None:
             n1 = math.ceil(n / 2)
             for i in range(n):
                 if i < n1:
-                    xa, xb, y = min(sx) + 0.05, min(sx) + 0.05 + w, min(sy) + 0.3 + i * t
+                    aa, ab, b = a0 + 0.05, a0 + 0.05 + w, b0 + 0.3 + i * t
                 else:
-                    xa, xb, y = max(sx) - 0.05 - w, max(sx) - 0.05, min(sy) + 0.3 + (n - i) * t
-                poly(msp, [T((xa, y)), T((xb, y))], "_Staircase", closed=False)
+                    aa, ab, b = a1 - 0.05 - w, a1 - 0.05, b0 + 0.3 + (n - i) * t
+                poly(msp, [S(aa, b), S(ab, b)], "_Staircase", closed=False)
             # Walking line with an arrow and "UP", as drawn on plans.
-            xa = min(sx) + 0.05 + w / 2
-            xb = max(sx) - 0.05 - w / 2
-            y_lo, y_hi = min(sy) + 0.3, min(sy) + 0.3 + (n1 - 1) * t
-            poly(msp, [T((xa, y_lo)), T((xa, y_hi + 0.4)), T((xb, y_hi + 0.4)), T((xb, y_lo + 0.4))], "ANNO", closed=False)
-            poly(msp, [T((xb - 0.12, y_lo + 0.65)), T((xb, y_lo + 0.4)), T((xb + 0.12, y_lo + 0.65))], "ANNO", closed=False)
-            text(msp, "UP", T((xa, y_lo - 0.2)), "ANNO", 0.2)
+            aa = a0 + 0.05 + w / 2
+            ab = a1 - 0.05 - w / 2
+            b_lo, b_hi = b0 + 0.3, b0 + 0.3 + (n1 - 1) * t
+            poly(msp, [S(aa, b_lo), S(aa, b_hi + 0.4), S(ab, b_hi + 0.4), S(ab, b_lo + 0.4)], "ANNO", closed=False)
+            poly(msp, [S(ab - 0.12, b_lo + 0.65), S(ab, b_lo + 0.4), S(ab + 0.12, b_lo + 0.65)], "ANNO", closed=False)
+            text(msp, "UP", S(aa, b_lo - 0.2), "ANNO", 0.2)
 
         detail.floor(msp, spaces, door_lines, T, frame, fname, name_of=room_label)
 

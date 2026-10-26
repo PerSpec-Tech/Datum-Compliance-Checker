@@ -7,7 +7,6 @@ import SiteMap, {
   PUNE,
   PlotSize,
   SideList,
-  alignRotation,
   area,
   norm,
   sides,
@@ -25,9 +24,10 @@ import PlanningFacts from "../upload/PlanningFacts";
 // its plot and roads) fills the steps in and marks them "from the file", so a complete model is one
 // click from its check. Saving writes declared brief answers and runs the check.
 
-type StepId = "city" | "address" | "north" | "plot" | "planning" | "review";
+type StepId = "model" | "city" | "address" | "north" | "plot" | "planning" | "review";
 type Status = "file" | "done" | "optional" | "todo";
 const STEPS: { id: StepId; title: string; icon: IconName }[] = [
+  { id: "model", title: "model", icon: "cube" },
   { id: "city", title: "city", icon: "home" },
   { id: "address", title: "address", icon: "search" },
   { id: "north", title: "north", icon: "refresh" },
@@ -54,6 +54,7 @@ export default function SiteWizard({
   busy,
   onClose,
   onSave,
+  onSaveOnly,
 }: {
   projectId: string;
   model: BuildingModel;
@@ -61,7 +62,14 @@ export default function SiteWizard({
   busy: boolean;
   onClose: () => void;
   onSave: (answers: Record<string, unknown>) => void;
+  /** Save what is set without checking (the project keeps it for next time). */
+  onSaveOnly: (answers: Record<string, unknown>) => Promise<void>;
 }) {
+  // Something the user changed since opening (or since the last save). The file's own north,
+  // applied on open, doesn't count.
+  const [dirty, setDirty] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [savedAt, setSavedAt] = useState<Date | null>(null);
   const cities = useQuery({ queryKey: ["cities"], queryFn: api.cities, staleTime: Infinity });
   const north = useQuery({ queryKey: ["orientation", projectId], queryFn: () => api.orientation(projectId), staleTime: Infinity });
 
@@ -87,7 +95,6 @@ export default function SiteWizard({
   const [selected, setSelected] = useState<string | null>(null);
   const [drawMode, setDrawMode] = useState(false);
   const [typeMode, setTypeMode] = useState(false);
-  const [alignSide, setAlignSide] = useState<string | null>(null);
   const [areaHint, setAreaHint] = useState<string | null>(null);
 
 
@@ -109,7 +116,9 @@ export default function SiteWizard({
   });
   const ownPlot = !!model.site.boundary && !draft.boundary;
 
+  const health = modelHealth(model);
   const status: Record<StepId, Status> = {
+    model: health.some((h) => h.key === "rooms" && !h.ok) ? "todo" : "file",
     city: authority ? "done" : "todo",
     address: pl ? (loc.value && !locChanged ? "file" : "done") : "todo",
     north: northFrom === "file" ? "file" : northFrom ? "done" : ownPlot ? "optional" : "todo",
@@ -119,7 +128,7 @@ export default function SiteWizard({
   };
   // Open on the first step that still needs an answer (the check itself when none does). Until the
   // user picks a step this follows the data as it loads, so a complete file lands on the check.
-  const firstOpen = (["city", "address", "north", "plot"] as StepId[]).find((s) => status[s] === "todo") ?? "review";
+  const firstOpen = (["model", "city", "address", "north", "plot"] as StepId[]).find((s) => status[s] === "todo") ?? "review";
   const [picked, setStep] = useState<StepId | null>(null);
   const loading = cities.isLoading || north.isLoading;
   useEffect(() => {
@@ -134,7 +143,6 @@ export default function SiteWizard({
   useEffect(() => {
     if (step === "planning") setSeenPlanning(true);
     if (step !== "plot") setDrawMode(false);
-    if (step !== "north") setAlignSide(null);
   }, [step]);
 
   // Address steps zoom: a new placement made from the list is flown to.
@@ -153,6 +161,7 @@ export default function SiteWizard({
     const next = draft.placement ? { ...draft.placement, lat: p.lat, lon: p.lon } : startPlacement(model, p, fileNorth ?? 0);
     setDraft((d) => ({ ...d, placement: next }));
     setLocChanged(true);
+    setDirty(true);
     setAreaHint(null);
     fitPlot(next);
   }
@@ -160,6 +169,7 @@ export default function SiteWizard({
     if (!pl) return;
     setDraft((d) => ({ ...d, placement: { ...d.placement!, rotation_deg: norm(deg) } }));
     setNorthFrom(from);
+    setDirty(true);
   }
   function change(d: SiteDraft) {
     if (d.placement && pl && (d.placement.lat !== pl.lat || d.placement.lon !== pl.lon)) setLocChanged(true);
@@ -167,9 +177,10 @@ export default function SiteWizard({
     if (!pl && d.placement) setLocChanged(true);
     if (d.tags !== draft.tags) setTagged(true);
     setDraft(d);
+    setDirty(true);
   }
 
-  const tool = step === "plot" && drawMode ? "draw" : step === "north" && alignSide ? "align" : step === "address" || step === "north" || step === "plot" ? "place" : "none";
+  const tool = step === "plot" && drawMode ? "draw" : step === "address" || step === "north" || step === "plot" ? "place" : "none";
   const city = cities.data?.find((c) => c.id === authority);
   const pin = pl ? { lat: +pl.lat.toFixed(3), lon: +pl.lon.toFixed(3) } : null;
   // A name for the spot, and whether it is in the chosen city at all.
@@ -188,7 +199,19 @@ export default function SiteWizard({
         <Icon name="pin" />
         <span className="h2 flex-1">site setup</span>
         <span className="hidden text-xs text-fg-3 md:inline">where the building stands, which way it faces, the plot and its roads</span>
-        <button className="btn-ghost h-8 px-2" onClick={onClose} aria-label="Close">
+        {savedAt && !dirty && (
+          <span className="flex items-center gap-1 text-xs text-fg-2">
+            <Icon name="check" size={12} /> saved {savedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+          </span>
+        )}
+        {dirty && <span className="text-xs text-accent">unsaved changes</span>}
+        <button
+          className="btn-ghost h-8 px-2"
+          onClick={() => {
+            if (!dirty || window.confirm("Close without saving your site changes?")) onClose();
+          }}
+          aria-label="Close"
+        >
           <Icon name="x" /> close
         </button>
       </header>
@@ -213,6 +236,12 @@ export default function SiteWizard({
           </ol>
 
           <div className="min-h-0 flex-1 overflow-y-auto p-4">
+            {step === "model" && (
+              <Panel title="What we read from the file" lead="Each check needs something from the model. Missing items aren't guessed: their checks come back as can't verify.">
+                <ModelHealth model={model} rows={health} />
+              </Panel>
+            )}
+
             {step === "city" && (
               <Panel title="Which city?" lead="The city decides the rulebook and where addresses are searched.">
                 {cities.isLoading && <Spinner />}
@@ -222,6 +251,7 @@ export default function SiteWizard({
                       key={c.id}
                       onClick={() => {
                         setAuthority(c.id);
+                        setDirty(true);
                         if (!pl && c.center) look({ ...c.center, zoom: 12 });
                       }}
                       aria-pressed={c.id === authority}
@@ -317,33 +347,6 @@ export default function SiteWizard({
                     </div>
                     <p className="mt-2 text-xs text-fg-3">Or drag the round handle on the map. Positive turns the plan anticlockwise.</p>
 
-                    <div className="mt-5 rounded-md border border-line-subtle p-3">
-                      <p className="flex items-center gap-2 text-sm font-medium">
-                        <Icon name="road" size={14} /> line it up with the street
-                      </p>
-                      <p className="mt-1 text-xs text-fg-2">Pick the side that faces the street, then click two points along the street on the map.</p>
-                      <div className="mt-2 flex items-center gap-2">
-                        <select
-                          className="input h-8 py-0 text-sm"
-                          value={alignSide ?? ""}
-                          onChange={(e) => setAlignSide(e.target.value || null)}
-                          aria-label="side that faces the street"
-                        >
-                          <option value="">choose a side…</option>
-                          {alignChoices(model, draft).map((c) => (
-                            <option key={c.id} value={c.id}>
-                              {c.label}
-                            </option>
-                          ))}
-                        </select>
-                        {alignSide && (
-                          <button className="btn-ghost h-8 text-xs" onClick={() => setAlignSide(null)}>
-                            <Icon name="x" size={12} /> cancel
-                          </button>
-                        )}
-                      </div>
-                      {alignSide && <p className="mt-2 text-xs text-accent">Now click two points along the street on the map.</p>}
-                    </div>
                   </>
                 )}
               </Panel>
@@ -373,7 +376,7 @@ export default function SiteWizard({
                           <Icon name="ruler" size={14} /> type its size
                         </button>
                         {draft.boundary && model.site.boundary && (
-                          <button className="btn-ghost col-span-2 h-8 text-xs" onClick={() => { setDraft({ ...draft, boundary: null, tags: {} }); setPlotFrom("file"); }}>
+                          <button className="btn-ghost col-span-2 h-8 text-xs" onClick={() => { setDraft({ ...draft, boundary: null, tags: {} }); setPlotFrom("file"); setDirty(true); }}>
                             <Icon name="back" size={12} /> use the plot from the file
                           </button>
                         )}
@@ -381,8 +384,8 @@ export default function SiteWizard({
                     )}
                     {drawMode && (
                       <div className="mb-4 rounded-md border border-accent p-3 text-xs text-fg-2">
-                        <p className="text-sm text-fg">Click each corner of the plot on the map.</p>
-                        <p className="mt-1">Lengths show as you go. Click the first corner to close. Backspace takes a corner back.</p>
+                        <p className="text-sm text-fg">Click each corner of the plot on the map, any shape and as many corners as it has.</p>
+                        <p className="mt-1">Lengths show as you go. Click the first corner to close. Backspace takes a corner back. Afterwards, drag a corner to adjust it.</p>
                         <button className="btn-ghost mt-2 h-7 text-xs" onClick={() => setDrawMode(false)}>
                           <Icon name="x" size={12} /> cancel
                         </button>
@@ -394,6 +397,7 @@ export default function SiteWizard({
                           model={model}
                           onPlot={(r) => {
                             setDraft({ ...draft, boundary: r, tags: {} });
+                            setDirty(true);
                             setPlotFrom("typed");
                             setTypeMode(false);
                           }}
@@ -415,7 +419,10 @@ export default function SiteWizard({
               <Panel title="Planning facts" lead="Suggested from the rooms and the location. Confirm them, or pick another value; dashed ones are used as suggested.">
                 {pin ? (
                   <div className="panel divide-y divide-line-subtle">
-                    <PlanningFacts projectId={projectId} pin={pin} answers={facts} onAnswer={(path, v) => setFacts((f) => ({ ...f, [path]: v }))} />
+                    <PlanningFacts projectId={projectId} pin={pin} answers={facts} onAnswer={(path, v) => {
+                        setFacts((f) => ({ ...f, [path]: v }));
+                        setDirty(true);
+                      }} />
                   </div>
                 ) : (
                   <Needs onGo={() => setStep("address")}>Place the building first.</Needs>
@@ -455,6 +462,23 @@ export default function SiteWizard({
               <Icon name="back" /> back
             </button>
             <span className="flex-1" />
+            <button
+              className="btn-secondary h-9"
+              disabled={!dirty || saving || busy}
+              title="Save what is set; check later"
+              onClick={async () => {
+                setSaving(true);
+                try {
+                  await onSaveOnly({ ...facts, ...siteAnswers(draft, locChanged) });
+                  setDirty(false);
+                  setSavedAt(new Date());
+                } finally {
+                  setSaving(false);
+                }
+              }}
+            >
+              {saving ? <Spinner /> : <Icon name="download" />} save
+            </button>
             {step !== "review" ? (
               <button className="btn-primary h-9" onClick={() => setStep(STEPS[idx + 1].id)}>
                 next <Icon name="arrow" />
@@ -477,16 +501,12 @@ export default function SiteWizard({
             draft={draft}
             onChange={change}
             tool={tool}
-            rotate={step === "north" && !alignSide}
+            rotate={step === "north"}
+            corners={step === "plot" && !drawMode && !!draft.boundary}
             labels={step === "plot"}
             focus={focus}
             selected={selected}
             onSelect={setSelected}
-            onAlign={(bearing) => {
-              const side = alignChoices(model, draft).find((c) => c.id === alignSide);
-              if (side && pl) setRotation(alignRotation(side.a, side.b, bearing, pl.rotation_deg));
-              setAlignSide(null);
-            }}
             onDrawn={() => {
               setDrawMode(false);
               setPlotFrom("drawn");
@@ -498,20 +518,6 @@ export default function SiteWizard({
       </div>
     </div>
   );
-}
-
-/** Sides that can be lined up with a street: the plot's (roads first), else the building's own. */
-function alignChoices(model: BuildingModel, draft: SiteDraft) {
-  const plot = sides(model, draft).map((e) => {
-    const t = tagOf(model, draft, e.id);
-    return { ...e, label: `plot side ${e.id}${t.kind === "road" ? " (road)" : ""} · ${Math.hypot(e.b[0] - e.a[0], e.b[1] - e.a[1]).toFixed(1)} m`, road: t.kind === "road" };
-  });
-  if (plot.length) return plot.sort((a, b) => Number(b.road) - Number(a.road));
-  const fp = model.building.footprint ?? [];
-  return fp.map((a, i) => {
-    const b = fp[(i + 1) % fp.length];
-    return { id: `b${i + 1}`, a, b, road: false, label: `building side ${i + 1} · ${Math.hypot(b[0] - a[0], b[1] - a[1]).toFixed(1)} m` };
-  });
 }
 
 function AddressSearch({ authority, onPick }: { authority: string; onPick: (p: Suggest) => void }) {
@@ -628,6 +634,84 @@ function AddressSearch({ authority, onPick }: { authority: string; onPick: (p: S
         </ul>
       )}
       {note && <p className="mt-2 text-xs text-fg-2">{note}</p>}
+    </div>
+  );
+}
+
+type Health = { key: string; label: string; value: string; ok: boolean; unlocks: string };
+
+/** What the reader found, item by item, and what each item lets the checker test. */
+function modelHealth(m: BuildingModel): Health[] {
+  const storeys = m.levels.length;
+  const rooms = m.spaces.length;
+  const areas = m.areas.length;
+  const sides = m.site.edges.length;
+  const height = m.building.roof_top_m ?? m.building.highest_point_m;
+  return [
+    { key: "storeys", label: "storeys", value: storeys ? `${storeys} · ${m.levels.map((l) => l.name).slice(0, 3).join(", ")}${storeys > 3 ? "…" : ""}` : "none", ok: storeys > 0, unlocks: "heights, floor areas per floor" },
+    { key: "rooms", label: "rooms", value: rooms ? `${rooms}` : "none found", ok: rooms > 0, unlocks: "room heights, use, kitchens, baths" },
+    { key: "doors", label: "doors", value: m.doors.length ? `${m.doors.length}` : "none", ok: m.doors.length > 0, unlocks: "exit door width and height" },
+    { key: "stairs", label: "stairs", value: m.stairs.length ? `${m.stairs.length}` : "none", ok: m.stairs.length > 0, unlocks: "stair width, riser, tread" },
+    { key: "areas", label: "floor areas", value: areas ? `${areas} area${areas === 1 ? "" : "s"}` : "none", ok: areas > 0 || rooms > 0, unlocks: "FSI" },
+    { key: "plot", label: "plot", value: m.site.boundary ? `${sides} sides` : "not in the file", ok: !!m.site.boundary, unlocks: "margins, FSI (or draw it in plot & sides)" },
+    { key: "footprint", label: "footprint", value: m.building.footprint ? "found" : "none", ok: !!m.building.footprint, unlocks: "margins" },
+    { key: "height", label: "height", value: height != null ? `${height.toFixed(1)} m` : "unknown", ok: height != null, unlocks: "height limits, margins above 3 floors" },
+  ];
+}
+
+function ModelHealth({ model, rows }: { model: BuildingModel; rows: Health[] }) {
+  const dxf = model.meta.source_kind === "dxf";
+  const missing = new Set(rows.filter((r) => !r.ok).map((r) => r.key));
+  const notes = (model as unknown as { _notes?: string[] })._notes ?? [];
+  return (
+    <div className="space-y-3">
+      <dl className="divide-y divide-line-subtle rounded-md border border-line-subtle text-sm">
+        {rows.map((r) => (
+          <div key={r.key} className="flex items-start gap-3 px-3 py-2">
+            <span className={`mt-0.5 ${r.ok ? "text-success" : "text-accent"}`}>
+              <Icon name={r.ok ? "check" : "info"} size={14} />
+            </span>
+            <dt className="w-20 shrink-0 text-xs text-fg-2">{r.label}</dt>
+            <dd className="min-w-0 flex-1">
+              <span className="block truncate">{r.value}</span>
+              {!r.ok && <span className="block text-xs text-fg-3">needed for {r.unlocks}</span>}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      {missing.size > 0 && (
+        <div className="rounded-md border border-dashed border-accent p-3 text-xs leading-5 text-fg-2">
+          <p className="mb-1 text-sm text-fg">How to add what's missing</p>
+          {dxf ? (
+            <ul className="list-disc space-y-1 pl-4">
+              {missing.has("rooms") && <li>Draw each room as a closed polyline on the <b>_Room</b> layer (PreDCR), with its name as text inside, or map your room layer in <b>2 Layers</b>.</li>}
+              {missing.has("areas") && <li>Built-up area per floor on <b>_ResiFSI</b> / <b>_CommFSI</b> closed polylines.</li>}
+              {missing.has("stairs") && <li>Stairs as closed polylines on <b>_Staircase</b>, with a line per tread inside.</li>}
+              {missing.has("plot") && <li>The plot on <b>_Main Plot</b>, or draw it on the map in <b>plot &amp; sides</b>.</li>}
+            </ul>
+          ) : (
+            <ul className="list-disc space-y-1 pl-4">
+              {missing.has("rooms") && (
+                <li>
+                  <b>Revit</b> leaves rooms out of most IFC exports. Place and bound a room in every space, then in <b>File → Export → IFC → Modify setup → Additional Content</b> tick <b>Export rooms in 3D views</b>.
+                  <b> ArchiCAD</b>: place a zone in every room; zones export as rooms.
+                </li>
+              )}
+              {missing.has("areas") && <li>In the IFC export setup (<b>General</b>), tick <b>Export base quantities</b> so each storey carries its floor area.</li>}
+              {missing.has("stairs") && <li>Model stairs with the Stair tool (not as generic models) so they export as stairs.</li>}
+              {missing.has("plot") && <li>Add the property line in Revit (Massing &amp; Site → Property Line), or draw the plot on the map in <b>plot &amp; sides</b>.</li>}
+            </ul>
+          )}
+          <p className="mt-2">Or carry on: the check runs on what is there and asks for the rest.</p>
+        </div>
+      )}
+      {notes.length > 0 && (
+        <ul className="space-y-0.5 text-xs text-fg-3">
+          {notes.slice(0, 6).map((n) => (
+            <li key={n}>· {n}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

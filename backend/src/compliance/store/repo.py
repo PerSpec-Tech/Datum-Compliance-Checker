@@ -39,6 +39,61 @@ class Store:
         row = self.db.one("SELECT * FROM projects WHERE id = ?", (project_id,))
         return dict(row) if row else None
 
+    def rename_project(self, project_id: str, name: str) -> None:
+        self.db.execute("UPDATE projects SET name = ? WHERE id = ?", (name, project_id))
+
+    def project_summary(self, project_id: str) -> dict[str, Any] | None:
+        """What a project list shows: name, kind, where, whether the site is set, the last check."""
+        p = self.get_project(project_id)
+        if p is None:
+            return None
+        brief = {k: v.get("value") for k, v in self.get_brief(project_id).items()}
+        latest = self.db.one(
+            "SELECT id, source_kind, created_at, model_json FROM model_versions WHERE project_id = ? "
+            "ORDER BY created_at DESC, rowid DESC LIMIT 1",
+            (project_id,),
+        )
+        model = json.loads(latest["model_json"]) if latest else None
+        report = self.db.one(
+            "SELECT id, created_at, report_json FROM reports WHERE project_id = ? "
+            "ORDER BY created_at DESC, rowid DESC LIMIT 1",
+            (project_id,),
+        )
+        touched = self.db.one(
+            "SELECT MAX(updated_at) AS t FROM briefs WHERE project_id = ?", (project_id,)
+        )
+        loc = brief.get("project.location") or (
+            ((model or {}).get("project") or {}).get("location") or {}
+        ).get("value")
+        site = (model or {}).get("site") or {}
+        edges = site.get("edges") or []
+        tags = brief.get("site.edges") or {}
+        boundary = bool(brief.get("site.boundary") or site.get("boundary"))
+        tagged = bool(edges) and all(
+            (tags.get(e["id"]) or {}).get("kind") or (e.get("kind") or {}).get("value")
+            for e in edges
+        )
+        times = [p["created_at"], latest and latest["created_at"], report and report["created_at"]]
+        times.append(touched["t"] if touched else None)
+        last = None
+        if report:
+            summary = json.loads(report["report_json"]).get("summary") or {}
+            last = {"report_id": report["id"], "at": report["created_at"], **summary}
+        return {
+            "id": p["id"],
+            "name": p["name"],
+            "created_at": p["created_at"],
+            "updated_at": max(t for t in times if t),
+            "source_kind": latest["source_kind"] if latest else None,
+            "location": loc,
+            "site": {
+                "location": bool(loc),
+                "plot": boundary,
+                "sides": tagged or bool(brief.get("site.boundary") and tags),
+            },
+            "last_check": last,
+        }
+
     def add_model_version(self, project_id: str, model: dict[str, Any]) -> str:
         vid = new_id()
         self.db.execute(

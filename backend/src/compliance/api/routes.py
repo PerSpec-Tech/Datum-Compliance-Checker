@@ -82,6 +82,26 @@ def create_project(body: NewProject, st: Store = Depends(store)) -> dict[str, st
     return {"id": st.create_project(body.name)}
 
 
+@router.get("/project-summaries")
+def project_summaries(
+    ids: str = Query(max_length=2000), st: Store = Depends(store)
+) -> list[dict[str, Any]]:
+    """A list of projects the caller already knows (by id): there is no login, so the server never
+    lists everyone's projects. Unknown ids are left out."""
+    wanted = [i for i in dict.fromkeys(ids.split(",")) if i][:50]
+    return [s for i in wanted if (s := st.project_summary(i)) is not None]
+
+
+@router.patch("/projects/{project_id}")
+def rename_project(project_id: str, body: NewProject, st: Store = Depends(store)) -> dict[str, Any]:
+    project_or_404(project_id, st)
+    name = " ".join(body.name.split())[:120]
+    if not name:
+        raise HTTPException(422, "A project needs a name.")
+    st.rename_project(project_id, name)
+    return {"id": project_id, "name": name}
+
+
 @router.get("/projects/{project_id}")
 def get_project(project_id: str, st: Store = Depends(store)) -> dict[str, Any]:
     p = project_or_404(project_id, st)

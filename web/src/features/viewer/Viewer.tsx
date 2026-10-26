@@ -33,6 +33,7 @@ export default function Viewer({ modelVersion, statusByGuid, selectedGuid, onPic
   const [setbacks, setSetbacks] = useState(true);
   const host = useRef<HTMLDivElement>(null);
   const scene = useRef<{
+    view: (kind: "fit" | "top" | "front" | "iso") => void;
     focus: (guid: string | null) => void;
     xray: (on: boolean) => void;
     setbacks: (pack: LivePack | null) => void;
@@ -107,11 +108,27 @@ export default function Viewer({ modelVersion, statusByGuid, selectedGuid, onPic
           </span>
         ))}
       </div>
-      <div className="readout pointer-events-none absolute bottom-3 left-3">
-        {point ? `x ${point[0].toFixed(2)}  y ${point[1].toFixed(2)}  z ${point[2].toFixed(2)} m` : "x —  y —  z — m"}
+      <div className="readout pointer-events-none absolute bottom-3 left-1/2 max-w-[60%] -translate-x-1/2 truncate">
+        {point
+          ? `x ${point[0].toFixed(2)}  y ${point[1].toFixed(2)}  z ${point[2].toFixed(2)} m`
+          : "drag: orbit · right / middle-drag: pan · wheel: zoom · Shift + middle: orbit · double-middle: fit"}
       </div>
       {mesh.data && (
-        <div className="absolute right-3 top-3 flex gap-1">
+        <div className="absolute left-1/2 top-3 flex -translate-x-1/2 gap-1">
+          <div className="flex rounded-sm border border-line-subtle bg-surface">
+            {(
+              [
+                ["fit", "home", "Zoom to fit (double-click the middle button)"],
+                ["top", "plan", "From above"],
+                ["front", "layers", "From the front (the road)"],
+                ["iso", "cube", "3D view"],
+              ] as const
+            ).map(([k, icon, title]) => (
+              <button key={k} onClick={() => scene.current?.view(k)} className="btn-ghost h-7 px-2 text-xs" title={title}>
+                <Icon name={icon} size={12} /> {k === "iso" ? "3D" : k}
+              </button>
+            ))}
+          </div>
           {pack.data?.envelope && (
             <button
               onClick={() => setSetbacks((v) => !v)}
@@ -155,7 +172,16 @@ function build(
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 5000);
   camera.up.set(0, 0, 1); // IFC is Z-up
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
+  // Navigation as in Revit: wheel zooms to the cursor, middle-drag pans, Shift + middle-drag orbits,
+  // double-click the middle button to fit. Left-drag orbits and right-drag pans too (laptops, other
+  // viewers). No inertia: the view stops the moment the mouse is let go.
+  controls.enableDamping = false;
+  controls.zoomToCursor = true;
+  controls.screenSpacePanning = true;
+  controls.rotateSpeed = 0.6;
+  controls.zoomSpeed = 1.1;
+  controls.maxPolarAngle = Math.PI * 0.55; // not far under the ground
+  controls.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.PAN };
   scene.add(new THREE.HemisphereLight(0xffffff, light ? 0xb4b4b9 : 0x2a2a2e, light ? 2.4 : 2.0));
   const sun = new THREE.DirectionalLight(0xffffff, 1.4);
   sun.position.set(30, -40, 60);
@@ -184,7 +210,7 @@ function build(
       side: THREE.DoubleSide,
     });
     const mesh = new THREE.Mesh(g, mat);
-    mesh.userData = { guid: m.parent && statusByGuid.has(m.parent) ? m.parent : m.guid, label: `${m.name} · ${m.type.replace(/^Ifc/, "")}`, base: color };
+    mesh.userData = { guid: m.parent && statusByGuid.has(m.parent) ? m.parent : m.guid, label: `${m.name} · ${m.type.replace(/^Ifc/, "")}`, base: color, isSpace };
     if (status && STATUS_META[status].dashed) {
       // can't verify: a dashed outline, never colour alone (guidelines 10)
       const edges = new THREE.LineSegments(
@@ -231,7 +257,8 @@ function build(
   const all = new THREE.Box3();
   meshes.forEach((m) => all.expandByObject(m));
   contextMeshes.filter((m) => m.userData.label === "Plot").forEach((m) => all.expandByObject(m));
-  const frame = (box: THREE.Box3, tight: boolean) => {
+  let anim: { p0: THREE.Vector3; p1: THREE.Vector3; t0: THREE.Vector3; t1: THREE.Vector3; start: number } | null = null;
+  const frame = (box: THREE.Box3, tight: boolean, from = new THREE.Vector3(0.9, -1.3, 0.9), glide = false) => {
     if (box.isEmpty()) return;
     const c = box.getCenter(new THREE.Vector3());
     const r = Math.max(box.getSize(new THREE.Vector3()).length() / 2, tight ? 2 : 5);
@@ -239,18 +266,27 @@ function build(
     const vfov = (camera.fov * Math.PI) / 180;
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * Math.max(camera.aspect, 0.3));
     const d = r / Math.sin(Math.min(vfov, hfov) / 2);
-    controls.target.copy(c);
-    camera.position.copy(c).add(new THREE.Vector3(0.9, -1.3, 0.9).normalize().multiplyScalar(d * (tight ? 1.4 : 1.05)));
-    camera.near = d / 100;
-    camera.far = d * 100;
+    const to = c.clone().add(from.clone().normalize().multiplyScalar(d * (tight ? 1.4 : 1.05)));
+    camera.near = Math.min(camera.near, d / 100);
+    camera.far = Math.max(camera.far, d * 100);
     camera.updateProjectionMatrix();
+    if (glide) {
+      anim = { p0: camera.position.clone(), p1: to, t0: controls.target.clone(), t1: c, start: performance.now() };
+    } else {
+      anim = null;
+      controls.target.copy(c);
+      camera.position.copy(to);
+    }
   };
 
   // Until the user moves the camera, keep the whole model framed as the panel settles its size
   // (on first build the panel can still be zero-sized).
   let userMoved = false;
   let focused: THREE.Box3 | null = null;
-  controls.addEventListener("start", () => (userMoved = true));
+  controls.addEventListener("start", () => {
+    userMoved = true;
+    anim = null; // the user takes over mid-glide
+  });
   const resize = () => {
     const w = el.clientWidth;
     const h = el.clientHeight;
@@ -260,7 +296,7 @@ function build(
     renderer.domElement.style.height = "100%";
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
-    if (!userMoved) frame(focused ?? all, !!focused);
+    if (!userMoved && !anim) frame(focused ?? all, false, focused ? new THREE.Vector3(0.5, -0.8, 1.6) : undefined);
   };
   const ro = new ResizeObserver(resize);
   ro.observe(el);
@@ -275,7 +311,38 @@ function build(
     ray.setFromCamera(ndc, camera);
     return ray.intersectObjects([...pickTargets, ...contextMeshes], false)[0]?.object as THREE.Mesh | undefined;
   };
+  const hitPoint = (e: PointerEvent) => {
+    const r = renderer.domElement.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    return ray.intersectObjects([...meshes, ...contextMeshes], false)[0]?.point ?? null;
+  };
   let down = { x: 0, y: 0 };
+  let lastMiddle = 0;
+  // Runs before the orbit controls (capture), so it can choose what this drag does.
+  const onDownFirst = (e: PointerEvent) => {
+    if (e.button === 1) {
+      e.preventDefault(); // no browser autoscroll
+      controls.mouseButtons.MIDDLE = e.shiftKey ? THREE.MOUSE.ROTATE : THREE.MOUSE.PAN;
+      const now = performance.now();
+      if (now - lastMiddle < 350) {
+        frame(all, false, undefined, true); // double middle click: zoom to fit, as in Revit
+        lastMiddle = 0;
+        return;
+      }
+      lastMiddle = now;
+    }
+    const orbit = (e.button === 0 && !e.shiftKey && !e.ctrlKey && !e.metaKey) || (e.button === 1 && e.shiftKey);
+    if (!orbit) return;
+    // Orbit around what is under the cursor: the pivot goes to that depth on the view axis, so the
+    // view doesn't jump when the drag starts.
+    const h = hitPoint(e);
+    if (!h) return;
+    const fwd = new THREE.Vector3();
+    camera.getWorldDirection(fwd);
+    const depth = h.clone().sub(camera.position).dot(fwd);
+    if (depth > camera.near * 2) controls.target.copy(camera.position).addScaledVector(fwd, depth);
+  };
   const onDown = (e: PointerEvent) => (down = { x: e.clientX, y: e.clientY });
   const onUp = (e: PointerEvent) => {
     if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 4) return; // a drag, not a click
@@ -290,12 +357,22 @@ function build(
     setHover((h?.object.userData.label as string | undefined) ?? null);
     setPoint(h ? [h.point.x, h.point.y, h.point.z] : null);
   };
+  renderer.domElement.addEventListener("pointerdown", onDownFirst, { capture: true });
   renderer.domElement.addEventListener("pointerdown", onDown);
+  const noMenu = (e: Event) => e.preventDefault(); // right-drag pans
+  renderer.domElement.addEventListener("contextmenu", noMenu);
   renderer.domElement.addEventListener("pointerup", onUp);
   renderer.domElement.addEventListener("pointermove", onMove);
 
   let raf = 0;
   const loop = () => {
+    if (anim) {
+      const k = Math.min(1, (performance.now() - anim.start) / 450);
+      const e = 1 - Math.pow(1 - k, 3); // ease out
+      camera.position.lerpVectors(anim.p0, anim.p1, e);
+      controls.target.lerpVectors(anim.t0, anim.t1, e);
+      if (k >= 1) anim = null;
+    }
     controls.update();
     renderer.render(scene, camera);
     raf = requestAnimationFrame(loop);
@@ -365,28 +442,45 @@ function build(
         }
       }
     },
+    view(kind: "fit" | "top" | "front" | "iso") {
+      const box = focused ?? all;
+      const dir = { fit: new THREE.Vector3(0.9, -1.3, 0.9), iso: new THREE.Vector3(0.9, -1.3, 0.9), top: new THREE.Vector3(0, -0.001, 1), front: new THREE.Vector3(0, -1, 0.12) }[kind];
+      userMoved = true;
+      frame(kind === "fit" ? all : box, false, dir, true);
+    },
     focus(guid: string | null) {
       meshes.forEach((m) => {
         const mat = m.material as THREE.MeshStandardMaterial;
         mat.emissive.setHex(0x000000);
       });
       const targets = guid ? byGuid.get(guid) : undefined;
+      // A section cut just above the element: the floors above disappear, so a room is seen in its
+      // own floor, from above, instead of the camera flying in among the walls.
+      renderer.clippingPlanes = [];
       if (!targets) return;
       const box = new THREE.Box3();
       targets.forEach((m) => {
         (m.material as THREE.MeshStandardMaterial).emissive.setHex(0x505057);
         box.expandByObject(m);
       });
-      focused = box;
+      // An element through several storeys (a stair) is shown at its lowest storey.
+      if (box.max.z - box.min.z > 4.5) box.max.z = box.min.z + 3.2;
+      renderer.clippingPlanes = [new THREE.Plane(new THREE.Vector3(0, 0, -1), box.max.z + 0.05)];
+      const room = targets.some((m) => m.userData.isSpace);
+      // A room: its part of the floor, from above. A door, stair or other element: close up.
+      const view = room ? box.clone().expandByVector(new THREE.Vector3(4, 4, 0)) : box.clone().expandByVector(new THREE.Vector3(1.2, 1.2, 0.3));
+      focused = view;
       userMoved = false;
-      frame(box, true);
+      frame(view, !room, room ? new THREE.Vector3(0.5, -0.8, 1.6) : new THREE.Vector3(0.7, -1.0, 1.1), true);
     },
     dispose() {
       dropEnvelope();
       cancelAnimationFrame(raf);
       ro.disconnect();
       controls.dispose();
+      renderer.domElement.removeEventListener("pointerdown", onDownFirst, { capture: true });
       renderer.domElement.removeEventListener("pointerdown", onDown);
+      renderer.domElement.removeEventListener("contextmenu", noMenu);
       renderer.domElement.removeEventListener("pointerup", onUp);
       renderer.domElement.removeEventListener("pointermove", onMove);
       [...meshes, ...contextMeshes].forEach((m) => {

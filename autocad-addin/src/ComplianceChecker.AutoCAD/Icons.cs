@@ -12,6 +12,7 @@ namespace ComplianceChecker.AutoCAD
         public const string Layers = "M10 3l7 4-7 4-7-4 7-4zM3 11l7 4 7-4";
         public const string Pin = "M10 18s5-5.2 5-9a5 5 0 0 0-10 0c0 3.8 5 9 5 9zM10 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z";
         public const string Check = "M4 10.5l3.5 3.5L16 5.5";
+        public const string Save = "M4 3h10l3 3v11H4V3zM7 3v4h6V3M7 17v-5h7v5";
         public const string Cross = "M5 5l10 10M15 5L5 15";
         public const string Question = "M7.5 7.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5v.7M10 14.5v.5M10 2.5a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15z";
         public const string List = "M7 5h10M7 10h10M7 15h10M3 5h.5M3 10h.5M3 15h.5";

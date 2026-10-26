@@ -2412,14 +2412,14 @@
       "op": ">=",
       "limit": 2.0,
       "element_ids": [
-        "D006",
         "D007",
-        "D008"
+        "D008",
+        "D009"
       ],
       "source_ids": [
-        "demo-dr-D006",
         "demo-dr-D007",
-        "demo-dr-D008"
+        "demo-dr-D008",
+        "demo-dr-D009"
       ]
     },
     {
@@ -2431,14 +2431,14 @@
       "op": ">=",
       "limit": 0.9,
       "element_ids": [
-        "D006",
         "D007",
-        "D008"
+        "D008",
+        "D009"
       ],
       "source_ids": [
-        "demo-dr-D006",
         "demo-dr-D007",
-        "demo-dr-D008"
+        "demo-dr-D008",
+        "demo-dr-D009"
       ]
     },
     {
@@ -2475,6 +2475,7 @@
         "104-BR",
         "104-LIV",
         "105-LIV",
+        "105-MTR",
         "106-BR",
         "106-LIV",
         "1101-BR1",
@@ -2630,6 +2631,7 @@
         "demo-sp-104-BR",
         "demo-sp-104-LIV",
         "demo-sp-105-LIV",
+        "demo-sp-105-MTR",
         "demo-sp-106-BR",
         "demo-sp-106-LIV",
         "demo-sp-1101-BR1",
@@ -2794,6 +2796,7 @@
         "104-BR",
         "104-LIV",
         "105-LIV",
+        "105-MTR",
         "106-BR",
         "106-LIV",
         "1101-BR1",
@@ -2949,6 +2952,7 @@
         "demo-sp-104-BR",
         "demo-sp-104-LIV",
         "demo-sp-105-LIV",
+        "demo-sp-105-MTR",
         "demo-sp-106-BR",
         "demo-sp-106-LIV",
         "demo-sp-1101-BR1",
@@ -3250,10 +3254,12 @@
       "op": "<=",
       "limit": 0.19,
       "element_ids": [
-        "ST1"
+        "ST1",
+        "ST2"
       ],
       "source_ids": [
-        "demo-st-1"
+        "demo-st-1",
+        "demo-st-2"
       ]
     },
     {
@@ -3265,10 +3271,12 @@
       "op": ">=",
       "limit": 0.25,
       "element_ids": [
-        "ST1"
+        "ST1",
+        "ST2"
       ],
       "source_ids": [
-        "demo-st-1"
+        "demo-st-1",
+        "demo-st-2"
       ]
     },
     {
@@ -3280,10 +3288,12 @@
       "op": ">=",
       "limit": 1.5,
       "element_ids": [
-        "ST1"
+        "ST1",
+        "ST2"
       ],
       "source_ids": [
-        "demo-st-1"
+        "demo-st-1",
+        "demo-st-2"
       ]
     }
   ],
