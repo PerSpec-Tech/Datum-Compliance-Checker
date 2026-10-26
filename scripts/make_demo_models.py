@@ -314,37 +314,50 @@ def house() -> dict:
         return b.room(rid, name, lv, x0 + dx, y0, x1 + dx, y1, h)
 
     levels = [("L0", "Ground Floor", 0.0), ("L1", "First Floor", 3.3)]
+    # A door belongs to (and swings into) the room named first. Openings 1.2 m and wider between
+    # living spaces are drawn as archways, without a leaf (dxf_detail). Nothing opens off the stair
+    # except through the living room below and the lounge above.
     g = "L0"
     living = room("G-LIV", "Living", g, 2.5, 4, 8.7, 9.5, 3.0)
     dining = room("G-DIN", "Dining", g, 8.7, 4, 12.5, 9.5, 3.0)
-    guest = room("G-BR", "Guest Bedroom", g, 2.5, 9.5, 6.5, 16, 3.0)
+    guest = room("G-BR", "Guest Bedroom", g, 2.5, 9.5, 6.5, 14, 3.0)
+    gbath = room("G-BTH", "Guest Bath", g, 2.5, 14, 4.5, 16, 2.7)
+    gstore = room("G-STO", "Store", g, 4.5, 14, 6.5, 16, 2.7)
     stair = room("G-STR", "Staircase", g, 6.5, 9.5, 8.7, 16, 3.0)
     kitchen = room("G-KIT", "Kitchen", g, 8.7, 9.5, 12.5, 13, 3.0)
-    toilet = room("G-WC", "Toilet", g, 8.7, 13, 10.6, 16, 2.7)
+    pantry = room("G-PAN", "Store", g, 8.7, 13, 10.6, 16, 2.7)
     utility = room("G-UTL", "Utility", g, 10.6, 13, 12.5, 16, 2.7)
     b.door(g, living, None, 0.8, 2.1, exit_=True)  # 0.8 m < 0.9 m exit door (planted)
-    b.door(g, living, dining, 1.5)
-    b.door(g, living, stair, 0.9)
-    b.door(g, stair, guest, 0.9)
-    b.door(g, stair, kitchen, 0.9)
-    b.door(g, stair, toilet, 0.75)
-    b.door(g, dining, kitchen, 0.9)
-    b.door(g, kitchen, utility, 0.75)
+    b.door(g, living, dining, 1.5)  # archway
+    b.door(g, living, stair, 1.2)  # archway: the stair rises from the living room
+    b.door(g, guest, living, 0.9)
+    b.door(g, gbath, guest, 0.75)
+    b.door(g, gstore, guest, 0.75)
+    b.door(g, kitchen, dining, 0.9)
+    b.door(g, pantry, kitchen, 0.75)
+    b.door(g, utility, kitchen, 0.75)
+    b.door(g, utility, None, 0.9, 2.1, exit_=True)  # back door
 
     f = "L1"
-    master = room("F-MBR", "Master Bedroom", f, 2.5, 4, 8.7, 9.5, 3.0)
+    master = room("F-MBR", "Master Bedroom", f, 4.5, 4, 8.7, 9.5, 3.0)
+    bath1 = room("F-BT1", "Bath 1", f, 2.5, 4, 4.5, 7, 2.7)
+    mstore = room("F-MST", "Store", f, 2.5, 7, 4.5, 9.5, 2.7)
     bed2 = room("F-BR2", "Bedroom 2", f, 8.7, 4, 12.5, 9.5, 3.0)
-    bed3 = room("F-BR3", "Bedroom 3", f, 2.5, 9.5, 6.5, 16, 3.0)
+    bed3 = room("F-BR3", "Bedroom 3", f, 2.5, 9.5, 6.5, 14, 3.0)
+    bath3 = room("F-BT3", "Bath 3", f, 2.5, 14, 6.5, 16, 2.7)
     landing = room("F-STR", "Staircase", f, 6.5, 9.5, 8.7, 16, 3.0)
     lounge = room("F-LNG", "Family Lounge", f, 8.7, 9.5, 12.5, 13, 3.0)
-    bath = room("F-BTH", "Bath", f, 8.7, 13, 10.6, 16, 2.7)
-    bath2 = room("F-BT2", "Bath 2", f, 10.6, 13, 12.5, 16, 2.7)
-    b.door(f, landing, master, 0.9)
-    b.door(f, landing, bed3, 0.9)
-    b.door(f, landing, lounge, 0.9)
-    b.door(f, lounge, bed2, 0.9)
-    b.door(f, lounge, bath, 0.75)
-    b.door(f, lounge, bath2, 0.75)
+    bath2 = room("F-BT2", "Bath 2", f, 8.7, 13, 10.6, 16, 2.7)
+    fstore = room("F-STO", "Store", f, 10.6, 13, 12.5, 16, 2.7)
+    b.door(f, lounge, landing, 1.2)  # archway: the stair arrives in the lounge
+    b.door(f, master, landing, 0.9)
+    b.door(f, bath1, master, 0.75)
+    b.door(f, mstore, master, 0.75)
+    b.door(f, bed3, landing, 0.9)
+    b.door(f, bath3, bed3, 0.75)
+    b.door(f, bed2, lounge, 0.9)
+    b.door(f, bath2, lounge, 0.75)
+    b.door(f, fstore, lounge, 0.75)
     b.unit("H1", "House", g, 200.0)
 
     stair_ = {

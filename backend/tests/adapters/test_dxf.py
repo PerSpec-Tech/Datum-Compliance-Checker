@@ -150,14 +150,14 @@ def test_upload_and_remap_endpoints(tmp_path):
         r = c.post(f"/api/projects/{pid}/dxf", content=data)
         assert r.status_code == 200, r.text
         body = r.json()
-        assert body["counts"]["spaces"] == 14 and body["unmapped"] == 0
+        assert body["counts"]["spaces"] == 19 and body["unmapped"] == 0
         assert c.get(f"/api/projects/{pid}/model").json()["model"]["meta"]["source_kind"] == "dxf"
         # Remap: treat the rooms layer as ignored → no rooms
         r = c.put(f"/api/projects/{pid}/dxf/roles", json={"_Room": "ignore"})
         assert r.json()["counts"]["spaces"] == 0
         assert (
             c.put(f"/api/projects/{pid}/dxf/roles", json={"_Room": None}).json()["counts"]["spaces"]
-            == 14
+            == 19
         )
         assert c.put(f"/api/projects/{pid}/dxf/roles", json={"_Room": "kitchen"}).status_code == 422
         assert c.post(f"/api/projects/{pid}/dxf", content=b"AC1032 binary").status_code == 415
@@ -242,7 +242,7 @@ def test_upload_uses_suggestions_and_user_choice_wins(tmp_path):
             rows["A-AREA-ROOMS"]["role"] == "room" and rows["A-AREA-ROOMS"]["source"] == "suggested"
         )
         assert rows["A-AREA-ROOMS"]["confidence"] == 0.95
-        assert body["counts"]["spaces"] == 14
+        assert body["counts"]["spaces"] == 19
         body = c.put(f"/api/projects/{pid}/dxf/roles", json={"A-AREA-ROOMS": "ignore"}).json()
         rows = {r["layer"]: r for r in body["layers"]}
         assert rows["A-AREA-ROOMS"]["source"] == "user" and body["counts"]["spaces"] == 0

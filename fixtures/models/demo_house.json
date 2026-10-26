@@ -339,7 +339,7 @@
         "confidence": 0.7,
         "note": "from room name"
       },
-      "area_m2": 26.0,
+      "area_m2": 18.0,
       "clear_height_m": 3.0,
       "polygon": [
         [
@@ -352,10 +352,74 @@
         ],
         [
           7.9,
+          14
+        ],
+        [
+          3.9,
+          14
+        ]
+      ]
+    },
+    {
+      "id": "G-BTH",
+      "source_id": "demo-sp-G-BTH",
+      "name": "Guest Bath",
+      "level_id": "L0",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.7,
+      "polygon": [
+        [
+          3.9,
+          14
+        ],
+        [
+          5.9,
+          14
+        ],
+        [
+          5.9,
           16
         ],
         [
           3.9,
+          16
+        ]
+      ]
+    },
+    {
+      "id": "G-STO",
+      "source_id": "demo-sp-G-STO",
+      "name": "Store",
+      "level_id": "L0",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 4.0,
+      "clear_height_m": 2.7,
+      "polygon": [
+        [
+          5.9,
+          14
+        ],
+        [
+          7.9,
+          14
+        ],
+        [
+          7.9,
+          16
+        ],
+        [
+          5.9,
           16
         ]
       ]
@@ -425,12 +489,12 @@
       ]
     },
     {
-      "id": "G-WC",
-      "source_id": "demo-sp-G-WC",
-      "name": "Toilet",
+      "id": "G-PAN",
+      "source_id": "demo-sp-G-PAN",
+      "name": "Store",
       "level_id": "L0",
       "usage": {
-        "value": "bathroom",
+        "value": "storage",
         "source": "inferred",
         "confidence": 0.7,
         "note": "from room name"
@@ -499,19 +563,83 @@
         "confidence": 0.7,
         "note": "from room name"
       },
-      "area_m2": 34.1,
+      "area_m2": 23.1,
       "clear_height_m": 3.0,
+      "polygon": [
+        [
+          5.9,
+          4
+        ],
+        [
+          10.1,
+          4
+        ],
+        [
+          10.1,
+          9.5
+        ],
+        [
+          5.9,
+          9.5
+        ]
+      ]
+    },
+    {
+      "id": "F-BT1",
+      "source_id": "demo-sp-F-BT1",
+      "name": "Bath 1",
+      "level_id": "L1",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 6.0,
+      "clear_height_m": 2.7,
       "polygon": [
         [
           3.9,
           4
         ],
         [
-          10.1,
+          5.9,
           4
         ],
         [
-          10.1,
+          5.9,
+          7
+        ],
+        [
+          3.9,
+          7
+        ]
+      ]
+    },
+    {
+      "id": "F-MST",
+      "source_id": "demo-sp-F-MST",
+      "name": "Store",
+      "level_id": "L1",
+      "usage": {
+        "value": "storage",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 5.0,
+      "clear_height_m": 2.7,
+      "polygon": [
+        [
+          3.9,
+          7
+        ],
+        [
+          5.9,
+          7
+        ],
+        [
+          5.9,
           9.5
         ],
         [
@@ -563,7 +691,7 @@
         "confidence": 0.7,
         "note": "from room name"
       },
-      "area_m2": 26.0,
+      "area_m2": 18.0,
       "clear_height_m": 3.0,
       "polygon": [
         [
@@ -573,6 +701,38 @@
         [
           7.9,
           9.5
+        ],
+        [
+          7.9,
+          14
+        ],
+        [
+          3.9,
+          14
+        ]
+      ]
+    },
+    {
+      "id": "F-BT3",
+      "source_id": "demo-sp-F-BT3",
+      "name": "Bath 3",
+      "level_id": "L1",
+      "usage": {
+        "value": "bathroom",
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "from room name"
+      },
+      "area_m2": 8.0,
+      "clear_height_m": 2.7,
+      "polygon": [
+        [
+          3.9,
+          14
+        ],
+        [
+          7.9,
+          14
         ],
         [
           7.9,
@@ -649,9 +809,9 @@
       ]
     },
     {
-      "id": "F-BTH",
-      "source_id": "demo-sp-F-BTH",
-      "name": "Bath",
+      "id": "F-BT2",
+      "source_id": "demo-sp-F-BT2",
+      "name": "Bath 2",
       "level_id": "L1",
       "usage": {
         "value": "bathroom",
@@ -681,12 +841,12 @@
       ]
     },
     {
-      "id": "F-BT2",
-      "source_id": "demo-sp-F-BT2",
-      "name": "Bath 2",
+      "id": "F-STO",
+      "source_id": "demo-sp-F-STO",
+      "name": "Store",
       "level_id": "L1",
       "usage": {
-        "value": "bathroom",
+        "value": "storage",
         "source": "inferred",
         "confidence": 0.7,
         "note": "from room name"
@@ -790,7 +950,7 @@
       "id": "D003",
       "source_id": "demo-dr-D003",
       "level_id": "L0",
-      "width_m": 0.9,
+      "width_m": 1.2,
       "height_m": 2.1,
       "is_exit": {
         "value": false,
@@ -813,14 +973,14 @@
         "confidence": 0.7,
         "note": "Pset_DoorCommon.IsExternal"
       },
-      "from_space_id": "G-STR",
-      "to_space_id": "G-BR"
+      "from_space_id": "G-BR",
+      "to_space_id": "G-LIV"
     },
     {
       "id": "D005",
       "source_id": "demo-dr-D005",
       "level_id": "L0",
-      "width_m": 0.9,
+      "width_m": 0.75,
       "height_m": 2.1,
       "is_exit": {
         "value": false,
@@ -828,8 +988,8 @@
         "confidence": 0.7,
         "note": "Pset_DoorCommon.IsExternal"
       },
-      "from_space_id": "G-STR",
-      "to_space_id": "G-KIT"
+      "from_space_id": "G-BTH",
+      "to_space_id": "G-BR"
     },
     {
       "id": "D006",
@@ -843,8 +1003,8 @@
         "confidence": 0.7,
         "note": "Pset_DoorCommon.IsExternal"
       },
-      "from_space_id": "G-STR",
-      "to_space_id": "G-WC"
+      "from_space_id": "G-STO",
+      "to_space_id": "G-BR"
     },
     {
       "id": "D007",
@@ -858,8 +1018,8 @@
         "confidence": 0.7,
         "note": "Pset_DoorCommon.IsExternal"
       },
-      "from_space_id": "G-DIN",
-      "to_space_id": "G-KIT"
+      "from_space_id": "G-KIT",
+      "to_space_id": "G-DIN"
     },
     {
       "id": "D008",
@@ -873,14 +1033,14 @@
         "confidence": 0.7,
         "note": "Pset_DoorCommon.IsExternal"
       },
-      "from_space_id": "G-KIT",
-      "to_space_id": "G-UTL"
+      "from_space_id": "G-PAN",
+      "to_space_id": "G-KIT"
     },
     {
       "id": "D009",
       "source_id": "demo-dr-D009",
-      "level_id": "L1",
-      "width_m": 0.9,
+      "level_id": "L0",
+      "width_m": 0.75,
       "height_m": 2.1,
       "is_exit": {
         "value": false,
@@ -888,29 +1048,29 @@
         "confidence": 0.7,
         "note": "Pset_DoorCommon.IsExternal"
       },
-      "from_space_id": "F-STR",
-      "to_space_id": "F-MBR"
+      "from_space_id": "G-UTL",
+      "to_space_id": "G-KIT"
     },
     {
       "id": "D010",
       "source_id": "demo-dr-D010",
-      "level_id": "L1",
+      "level_id": "L0",
       "width_m": 0.9,
       "height_m": 2.1,
       "is_exit": {
-        "value": false,
+        "value": true,
         "source": "inferred",
         "confidence": 0.7,
         "note": "Pset_DoorCommon.IsExternal"
       },
-      "from_space_id": "F-STR",
-      "to_space_id": "F-BR3"
+      "from_space_id": "G-UTL",
+      "to_space_id": null
     },
     {
       "id": "D011",
       "source_id": "demo-dr-D011",
       "level_id": "L1",
-      "width_m": 0.9,
+      "width_m": 1.2,
       "height_m": 2.1,
       "is_exit": {
         "value": false,
@@ -918,8 +1078,8 @@
         "confidence": 0.7,
         "note": "Pset_DoorCommon.IsExternal"
       },
-      "from_space_id": "F-STR",
-      "to_space_id": "F-LNG"
+      "from_space_id": "F-LNG",
+      "to_space_id": "F-STR"
     },
     {
       "id": "D012",
@@ -933,8 +1093,8 @@
         "confidence": 0.7,
         "note": "Pset_DoorCommon.IsExternal"
       },
-      "from_space_id": "F-LNG",
-      "to_space_id": "F-BR2"
+      "from_space_id": "F-MBR",
+      "to_space_id": "F-STR"
     },
     {
       "id": "D013",
@@ -948,8 +1108,8 @@
         "confidence": 0.7,
         "note": "Pset_DoorCommon.IsExternal"
       },
-      "from_space_id": "F-LNG",
-      "to_space_id": "F-BTH"
+      "from_space_id": "F-BT1",
+      "to_space_id": "F-MBR"
     },
     {
       "id": "D014",
@@ -963,8 +1123,83 @@
         "confidence": 0.7,
         "note": "Pset_DoorCommon.IsExternal"
       },
-      "from_space_id": "F-LNG",
-      "to_space_id": "F-BT2"
+      "from_space_id": "F-MST",
+      "to_space_id": "F-MBR"
+    },
+    {
+      "id": "D015",
+      "source_id": "demo-dr-D015",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "F-BR3",
+      "to_space_id": "F-STR"
+    },
+    {
+      "id": "D016",
+      "source_id": "demo-dr-D016",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "F-BT3",
+      "to_space_id": "F-BR3"
+    },
+    {
+      "id": "D017",
+      "source_id": "demo-dr-D017",
+      "level_id": "L1",
+      "width_m": 0.9,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "F-BR2",
+      "to_space_id": "F-LNG"
+    },
+    {
+      "id": "D018",
+      "source_id": "demo-dr-D018",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "F-BT2",
+      "to_space_id": "F-LNG"
+    },
+    {
+      "id": "D019",
+      "source_id": "demo-dr-D019",
+      "level_id": "L1",
+      "width_m": 0.75,
+      "height_m": 2.1,
+      "is_exit": {
+        "value": false,
+        "source": "inferred",
+        "confidence": 0.7,
+        "note": "Pset_DoorCommon.IsExternal"
+      },
+      "from_space_id": "F-STO",
+      "to_space_id": "F-LNG"
     }
   ],
   "units": [

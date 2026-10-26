@@ -152,8 +152,6 @@ def build(name: str) -> None:
 
         for sp in spaces:
             poly(msp, [T(p) for p in sp["polygon"]], "_Room")
-            c = Polygon(sp["polygon"]).centroid
-            text(msp, room_label(sp["name"]), T((c.x, c.y + 0.05)), "_Room", 0.25)
 
         # Built-up area per floor: rooms by use; parking (stilt) is not FSI.
         comm = [Polygon(s["polygon"]) for s in spaces if s["usage"]["value"] == "retail"]
@@ -252,7 +250,7 @@ def build(name: str) -> None:
             poly(msp, [T((xb - 0.12, y_lo + 0.65)), T((xb, y_lo + 0.4)), T((xb + 0.12, y_lo + 0.65))], "ANNO", closed=False)
             text(msp, "UP", T((xa, y_lo - 0.2)), "ANNO", 0.2)
 
-        detail.floor(msp, spaces, door_lines, T, frame, fname)
+        detail.floor(msp, spaces, door_lines, T, frame, fname, name_of=room_label)
 
     # ---------------------------------------------------------------- section: floor heights
     sx0 = W + 15 + len(groups) * (fw + 15) + 5

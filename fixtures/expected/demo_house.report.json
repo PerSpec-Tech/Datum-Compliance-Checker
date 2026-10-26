@@ -5,7 +5,7 @@
   "ruleset_version": "volatile",
   "created_at": "2000-01-01T00:00:00+00:00",
   "summary": {
-    "pass": 26,
+    "pass": 29,
     "fail": 2,
     "unverifiable": 0,
     "not_applicable": 11,
@@ -484,6 +484,50 @@
       "guidance_note": null
     },
     {
+      "rule_id": "udcpr2020.ch9.exit-door-width",
+      "title": "Minimum exit door width",
+      "severity": "critical",
+      "element": {
+        "kind": "doors",
+        "id": "D010",
+        "source_id": "demo-dr-D010"
+      },
+      "status": "pass",
+      "measured": 0.9,
+      "limit": 0.9,
+      "message": "Exit door is 0.90 m wide; minimum is 0.90 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "doors[D010].is_exit",
+          "value": true,
+          "source": "inferred"
+        },
+        {
+          "path": "project.occupancy",
+          "value": {
+            "group": "A",
+            "subdivision": "A-2"
+          },
+          "source": "declared"
+        }
+      ],
+      "clause": {
+        "ref": "9.29.1 (ii)",
+        "excerpt": "No exit doorway shall be less than 90 cm. in width except assembly buildings where door width shall be not less than 200 cm. Doorway shall be not less than 200 cm. in height.",
+        "source": "udcpr2020 p.165",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
       "rule_id": "udcpr2020.ch9.stair-width-residential",
       "title": "Minimum staircase width (residential)",
       "severity": "critical",
@@ -686,6 +730,42 @@
       "facts_used": [
         {
           "path": "doors[D001].is_exit",
+          "value": true,
+          "source": "inferred"
+        }
+      ],
+      "clause": {
+        "ref": "9.29.1 (ii)",
+        "excerpt": "No exit doorway shall be less than 90 cm. in width except assembly buildings where door width shall be not less than 200 cm. Doorway shall be not less than 200 cm. in height.",
+        "source": "udcpr2020 p.165",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.exit-door-height",
+      "title": "Minimum exit door height",
+      "severity": "major",
+      "element": {
+        "kind": "doors",
+        "id": "D010",
+        "source_id": "demo-dr-D010"
+      },
+      "status": "pass",
+      "measured": 2.1,
+      "limit": 2.0,
+      "message": "Exit door is 2.10 m high; minimum is 2.00 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "doors[D010].is_exit",
           "value": true,
           "source": "inferred"
         }
@@ -1001,7 +1081,7 @@
       "status": "not_applicable",
       "measured": null,
       "limit": null,
-      "message": "Not applicable to any of the 14 spaces.",
+      "message": "Not applicable to any of the 19 spaces.",
       "missing_inputs": [],
       "facts_used": [],
       "clause": {
@@ -1155,6 +1235,42 @@
       "severity": "minor",
       "element": {
         "kind": "spaces",
+        "id": "F-BT1",
+        "source_id": "demo-sp-F-BT1"
+      },
+      "status": "pass",
+      "measured": 2.7,
+      "limit": 2.1,
+      "message": "Height is 2.70 m; minimum is 2.10 m.",
+      "missing_inputs": [],
+      "facts_used": [
+        {
+          "path": "spaces[F-BT1].usage",
+          "value": "bathroom",
+          "source": "inferred"
+        }
+      ],
+      "clause": {
+        "ref": "9.4.2",
+        "excerpt": "The height of a bathroom or water closet measured from the surface of the floor to the lowest point in the ceiling (bottom of slab) shall be not less than 2.1 m.",
+        "source": "udcpr2020 p.154",
+        "retrieved": "2026-10-19"
+      },
+      "rule_status": "draft",
+      "freshness": {
+        "status": "unchecked",
+        "url": null,
+        "checked": null
+      },
+      "fix_by": null,
+      "guidance_note": null
+    },
+    {
+      "rule_id": "udcpr2020.ch9.bath-wc-height-min",
+      "title": "Minimum bathroom / WC height",
+      "severity": "minor",
+      "element": {
+        "kind": "spaces",
         "id": "F-BT2",
         "source_id": "demo-sp-F-BT2"
       },
@@ -1191,8 +1307,8 @@
       "severity": "minor",
       "element": {
         "kind": "spaces",
-        "id": "F-BTH",
-        "source_id": "demo-sp-F-BTH"
+        "id": "F-BT3",
+        "source_id": "demo-sp-F-BT3"
       },
       "status": "pass",
       "measured": 2.7,
@@ -1201,7 +1317,7 @@
       "missing_inputs": [],
       "facts_used": [
         {
-          "path": "spaces[F-BTH].usage",
+          "path": "spaces[F-BT3].usage",
           "value": "bathroom",
           "source": "inferred"
         }
@@ -1227,8 +1343,8 @@
       "severity": "minor",
       "element": {
         "kind": "spaces",
-        "id": "G-WC",
-        "source_id": "demo-sp-G-WC"
+        "id": "G-BTH",
+        "source_id": "demo-sp-G-BTH"
       },
       "status": "pass",
       "measured": 2.7,
@@ -1237,7 +1353,7 @@
       "missing_inputs": [],
       "facts_used": [
         {
-          "path": "spaces[G-WC].usage",
+          "path": "spaces[G-BTH].usage",
           "value": "bathroom",
           "source": "inferred"
         }
