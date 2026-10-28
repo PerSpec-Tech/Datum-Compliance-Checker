@@ -51,3 +51,12 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# Not part of the public repo: working notes, submission material, recordings
+CLAUDE.md
+ROADMAP.md
+docs/
+videos/
+*.mp4
+*.mov
+*.mkv

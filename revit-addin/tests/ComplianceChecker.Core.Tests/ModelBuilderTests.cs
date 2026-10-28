@@ -195,7 +195,7 @@ public class ModelBuilderTests
     internal static string RepoRoot()
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
-        while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "ROADMAP.md")))
+        while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "justfile")))
             dir = dir.Parent;
         return dir?.FullName ?? throw new InvalidOperationException("repo root not found");
     }
