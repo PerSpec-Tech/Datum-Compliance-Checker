@@ -1,4 +1,4 @@
-"""Rule compiler (P3.5): regulation text → draft rule, checked before anyone sees it.
+"""Rule compiler: regulation text → draft rule, checked before anyone sees it.
 
 Nemotron Super drafts the rule; then deterministic checks run, and any failure goes back to the
 model (at most 2 retries):
@@ -8,7 +8,7 @@ model (at most 2 retries):
   4. every number it uses appears in the clause text (unit conversions allowed) — anti-hallucination
   5. it runs on all fixture buildings without an evaluation error (dry run)
 Optionally Nemotron Ultra reviews the draft against the clause. Output is always status "draft";
-only a person sets "verified" (D2, CLAUDE.md).
+only a person sets "verified".
 """
 
 from __future__ import annotations

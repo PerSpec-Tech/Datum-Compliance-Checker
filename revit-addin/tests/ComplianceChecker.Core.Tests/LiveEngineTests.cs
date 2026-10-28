@@ -5,7 +5,7 @@ using Xunit;
 
 namespace ComplianceChecker.Core.Tests;
 
-/// <summary>P9.2: the live engine on the Python-side golden live pack and the demo apartment.</summary>
+/// <summary>the live engine on the Python-side golden live pack and the demo apartment.</summary>
 public class LiveEngineTests
 {
     private static LivePack Pack() => LivePack.FromJson(File.ReadAllText(

@@ -12,14 +12,14 @@ from pydantic import BaseModel, ConfigDict, Field, RootModel
 class Common(RootModel[Any]):
     root: Any = Field(
         ...,
-        description="Shared types for the compliance checker contracts (ROADMAP §5). Units are SI: metres, m², decimal degrees.",
+        description="Shared types for the compliance checker contracts. Units are SI: metres, m², decimal degrees.",
         title="Common",
     )
 
 
 class Source(StrEnum):
     """
-    Where a fact came from (D4). 'declared' always wins over the others.
+    Where a fact came from. 'declared' always wins over the others.
     """
 
     model = "model"
@@ -80,7 +80,7 @@ class ElementRef(BaseModel):
 
 class Clause(BaseModel):
     """
-    Citation copied from source text, never from memory (D13).
+    Citation copied from source text, never from memory.
     """
 
     model_config = ConfigDict(

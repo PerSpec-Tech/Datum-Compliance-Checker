@@ -2,7 +2,7 @@ using Autodesk.Revit.DB;
 
 namespace ComplianceChecker.Export
 {
-    /// <summary>Revit internal units (feet) → SI (D12).</summary>
+    /// <summary>Revit internal units (feet) → SI.</summary>
     internal static class Units
     {
         public static double M(double feet) => UnitUtils.ConvertFromInternalUnits(feet, UnitTypeId.Meters);

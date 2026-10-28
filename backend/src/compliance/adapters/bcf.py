@@ -1,4 +1,4 @@
-"""BCF 2.1 export (P6.2): one topic per failing result, so IFC users can open the issues in their
+"""BCF 2.1 export: one topic per failing result, so IFC users can open the issues in their
 own tool (Solibri, BIMcollab, Archicad, BlenderBIM…). Standard library only.
 
 Zip layout:  bcf.version · project.bcfp · <topic guid>/markup.bcf · <topic guid>/viewpoint.bcfv

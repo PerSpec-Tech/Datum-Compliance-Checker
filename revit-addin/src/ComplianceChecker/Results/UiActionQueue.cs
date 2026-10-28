@@ -6,7 +6,7 @@ namespace ComplianceChecker.Results
 {
     /// <summary>
     /// The only way background code reaches the Revit API: queue an action, raise one ExternalEvent,
-    /// and Revit runs it on its main thread when it's idle (P5.6).
+    /// and Revit runs it on its main thread when it's idle.
     /// </summary>
     public sealed class UiActionQueue : IExternalEventHandler, IDisposable
     {

@@ -13,7 +13,7 @@ using ComplianceChecker.UI;
 namespace ComplianceChecker.Live
 {
     /// <summary>
-    /// Live mode (P9.2, D32). After a check, the server's live pack is kept per document. While the
+    /// Live mode. After a check, the server's live pack is kept per document. While the
     /// user models, edits are noted (DocumentChanged); once nothing has changed for 1.5 s the model
     /// is re-read and the live engine runs (Idling): the live panel on the left (FSI bar, height,
     /// setbacks) and the strip in the results pane update, and the lens redraws (on by default: the

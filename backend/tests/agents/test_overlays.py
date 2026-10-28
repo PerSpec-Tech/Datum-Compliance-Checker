@@ -1,4 +1,4 @@
-"""P3.10: metro TOD overlay."""
+"""metro TOD overlay."""
 
 import copy
 import json

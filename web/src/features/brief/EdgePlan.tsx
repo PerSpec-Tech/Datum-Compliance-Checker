@@ -17,7 +17,7 @@ const KIND_STYLE: Record<EdgeKind | "none", { stroke: string; label: string; wei
   none: { stroke: "var(--text-tertiary)", label: "not tagged", weight: 0.75, dash: true },
 };
 
-// P6.5: the plot boundary and building footprint drawn from the model; click a side to tag it.
+// the plot boundary and building footprint drawn from the model; click a side to tag it.
 export default function EdgePlan({
   edges,
   footprint,

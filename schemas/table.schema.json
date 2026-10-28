@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "LookupTable",
-  "description": "Lookup table used by rule expressions via table(name, *keys) (ROADMAP §5.2). Stored under rules/<ruleset>/tables/<name>.yaml.\n- map: table(name, key) → entries[key]\n- bands: table(name, x) → value of the band with min <= x < max (max null = no upper bound)\n- map_of_bands: table(name, key, x) → bands of map[key], then as 'bands'",
+  "description": "Lookup table used by rule expressions via table(name, *keys). Stored under rules/<ruleset>/tables/<name>.yaml.\n- map: table(name, key) → entries[key]\n- bands: table(name, x) → value of the band with min <= x < max (max null = no upper bound)\n- map_of_bands: table(name, key, x) → bands of map[key], then as 'bands'",
   "type": "object",
   "additionalProperties": false,
   "required": ["name", "authority", "kind", "source"],

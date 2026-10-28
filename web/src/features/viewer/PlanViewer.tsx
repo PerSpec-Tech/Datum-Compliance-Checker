@@ -5,7 +5,7 @@ import type { BuildingModel, Status } from "../../api/types";
 import { Icon, STATUS_META, StatusMark } from "../../components/ui";
 import SetbackLayer from "./SetbackLayer";
 
-// P10.5: the report's view for 2D drawings. The drawing itself (walls, doors, windows, furniture,
+// the report's view for 2D drawings. The drawing itself (walls, doors, windows, furniture,
 // dimensions, texts) is the base; the check's results are a translucent layer on the rooms.
 // Line weight carries meaning (guidelines §9); colours come from the theme tokens.
 

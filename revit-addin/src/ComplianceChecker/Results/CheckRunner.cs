@@ -14,7 +14,7 @@ using ComplianceChecker.Storage;
 namespace ComplianceChecker.Results
 {
     /// <summary>
-    /// Runs one check (P5.6): export on Revit's main thread → upload, run and stream on a background
+    /// Runs one check: export on Revit's main thread → upload, run and stream on a background
     /// task → apply the report back on the main thread through <see cref="UiActionQueue"/>.
     /// Never blocks the Revit UI.
     /// </summary>

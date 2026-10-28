@@ -2,7 +2,7 @@ import type { DrawingFloor } from "../../api/client";
 import type { BuildingModel } from "../../api/types";
 import type { Group } from "./groups";
 
-// P12.5: a small plan cropped to one element, the element in red. Drawn from the model (rooms,
+// a small plan cropped to one element, the element in red. Drawn from the model (rooms,
 // plot, footprint) plus, for a 2D drawing, the floor's own lines. Doors, stairs and flats have no
 // outline of their own, so the rooms they belong to are shown instead.
 

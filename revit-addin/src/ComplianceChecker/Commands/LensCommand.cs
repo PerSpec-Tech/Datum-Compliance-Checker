@@ -6,7 +6,7 @@ using ComplianceChecker.UI;
 namespace ComplianceChecker.Commands
 {
     /// <summary>
-    /// Compliance lens on/off (P9.3): the buildable line and setback issues drawn over the current
+    /// Compliance lens on/off: the buildable line and setback issues drawn over the current
     /// view. Transient graphics only; changes nothing in the model. Assign it a key (Revit
     /// Keyboard Shortcuts, e.g. Shift+L) to toggle it while modelling.
     /// </summary>

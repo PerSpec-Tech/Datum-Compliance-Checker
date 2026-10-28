@@ -1,9 +1,9 @@
-"""P3.10: fetch Pune metro stations from OpenStreetMap (Overpass API) once, check them against the
+"""fetch Pune metro stations from OpenStreetMap (Overpass API) once, check them against the
 hand-typed reference list, and write rules/cities/pmc/data/metro_stations.geojson.
 
 Usage: just fetch-stations [--write]
 
-Without --write it only prints the comparison, so a person can resolve differences first (D22).
+Without --write it only prints the comparison, so a person can resolve differences first.
 Data © OpenStreetMap contributors, ODbL 1.0 — the attribution is kept in the GeoJSON.
 """
 

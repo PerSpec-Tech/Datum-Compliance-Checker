@@ -1,16 +1,16 @@
-"""Apply declared answers (web app PATCH /brief, P2.5 questions) over a BuildingModel (P4.2).
+"""Apply declared answers (the planner's questions, via PATCH /brief) over a BuildingModel.
 
 Answers are keyed by the same paths the engine reports as missing, e.g.
   site.edges[e1].road_width_m · project.zone · project.overlays.metro_tod · spaces[S4].usage
 plus one grouped form for edge tags:
   site.edges → {"e1": {"kind": "road", "road_width_m": 12,
                         "road_width_basis": "development_plan"}, …}
-and the plot drawn on the map in the web app (P12.3):
+and the plot drawn on the map in the web app:
   site.boundary  → [[x, y], …] in model coordinates: replaces the plot; its sides become e1…en,
                    untagged, so tag them with site.edges (applied after the boundary)
   site.placement → {lat, lon, rotation_deg, scale}: where the drawing sits on the map; kept for the
                    web app only, the check doesn't use it
-Declared always wins (D4). Answers that no longer match the model (e.g. an edge that was redrawn)
+Declared always wins. Answers that no longer match the model (e.g. an edge that was redrawn)
 are skipped and reported, never forced in.
 """
 

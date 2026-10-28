@@ -1,11 +1,11 @@
-"""Nebius Token Factory client (P3.1). Every LLM call in the app goes through `LLMClient.chat`.
+"""Nebius Token Factory client. Every LLM call in the app goes through `LLMClient.chat`.
 
-- The model comes from the role (agent / fast / reviewer), never from the caller (CLAUDE.md).
-- Reasoning ("thinking") is switched per call or per role default, using the method P0.5 verified.
+- The model comes from the role (agent / fast / reviewer), never from the caller.
+- Reasoning ("thinking") is switched per call or per role default (see scripts/smoke_nebius.py).
 - `schema=` asks for structured JSON (json_schema response format, or a forced tool call when the
   model can't do json_schema), validates it, and gives the model one chance to repair it.
 - Transient errors are retried 3 times with exponential backoff; each attempt is logged to
-  llm_usage (the judges' proof of Nebius / NVIDIA use, P7.4).
+  llm_usage (the judges' proof of Nebius / NVIDIA use).
 """
 
 from __future__ import annotations

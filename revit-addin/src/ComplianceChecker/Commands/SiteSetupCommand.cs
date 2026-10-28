@@ -9,7 +9,7 @@ using ComplianceChecker.UI;
 
 namespace ComplianceChecker.Commands
 {
-    /// <summary>Site Setup (P5.4). Writes only the brief in Extensible Storage (D11).</summary>
+    /// <summary>Site Setup. Writes only the brief in Extensible Storage.</summary>
     [Transaction(TransactionMode.Manual)]
     public class SiteSetupCommand : IExternalCommand
     {

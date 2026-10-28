@@ -88,7 +88,7 @@ export function Chip({ children, predicted = false, title }: { children: ReactNo
   );
 }
 
-// Where a fact came from. Model-inferred values are dashed and say so (§10).
+// Where a fact came from. Model-inferred values are dashed and say so.
 const SOURCE_META: Record<Source, { label: string; title: string; predicted: boolean }> = {
   model: { label: "model", title: "Read from the BIM model", predicted: false },
   declared: { label: "declared", title: "Answered by you in the brief", predicted: false },
@@ -143,7 +143,7 @@ export function FieldError({ error }: { error: unknown }) {
   return <p className="mt-2 text-xs text-danger">{msg}</p>;
 }
 
-// System or model failure: a full panel with what failed and a way to retry (§10, §13).
+// System or model failure: a full panel with what failed and a way to retry.
 export function ErrorBox({ error, title = "That didn't work", onRetry }: { error: unknown; title?: string; onRetry?: () => void }) {
   const msg = error instanceof Error ? error.message : String(error);
   return (

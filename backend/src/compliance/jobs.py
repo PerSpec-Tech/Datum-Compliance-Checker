@@ -1,4 +1,4 @@
-"""Check jobs (P4.3): one asyncio task per job, running the §3 pipeline and streaming progress.
+"""Check jobs: one asyncio task per job, running the §3 pipeline and streaming progress.
 
 resolve_authority → overlays → classify_usage → derive → evaluate → freshness → plan_questions →
 explain → done. The deterministic engine decides every status; agent stages (classify, freshness,
@@ -150,7 +150,7 @@ class JobRunner:
 
             assert ctx.report is not None
             self.store.save_report(ctx.report)
-            try:  # the live pack for the add-ins (P9.1); it never fails the check itself
+            try:  # the live pack for the add-ins; it never fails the check itself
                 pack = await asyncio.to_thread(build_live_pack, ctx.model, ctx.rulebase, ctx.report)
                 self.store.save_live_pack(project_id, pack)
             except Exception:  # noqa: BLE001

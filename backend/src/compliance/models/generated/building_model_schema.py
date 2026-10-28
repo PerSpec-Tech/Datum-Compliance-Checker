@@ -41,7 +41,7 @@ class Level(BaseModel):
 
 class Special(BaseModel):
     """
-    Declared yes/no constraints (D19). metro_rail_within_20m triggers the Metro NOC advisory (UDCPR 14.2.1.7).
+    Declared yes/no constraints. metro_rail_within_20m triggers the Metro NOC advisory (UDCPR 14.2.1.7).
     """
 
     model_config = ConfigDict(
@@ -60,7 +60,7 @@ class Special(BaseModel):
 
 class Overlays(BaseModel):
     """
-    Spatial overlays (D18, D22).
+    Spatial overlays.
     """
 
     model_config = ConfigDict(
@@ -84,7 +84,7 @@ class Project(BaseModel):
     )
     rulesets: common_schema.FactStringList = Field(
         ...,
-        description="Ordered, later overrides earlier, e.g. [nbc2016, udcpr2020, pmc] (D15).",
+        description="Ordered, later overrides earlier, e.g. [nbc2016, udcpr2020, pmc].",
     )
     occupancy: common_schema.FactOccupancy
     zone: common_schema.FactString = Field(
@@ -101,7 +101,7 @@ class Project(BaseModel):
 
 class Edge(BaseModel):
     """
-    One side of the plot boundary. Road width is a legal fact: declared, never measured (D5).
+    One side of the plot boundary. Road width is a legal fact: declared, never measured.
     """
 
     model_config = ConfigDict(
@@ -221,7 +221,7 @@ class Unit(BaseModel):
 
 class BuildingModel(BaseModel):
     """
-    One building, normalised from Revit or IFC (ROADMAP §5.1). SI units. Any measured value may be null; the engine then reports 'cannot verify'.
+    One building, normalised from Revit or IFC. SI units. Any measured value may be null; the engine then reports 'cannot verify'.
     """
 
     model_config = ConfigDict(

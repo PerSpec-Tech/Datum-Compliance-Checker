@@ -1,9 +1,9 @@
-"""Tavily client (P3.3, D6, D26): search + extract, limited to an authority's official domains,
+"""Tavily client: search + extract, limited to an authority's official domains,
 cached for 7 days in SQLite, and every call (cached or live) logged to search_usage — the proof of a
 "functional, runtime call to the Tavily API" for the Best Use of Tavily prize.
 
 Search results only ever *flag* things (possible amendments, candidate sources). A rule's pass/fail
-never depends on what a search returns (D6).
+never depends on what a search returns.
 """
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-"""Generate sample IFC4 files from the fixture buildings (P6.1 / P8.1).
+"""Generate sample IFC4 files from the fixture buildings.
 
 Usage: just make-samples
 

@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Common",
-  "description": "Shared types for the compliance checker contracts (ROADMAP §5). Units are SI: metres, m², decimal degrees.",
+  "description": "Shared types for the compliance checker contracts. Units are SI: metres, m², decimal degrees.",
   "definitions": {
     "Source": {
-      "description": "Where a fact came from (D4). 'declared' always wins over the others.",
+      "description": "Where a fact came from. 'declared' always wins over the others.",
       "type": "string",
       "enum": ["model", "inferred", "declared", "default"]
     },
@@ -37,7 +37,7 @@
       }
     },
     "Clause": {
-      "description": "Citation copied from source text, never from memory (D13).",
+      "description": "Citation copied from source text, never from memory.",
       "type": "object",
       "additionalProperties": false,
       "required": ["ref", "excerpt", "source"],

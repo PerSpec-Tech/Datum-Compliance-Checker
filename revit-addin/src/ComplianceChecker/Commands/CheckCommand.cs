@@ -7,7 +7,7 @@ using ComplianceChecker.UI;
 
 namespace ComplianceChecker.Commands
 {
-    /// <summary>Run Check (P5.6): export → upload → check → results, without blocking Revit.</summary>
+    /// <summary>Run Check: export → upload → check → results, without blocking Revit.</summary>
     [Transaction(TransactionMode.Manual)]
     public class CheckCommand : IExternalCommand
     {

@@ -1,6 +1,6 @@
-"""Question wording (P3.9): Nemotron Nano rephrases the planner's template questions.
+"""Question wording: Nemotron Nano rephrases the planner's template questions.
 
-It never changes which questions are asked, their order or what they unlock (the planner, P2.5,
+It never changes which questions are asked, their order or what they unlock (the planner,
 decides that). If the answer doesn't line up one-to-one, the templates are kept.
 """
 

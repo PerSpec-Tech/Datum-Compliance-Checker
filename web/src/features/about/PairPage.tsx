@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { api } from "../../api/client";
 import { ErrorBox, Icon, Spinner, Title } from "../../components/ui";
 
-// "Pair Revit": the add-in's pairing window sends people here for a 6-digit code (P4.4 / P5).
+// "Pair Revit": the add-in's pairing window sends people here for a 6-digit code.
 export default function PairPage() {
   const pair = useMutation({ mutationFn: api.pairStart });
   const [left, setLeft] = useState(0);

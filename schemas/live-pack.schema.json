@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "live-pack.schema.json",
   "title": "LivePack",
-  "description": "P9.1 / D32: the rule engine's limits for one project, reduced to geometry the Revit and AutoCAD add-ins can test locally while the user models. A preview; the full check stays the official result.",
+  "description": "The rule engine's limits for one project, reduced to geometry the Revit and AutoCAD add-ins can test locally while the user models. A preview; the full check stays the official result.",
   "type": "object",
   "required": [
     "project_id",

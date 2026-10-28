@@ -9,7 +9,7 @@ export interface LatLon {
   lon: number;
 }
 
-// Dark grayscale basemap (§15), a fixed mono coordinate/zoom readout and a north arrow (§9).
+// Dark grayscale basemap, a fixed mono coordinate/zoom readout and a north arrow.
 // Click the map to place or move the pin.
 export default function MapPin({
   value,

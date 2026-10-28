@@ -101,7 +101,7 @@ class Threshold(BaseModel):
 
 class LivePack(BaseModel):
     """
-    P9.1 / D32: the rule engine's limits for one project, reduced to geometry the Revit and AutoCAD add-ins can test locally while the user models. A preview; the full check stays the official result.
+    The rule engine's limits for one project, reduced to geometry the Revit and AutoCAD add-ins can test locally while the user models. A preview; the full check stays the official result.
     """
 
     model_config = ConfigDict(

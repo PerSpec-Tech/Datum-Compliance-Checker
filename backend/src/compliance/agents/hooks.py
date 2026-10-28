@@ -1,4 +1,4 @@
-"""Wires the Nemotron / Tavily agents into the job pipeline as best-effort stage hooks (P4.3)."""
+"""Wires the Nemotron / Tavily agents into the job pipeline as best-effort stage hooks."""
 
 from __future__ import annotations
 

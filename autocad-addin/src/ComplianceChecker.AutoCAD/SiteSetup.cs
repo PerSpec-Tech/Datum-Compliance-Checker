@@ -39,7 +39,7 @@ namespace ComplianceChecker.AutoCAD
     internal enum SiteAction { Cancel, Save, SaveOnly, PickPlot, PickRoad, Browser }
 
     /// <summary>
-    /// CCSITE inside AutoCAD (P11.2): location (AutoCAD's own geographic location, an address search
+    /// CCSITE inside AutoCAD: location (AutoCAD's own geographic location, an address search
     /// or coordinates), the plot (from the drawing, or picked), what each side faces (picked on the
     /// drawing) and the planning facts. Saved as declared brief answers, then the check runs.
     /// </summary>

@@ -1,4 +1,4 @@
-"""P0.9: extract source PDFs page by page and search them with BM25.
+"""extract source PDFs page by page and search them with BM25.
 
 Usage:
   just extract-sources [--force]   extract manifest entries with index: true, then build the index
@@ -96,7 +96,7 @@ def build_index(docs: list[dict]) -> None:
         for p in json.loads(meta_path.read_text())["pages"]:
             f = OUT / doc["id"] / f"p{p['pdf']:04d}.txt"
             entries.append(
-                {"doc": doc["id"], "authority": doc.get("authority"), **p, "file": str(f)}
+                {"doc": doc["id"], "authority": doc.get("authority"), **p, "file": f.relative_to(REPO_ROOT).as_posix()}
             )
             corpus.append(tokens(f.read_text(encoding="utf-8")))
     INDEX.write_bytes(pickle.dumps({"entries": entries, "bm25": BM25Okapi(corpus)}))
@@ -123,10 +123,10 @@ def find(query: str, k: int = 5) -> None:
     for i in top:
         e = data["entries"][i]
         printed = f"p.{e['printed']} " if e["printed"] else ""
-        text = Path(e["file"]).read_text(encoding="utf-8")
+        text = (REPO_ROOT / e["file"]).read_text(encoding="utf-8")
         print(f"{e['doc']} {printed}(pdf p.{e['pdf']}) [{e['authority']}] score={scores[i]:.1f}")
         print(f"    {snippet(text, q)}")
-        print(f"    file: {Path(e['file']).relative_to(REPO_ROOT).as_posix()}")
+        print(f"    file: {e['file']}")
 
 
 def main() -> None:

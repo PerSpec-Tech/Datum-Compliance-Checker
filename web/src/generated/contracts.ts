@@ -1,7 +1,7 @@
 // GENERATED — DO NOT EDIT. Source: schemas/*.schema.json. Regenerate with `just codegen`.
 /**
- * One building, normalised from Revit or IFC (ROADMAP §5.1). SI units. Any measured value
- * may be null; the engine then reports 'cannot verify'.
+ * One building, normalised from Revit or IFC. SI units. Any measured value may be null; the
+ * engine then reports 'cannot verify'.
  */
 export interface BuildingModel {
     /**
@@ -47,7 +47,7 @@ export interface FactBool {
 }
 
 /**
- * Where a fact came from (D4). 'declared' always wins over the others.
+ * Where a fact came from. 'declared' always wins over the others.
  */
 export type Source = "model" | "inferred" | "declared" | "default";
 
@@ -107,7 +107,7 @@ export interface Project {
     occupancy:      FactOccupancy;
     overlays:       Overlays;
     /**
-     * Ordered, later overrides earlier, e.g. [nbc2016, udcpr2020, pmc] (D15).
+     * Ordered, later overrides earlier, e.g. [nbc2016, udcpr2020, pmc].
      */
     rulesets: FactStringList;
     special:  Special;
@@ -168,7 +168,7 @@ export interface Occupancy {
 export type OccupancyGroup = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "J";
 
 /**
- * Spatial overlays (D18, D22).
+ * Spatial overlays.
  */
 export interface Overlays {
     metro_tod:             FactBool;
@@ -208,7 +208,7 @@ export interface FactNumber {
 }
 
 /**
- * Ordered, later overrides earlier, e.g. [nbc2016, udcpr2020, pmc] (D15).
+ * Ordered, later overrides earlier, e.g. [nbc2016, udcpr2020, pmc].
  */
 export interface FactStringList {
     confidence?: number | null;
@@ -218,8 +218,8 @@ export interface FactStringList {
 }
 
 /**
- * Declared yes/no constraints (D19). metro_rail_within_20m triggers the Metro NOC advisory
- * (UDCPR 14.2.1.7).
+ * Declared yes/no constraints. metro_rail_within_20m triggers the Metro NOC advisory (UDCPR
+ * 14.2.1.7).
  */
 export interface Special {
     airport_zone:          FactBool;
@@ -250,7 +250,7 @@ export interface Site {
 }
 
 /**
- * One side of the plot boundary. Road width is a legal fact: declared, never measured (D5).
+ * One side of the plot boundary. Road width is a legal fact: declared, never measured.
  */
 export interface Edge {
     a:                number[];
@@ -332,9 +332,8 @@ export interface FactUnitUse {
 export type UnitUse = "residential" | "commercial" | "office" | "other";
 
 /**
- * One compliance rule, stored as one YAML file under rules/<ruleset>/ (ROADMAP §5.2).
- * Expressions are Python-syntax strings evaluated only by engine/expr.py (AST whitelist,
- * never eval/exec).
+ * One compliance rule, stored as one YAML file under rules/<ruleset>/. Expressions are
+ * Python-syntax strings evaluated only by engine/expr.py (AST whitelist, never eval/exec).
  */
 export interface Rule {
     /**
@@ -364,7 +363,7 @@ export interface Rule {
     for_each?:  Collection | null;
     freshness?: Freshness;
     /**
-     * Note from a reference-only document (e.g. NBCS 2026). Never affects status (D20).
+     * Note from a reference-only document (e.g. NBCS 2026). Never affects status.
      */
     guidance_note?: GuidanceNote | null;
     /**
@@ -372,8 +371,7 @@ export interface Rule {
      */
     id: string;
     /**
-     * 'check' produces pass/fail; 'advisory' produces an obligation the model can't confirm
-     * (D23).
+     * 'check' produces pass/fail; 'advisory' produces an obligation the model can't confirm.
      */
     kind?: RuleKind;
     /**
@@ -389,7 +387,7 @@ export interface Rule {
      */
     message: string;
     /**
-     * Tag used by the FSI headroom summary (P2.8).
+     * Tag used by the FSI headroom summary.
      */
     metric?: Metric | null;
     /**
@@ -397,7 +395,7 @@ export interface Rule {
      */
     overrides?: null | string;
     /**
-     * Notes from the reviewer model (P3.5 --review).
+     * Notes from the reviewer model (scripts/compile_rule.py --review).
      */
     review_notes?: null | string;
     severity:      Severity;
@@ -409,7 +407,7 @@ export interface Rule {
 }
 
 /**
- * Citation copied from source text, never from memory (D13).
+ * Citation copied from source text, never from memory.
  */
 export interface Clause {
     /**
@@ -446,8 +444,7 @@ export interface GuidanceNote {
 }
 
 /**
- * 'check' produces pass/fail; 'advisory' produces an obligation the model can't confirm
- * (D23).
+ * 'check' produces pass/fail; 'advisory' produces an obligation the model can't confirm.
  */
 export type RuleKind = "check" | "advisory";
 
@@ -461,7 +458,7 @@ export type Severity = "critical" | "major" | "minor";
 export type RuleStatus = "draft" | "verified";
 
 /**
- * Lookup table used by rule expressions via table(name, *keys) (ROADMAP §5.2). Stored under
+ * Lookup table used by rule expressions via table(name, *keys). Stored under
  * rules/<ruleset>/tables/<name>.yaml.
  * - map: table(name, key) → entries[key]
  * - bands: table(name, x) → value of the band with min <= x < max (max null = no upper
@@ -510,13 +507,13 @@ export interface Band {
 export type Kind = "map" | "bands" | "map_of_bands";
 
 /**
- * Result of one compliance check job (ROADMAP §5.4). Pass/fail comes only from
- * engine/evaluate.py; agents only add wording (explanation) and freshness.
+ * Result of one compliance check job. Pass/fail comes only from engine/evaluate.py; agents
+ * only add wording (explanation) and freshness.
  */
 export interface CheckReport {
     created_at: Date;
     /**
-     * Plain-language summary from the explainer agent (P3.8).
+     * Plain-language summary from the explainer agent.
      */
     explanation: null | string;
     fsi:         FsiSummary | null;
@@ -536,8 +533,8 @@ export interface CheckReport {
 }
 
 /**
- * FSI used vs permitted, built only from rule-table limits (P2.8, D30). Numbers are null
- * when inputs are missing.
+ * FSI used vs permitted, built only from rule-table limits. Numbers are null when inputs
+ * are missing.
  */
 export interface FsiSummary {
     base_permissible: number | null;
@@ -556,7 +553,7 @@ export interface FsiSummary {
 }
 
 /**
- * A missing input, ranked by how many checks it unlocks (P2.5).
+ * A missing input, ranked by how many checks it unlocks.
  */
 export interface Question {
     input_type: InputType;
@@ -612,7 +609,7 @@ export interface FactUsed {
 }
 
 /**
- * How much the measured value must change to pass (D30). Only for comparison failures.
+ * How much the measured value must change to pass. Only for comparison failures.
  */
 export interface FixBy {
     amount:    number;
@@ -638,9 +635,9 @@ export interface Summary {
 }
 
 /**
- * P9.1 / D32: the rule engine's limits for one project, reduced to geometry the Revit and
- * AutoCAD add-ins can test locally while the user models. A preview; the full check stays
- * the official result.
+ * The rule engine's limits for one project, reduced to geometry the Revit and AutoCAD
+ * add-ins can test locally while the user models. A preview; the full check stays the
+ * official result.
  */
 export interface LivePack {
     created_at: Date;

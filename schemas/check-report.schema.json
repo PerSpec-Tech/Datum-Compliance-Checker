@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "CheckReport",
-  "description": "Result of one compliance check job (ROADMAP §5.4). Pass/fail comes only from engine/evaluate.py; agents only add wording (explanation) and freshness.",
+  "description": "Result of one compliance check job. Pass/fail comes only from engine/evaluate.py; agents only add wording (explanation) and freshness.",
   "type": "object",
   "additionalProperties": false,
   "required": ["id", "project_id", "model_version", "ruleset_version", "created_at", "summary", "results", "questions", "explanation", "fsi"],
@@ -14,7 +14,7 @@
     "summary": { "$ref": "#/definitions/Summary" },
     "results": { "type": "array", "items": { "$ref": "#/definitions/Result" } },
     "questions": { "type": "array", "items": { "$ref": "#/definitions/Question" } },
-    "explanation": { "type": ["string", "null"], "description": "Plain-language summary from the explainer agent (P3.8)." },
+    "explanation": { "type": ["string", "null"], "description": "Plain-language summary from the explainer agent." },
     "fsi": { "anyOf": [{ "$ref": "#/definitions/FsiSummary" }, { "type": "null" }] }
   },
   "definitions": {
@@ -47,7 +47,7 @@
     },
     "FixDirection": { "type": "string", "enum": ["increase", "decrease"] },
     "FixBy": {
-      "description": "How much the measured value must change to pass (D30). Only for comparison failures.",
+      "description": "How much the measured value must change to pass. Only for comparison failures.",
       "type": "object",
       "additionalProperties": false,
       "required": ["amount", "unit", "direction"],
@@ -91,7 +91,7 @@
     },
     "InputType": { "type": "string", "enum": ["number", "enum", "bool", "latlon", "edge_tags", "text"] },
     "Question": {
-      "description": "A missing input, ranked by how many checks it unlocks (P2.5).",
+      "description": "A missing input, ranked by how many checks it unlocks.",
       "type": "object",
       "additionalProperties": false,
       "required": ["path", "prompt", "unlocks", "rule_ids", "input_type", "options"],
@@ -105,7 +105,7 @@
       }
     },
     "FsiSummary": {
-      "description": "FSI used vs permitted, built only from rule-table limits (P2.8, D30). Numbers are null when inputs are missing.",
+      "description": "FSI used vs permitted, built only from rule-table limits. Numbers are null when inputs are missing.",
       "type": "object",
       "additionalProperties": false,
       "required": ["plot_area_m2", "built_up_m2", "used", "base_permissible", "max_permissible", "basis", "headroom_base_m2", "headroom_max_m2", "rule_ids", "missing_inputs"],

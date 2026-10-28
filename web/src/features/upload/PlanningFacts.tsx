@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { api, type Suggestion } from "../../api/client";
 import { Chip, Icon, Spinner } from "../../components/ui";
 
-// Planning facts the checker suggests from the rooms and the pin (P12.1). Suggestions are dashed
+// Planning facts the checker suggests from the rooms and the pin. Suggestions are dashed
 // and used as they are; choosing a value makes it yours (declared). Model values are shown plain.
 
 type Option = { label: string; value: unknown };

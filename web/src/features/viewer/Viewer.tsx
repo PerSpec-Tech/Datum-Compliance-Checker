@@ -8,7 +8,7 @@ import type { LivePack, Status } from "../../api/types";
 import { Icon, STATUS_META, Spinner, StatusMark } from "../../components/ui";
 import { useTheme } from "../../lib/theme";
 
-// P6.8: the IFC is tessellated server-side (/api/models/{v}/mesh) so the browser only needs three.js.
+// the IFC is tessellated server-side (/api/models/{v}/mesh) so the browser only needs three.js.
 // Elements are coloured by their worst result status, matched on IFC GlobalId.
 
 const NEUTRAL = 0x9a9aa1;
@@ -19,7 +19,7 @@ interface Props {
   /** What the open result is about: elements, a plot side, or the whole building. */
   focus: FocusTarget | null;
   onPick?: (guid: string) => void;
-  /** Shows the setbacks from this project's live pack (P12.2). */
+  /** Shows the setbacks from this project's live pack. */
   projectId?: string;
 }
 
@@ -431,7 +431,7 @@ function build(
   };
   loop();
 
-  // Setbacks (P12.2): the buildable line on the ground and faint walls up to the building height.
+  // Setbacks: the buildable line on the ground and faint walls up to the building height.
   let envelope: THREE.Group | null = null;
   const dropEnvelope = () => {
     if (!envelope) return;

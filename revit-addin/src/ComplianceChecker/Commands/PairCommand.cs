@@ -6,7 +6,7 @@ using ComplianceChecker.UI;
 
 namespace ComplianceChecker.Commands
 {
-    /// <summary>Pair this Revit with the web app (P5.5). Touches no model data itself; Manual mode
+    /// <summary>Pair this Revit with the web app. Touches no model data itself; Manual mode
     /// only so it can hand over to Site Setup, which saves the brief.</summary>
     [Transaction(TransactionMode.Manual)]
     public class PairCommand : IExternalCommand

@@ -1,5 +1,5 @@
-"""Explainer (P3.8): Nemotron Super turns a finished report into a short plain-language summary
-with fix advice. It reads the report only and can't change any status (D2). Any rule id it invents
+"""Explainer: Nemotron Super turns a finished report into a short plain-language summary
+with fix advice. It reads the report only and can't change any status. Any rule id it invents
 is dropped; any regulation number it mentions that isn't in the report triggers one regeneration,
 after which offending sentences are removed.
 """

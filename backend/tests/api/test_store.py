@@ -1,4 +1,4 @@
-"""P4.1: SQLite store."""
+"""SQLite store."""
 
 import json
 from datetime import timedelta

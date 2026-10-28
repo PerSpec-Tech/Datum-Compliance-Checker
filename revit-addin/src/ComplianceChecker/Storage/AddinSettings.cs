@@ -8,7 +8,7 @@ namespace ComplianceChecker.Storage
 {
     /// <summary>
     /// Per-user add-in settings in %AppData%\ComplianceChecker: settings.json (server URL) and
-    /// token.bin (the pairing token, encrypted with Windows DPAPI for the current user — P5.5).
+    /// token.bin (the pairing token, encrypted with Windows DPAPI for the current user).
     /// </summary>
     public sealed class AddinSettings
     {

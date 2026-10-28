@@ -4,7 +4,7 @@ import { Icon, StatusMark, Spinner, fmt } from "../../components/ui";
 import { OCCUPANCY, RESIDENTIAL_SUB, Scalar, getPath } from "../brief/BriefPage";
 import { KIND_LABEL, type Group } from "../report/groups";
 
-// P12.4: the small card that opens at an element. What it is, each clause with measured vs required
+// the small card that opens at an element. What it is, each clause with measured vs required
 // and what to change; "can't verify" results ask for the missing fact right here.
 
 // The question that asks for a concrete missing path (questions use [*] for "every element").

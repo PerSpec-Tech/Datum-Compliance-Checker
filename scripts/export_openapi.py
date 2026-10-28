@@ -1,4 +1,4 @@
-"""Write the FastAPI OpenAPI spec to schemas/openapi.json (P4.5).
+"""Write the FastAPI OpenAPI spec to schemas/openapi.json.
 
 Usage: just codegen-api   (then openapi-typescript turns it into web/src/generated/api.ts)
 """

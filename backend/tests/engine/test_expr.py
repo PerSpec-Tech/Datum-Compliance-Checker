@@ -1,4 +1,4 @@
-"""P2.1: safe expression evaluator."""
+"""safe expression evaluator."""
 
 import pytest
 

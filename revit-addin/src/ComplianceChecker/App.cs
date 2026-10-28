@@ -32,7 +32,7 @@ namespace ComplianceChecker
             application.RegisterDockablePane(ResultsPaneId, "Datum · results", ResultsPane);
             CheckRunner = new CheckRunner(ResultsPane, ui);
 
-            // Live mode (P9.2/P9.3): the lens joins Revit's DirectContext3D service once Revit is up.
+            // Live mode: the lens joins Revit's DirectContext3D service once Revit is up.
             _lens = new LensServer();
             var livePane = new LivePane();
             application.RegisterDockablePane(LivePaneId, "Datum · live", livePane);

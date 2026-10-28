@@ -1,4 +1,4 @@
-// Typed client for the FastAPI backend (ROADMAP §5.5). Contract types come from the generated
+// Typed client for the FastAPI backend. Contract types come from the generated
 // file; the small response wrappers below mirror backend/src/compliance/api/routes.py.
 import type {
   BuildingModel,
@@ -55,7 +55,7 @@ export interface UploadResult {
   warnings: string[];
   counts: Record<string, number>;
   has_site_boundary: boolean;
-  // DXF only (P10): every layer with its role (null = not understood yet)
+  // DXF only: every layer with its role (null = not understood yet)
   layers?: {
     layer: string;
     role: string | null;
@@ -164,7 +164,7 @@ export interface Located {
   label: string | null;
 }
 
-// GET /projects/{id}/drawing: the uploaded DXF as vectors per floor plan (P10.5).
+// GET /projects/{id}/drawing: the uploaded DXF as vectors per floor plan.
 export interface DrawingFloor {
   nums: number[];
   name: string | null;
@@ -173,7 +173,7 @@ export interface DrawingFloor {
   texts: [number, number, number, number, string, string][]; // x, y, height, rotation, text, class
 }
 
-/** A planning fact the checker suggests (P12.1), with what the model has now. */
+/** A planning fact the checker suggests, with what the model has now. */
 export interface Suggestion {
   path: string;
   suggested: Fact<unknown>;

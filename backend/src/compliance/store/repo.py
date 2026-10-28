@@ -1,4 +1,4 @@
-"""Thin repository over the SQLite store (P4.1). Plain dicts in, plain dicts out."""
+"""Thin repository over the SQLite store. Plain dicts in, plain dicts out."""
 
 from __future__ import annotations
 
@@ -175,7 +175,7 @@ class Store:
         row = self.db.one("SELECT report_json FROM reports WHERE id = ?", (report_id,))
         return json.loads(row["report_json"]) if row else None
 
-    # ------------------------------------------------------------------ live packs (P9.1)
+    # ------------------------------------------------------------------ live packs
     # One per project, from the latest check: a JSON file next to the database (small, read often).
 
     def _live_path(self, project_id: str):
@@ -193,7 +193,7 @@ class Store:
         path = self._live_path(project_id)
         return json.loads(path.read_text("utf-8")) if path.exists() else None
 
-    # ------------------------------------------------------------------ usage (P7.4 proof)
+    # ------------------------------------------------------------------ usage
 
     def record_llm_usage(
         self,
@@ -271,7 +271,7 @@ class Store:
             (key, kind, json.dumps(request), json.dumps(response), now()),
         )
 
-    # ------------------------------------------------------------------ pairing (P4.4)
+    # ------------------------------------------------------------------ pairing
 
     def create_pair_code(self) -> str:
         """A fresh 6-digit code, valid for 10 minutes and usable once."""

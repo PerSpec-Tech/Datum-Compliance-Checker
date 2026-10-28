@@ -18,7 +18,7 @@ const NAV: { to: string; label: string; icon: IconName; end?: boolean }[] = [
   { to: "/rules", label: "rules", icon: "book" },
 ];
 
-// The tool's glyph: a checklist with a tick (§16). Monochrome; used for the favicon too.
+// The tool's glyph: a checklist with a tick. Monochrome; used for the favicon too.
 function Glyph() {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
@@ -28,7 +28,7 @@ function Glyph() {
   );
 }
 
-// Old progress links (P4): the check now runs inside the workspace.
+// Old progress links: the check now runs inside the workspace.
 function ToWorkspace() {
   const { projectId, jobId } = useParams();
   return <Navigate to={`/w/${projectId}?job=${jobId}`} replace />;

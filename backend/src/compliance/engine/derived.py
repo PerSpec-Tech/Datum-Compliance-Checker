@@ -1,4 +1,4 @@
-"""Derived values computed from a BuildingModel (P2.2, ROADMAP §5.3), exposed as `derived.*`.
+"""Derived values computed from a BuildingModel, exposed as `derived.*`.
 
 Each value is either a number (or a dict of numbers), or None when an input is missing. `INPUTS`
 says which model paths each value depends on, so a rule that can't be checked because, say,
@@ -76,7 +76,7 @@ def _div(a: float | None, b: float | None) -> float | None:
 def compute(model: Mapping[str, Any]) -> Derived:
     site, building = model["site"], model["building"]
 
-    # Plot area: declared (legal, D5) wins; otherwise the property-line polygon, marked as model.
+    # Plot area: declared (legal) wins; otherwise the property-line polygon, marked as model.
     declared = _fact_value(site["plot_area_declared_m2"])
     boundary = _poly(site.get("boundary"))
     if declared is not None:

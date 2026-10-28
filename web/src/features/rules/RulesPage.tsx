@@ -11,7 +11,7 @@ const RULESETS: Record<string, string> = {
   drafts: "compiler drafts",
 };
 
-// P6.9: bylaws compiled into code. Explorer layout: rule list, then the selected rule and the compiler.
+// bylaws compiled into code. Explorer layout: rule list, then the selected rule and the compiler.
 export default function RulesPage() {
   const { ruleId } = useParams();
   const navigate = useNavigate();

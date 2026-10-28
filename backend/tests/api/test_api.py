@@ -1,4 +1,4 @@
-"""P4.2–P4.4: the HTTP API, end to end, as the Revit add-in and the web app use it."""
+"""the HTTP API, end to end, as the Revit add-in and the web app use it."""
 
 import json
 
@@ -197,7 +197,7 @@ def test_unsupported_location_suggests_official_documents(tmp_path):
     ["compliant_house", "violating_apartment", "missing_site", "demo_apartment", "demo_house"],
 )
 def test_each_fixture_create_model_check_report_bcf(client, name):
-    """P4.6: create → model → check → SSE done → report (same as the golden file) → BCF."""
+    """create → model → check → SSE done → report (same as the golden file) → BCF."""
     import io
     import zipfile
 

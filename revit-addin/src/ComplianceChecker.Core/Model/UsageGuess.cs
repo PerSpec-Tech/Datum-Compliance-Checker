@@ -5,7 +5,7 @@ namespace ComplianceChecker.Core.Model;
 
 /// <summary>
 /// First-pass room use from the room name (deterministic keywords). Anything it can't place is left
-/// unknown (null), so the Nemotron classifier (P3.7) or the user fills it — never a silent guess.
+/// unknown (null), so the Nemotron classifier or the user fills it — never a silent guess.
 /// </summary>
 public static class UsageGuess
 {

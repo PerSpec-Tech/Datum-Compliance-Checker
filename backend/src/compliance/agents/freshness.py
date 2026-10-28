@@ -1,7 +1,7 @@
-"""Freshness checker (P3.6, D26): has a regulation behind a fail/advisory been amended since our
+"""Freshness checker: has a regulation behind a fail/advisory been amended since our
 source? Tavily searches the authority's official domains at runtime; Nemotron Nano triages the hits.
 
-Only the `freshness` flag changes — never a rule's logic or a result's status (D6). Each verdict is
+Only the `freshness` flag changes — never a rule's logic or a result's status. Each verdict is
 cached for 7 days per rule, so repeat checks don't spend search credits.
 """
 

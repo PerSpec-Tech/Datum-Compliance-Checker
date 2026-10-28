@@ -5,7 +5,7 @@ using Xunit;
 
 namespace ComplianceChecker.Core.Tests;
 
-/// <summary>AutoCAD live mode (P11.4): drawing polylines → plot coordinates, and FSI as a change.</summary>
+/// <summary>AutoCAD live mode: drawing polylines → plot coordinates, and FSI as a change.</summary>
 public class DrawingLiveTests
 {
     // Drawn in millimetres: a typical plan (floors 1–3) framed at x 100 000–130 000, moved 95 m west onto the plot.

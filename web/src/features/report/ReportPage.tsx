@@ -10,7 +10,7 @@ import ElementThumb from "./ElementThumb";
 import FsiCard from "./FsiCard";
 import { KIND_LABEL, bunchGroups, groupResults, isBunch, type Bunch, type Group } from "./groups";
 
-// P12.5: the report as a document (D30 compliance memo). Failures first, each with a plan
+// the report as a document (a compliance memo). Failures first, each with a plan
 // thumbnail of the element; then what can't be verified yet; passes only on request. Prints to
 // PDF in the light theme.
 

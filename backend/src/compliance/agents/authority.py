@@ -1,9 +1,9 @@
-"""Planning-authority resolver (P3.4, location part). Deterministic: no LLM.
+"""Planning-authority resolver (location part). Deterministic: no LLM.
 
 Location → OpenStreetMap Nominatim reverse geocode (cached 30 days, ≤ 1 request/s, User-Agent set)
 → match against rules/cities/*/authority.yaml. If Nominatim can't be reached, an authority's
 optional offline `bbox` is used instead (marked as such). Unsupported places return no rule sets;
-the Tavily discovery part of P3.4 is added once a Tavily key is configured.
+the Tavily discovery part is added once a Tavily key is configured.
 """
 
 from __future__ import annotations

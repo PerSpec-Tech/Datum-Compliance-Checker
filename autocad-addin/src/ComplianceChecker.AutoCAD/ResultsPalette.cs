@@ -13,7 +13,7 @@ using AcApp = Autodesk.AutoCAD.ApplicationServices.Application;
 namespace ComplianceChecker.AutoCAD
 {
     /// <summary>
-    /// The Compliance palette (P11.4): what failed first, each with clause, measured / required and
+    /// The Compliance palette: what failed first, each with clause, measured / required and
     /// what to change; can't-verify next; passes only on request. Clicking a row zooms to it.
     /// </summary>
     internal static class ResultsPalette

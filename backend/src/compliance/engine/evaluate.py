@@ -1,4 +1,4 @@
-"""Rule evaluator (P2.4, ROADMAP §5.4). The ONLY place a pass or fail is decided (D2).
+"""Rule evaluator. The ONLY place a pass or fail is decided.
 
 For each rule (and each element, for `for_each` rules):
   applies_when → False: not_applicable · missing: unverifiable

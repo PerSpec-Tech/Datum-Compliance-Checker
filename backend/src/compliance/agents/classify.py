@@ -1,7 +1,7 @@
-"""Room-use classifier (P3.7): Nemotron Nano names the use of rooms the keyword guess couldn't.
+"""Room-use classifier: Nemotron Nano names the use of rooms the keyword guess couldn't.
 
 Only fills spaces whose usage is unknown (source "default") or a weak inference; never touches a
-declared value. Low-confidence answers are left unknown so the planner asks instead (D4).
+declared value. Low-confidence answers are left unknown so the planner asks instead.
 """
 
 from __future__ import annotations

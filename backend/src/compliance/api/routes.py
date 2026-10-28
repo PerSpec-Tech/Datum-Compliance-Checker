@@ -1,4 +1,4 @@
-"""HTTP API (P4.2, ROADMAP §5.5). Errors are JSON {detail}; the Revit add-in shows `detail`."""
+"""HTTP API. Errors are JSON {detail}; the Revit add-in shows `detail`."""
 
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ def runner(request: Request) -> JobRunner:
 def require_token(
     authorization: str | None = Header(default=None), st: Store = Depends(store)
 ) -> None:
-    """Revit calls carry `Authorization: Bearer <token>` from pairing (P4.4)."""
+    """Revit calls carry `Authorization: Bearer <token>` from pairing."""
     if not authorization or not authorization.lower().startswith("bearer "):
         raise HTTPException(401, "Pair this Revit with the web app first (Compliance › Pair).")
     if not st.check_token(authorization.split(" ", 1)[1].strip()):
@@ -55,7 +55,7 @@ class NewProject(BaseModel):
     name: str = Field(min_length=1, max_length=200)
 
 
-# ------------------------------------------------------------------ pairing (P4.4)
+# ------------------------------------------------------------------ pairing
 
 
 @router.post("/pair/start")
@@ -161,7 +161,7 @@ def get_suggestions(
     lon: float | None = Query(default=None, ge=-180, le=180),
     st: Store = Depends(store),
 ) -> list[dict[str, Any]]:
-    """Planning facts the checker can suggest (P12.1), with what the model has now.
+    """Planning facts the checker can suggest, with what the model has now.
 
     `lat`/`lon` default to the project location. Confirming one is a PATCH /brief (declared).
     """
@@ -181,7 +181,7 @@ def get_suggestions(
 
 @router.get("/projects/{project_id}/live-pack")
 def get_live_pack(project_id: str, st: Store = Depends(store)) -> dict[str, Any]:
-    """The latest check's limits as geometry for live mode in Revit / AutoCAD (P9.1, D32)."""
+    """The latest check's limits as geometry for live mode in Revit / AutoCAD."""
     project_or_404(project_id, st)
     pack = st.get_live_pack(project_id)
     if pack is None:
@@ -233,7 +233,7 @@ def ifc_path(version_id: str, st: Store):
 
 
 def drawing_dir(project_id: str, st: Store):
-    """A project's uploaded DXF and its layer → role mapping (P10)."""
+    """A project's uploaded DXF and its layer → role mapping."""
     from pathlib import Path
 
     return Path(st.db.path).parent / "drawings" / project_id
@@ -241,7 +241,7 @@ def drawing_dir(project_id: str, st: Store):
 
 def _read_drawing(project_id: str, st: Store, llm: Any = None) -> dict[str, Any]:
     """Read the stored DXF with the project's layer roles; store the result as a model version.
-    With `llm`, unknown layers first get Nemotron's suggested roles (P10.3)."""
+    With `llm`, unknown layers first get Nemotron's suggested roles."""
     import json
 
     from compliance.adapters.dxf import layer_profiles, layer_report
@@ -296,8 +296,8 @@ def _roles(suggested: dict[str, Any]) -> dict[str, str]:
 async def upload_dxf(
     project_id: str, request: Request, st: Store = Depends(store)
 ) -> dict[str, Any]:
-    """Body: the raw .dxf file (P10). 2D drawings in the PreDCR layer standard read directly;
-    other layer names can be mapped with PUT /dxf/roles. DWG: save as DXF first (D34)."""
+    """Body: the raw .dxf file. 2D drawings in the PreDCR layer standard read directly;
+    other layer names can be mapped with PUT /dxf/roles. DWG: save as DXF first."""
     import asyncio
 
     project_or_404(project_id, st)
@@ -326,7 +326,7 @@ def get_drawing(project_id: str, st: Store = Depends(store)) -> Any:
 
 @router.get("/projects/{project_id}/drawing/frames")
 def get_drawing_frames(project_id: str, st: Store = Depends(store)) -> dict[str, Any]:
-    """Each floor plan's frame and alignment shift, and the layer roles (AutoCAD live, P11.4)."""
+    """Each floor plan's frame and alignment shift, and the layer roles (AutoCAD live)."""
     import json
 
     from compliance.adapters.dxf import frames
@@ -375,7 +375,7 @@ def _drawing_json(project_id: str, st: Store) -> bytes:
 async def set_dxf_roles(
     project_id: str, roles: dict[str, str | None] = Body(...), st: Store = Depends(store)
 ) -> dict[str, Any]:
-    """Map drawing layers to roles ({layer: role}), then re-read the drawing (P10.5)."""
+    """Map drawing layers to roles ({layer: role}), then re-read the drawing."""
     import asyncio
     import json
 
@@ -403,7 +403,7 @@ async def set_dxf_roles(
 async def upload_ifc(
     project_id: str, request: Request, st: Store = Depends(store)
 ) -> dict[str, Any]:
-    """Body: the raw .ifc file (any content type). Converted by the IFC adapter (P6.1)."""
+    """Body: the raw .ifc file (any content type). Converted by the IFC adapter."""
     import asyncio
     import tempfile
     from pathlib import Path
@@ -462,7 +462,7 @@ def patch_brief(
     return {"brief": st.get_brief(project_id)}
 
 
-# ------------------------------------------------------------------ checks & jobs (P4.3)
+# ------------------------------------------------------------------ checks & jobs
 
 
 @router.post("/projects/{project_id}/checks")
@@ -520,7 +520,7 @@ def get_report(report_id: str, st: Store = Depends(store)) -> dict[str, Any]:
 
 @router.get("/reports/{report_id}/bcf")
 def get_bcf(report_id: str, st: Store = Depends(store)):
-    """BCF 2.1 zip with one topic per failure (P6.2)."""
+    """BCF 2.1 zip with one topic per failure."""
     from fastapi.responses import Response
 
     from compliance.adapters.bcf import export
@@ -573,7 +573,7 @@ class CompileRequest(BaseModel):
 
 @router.post("/rules/compile")
 def compile_rule(body: CompileRequest, request: Request) -> dict[str, Any]:
-    """Live demo of the rule compiler (P3.5): returns a checked draft; nothing is saved."""
+    """Live demo of the rule compiler: returns a checked draft; nothing is saved."""
     from compliance.agents.compiler import Clause, compile_clause
 
     llm = getattr(request.app.state, "llm", None)

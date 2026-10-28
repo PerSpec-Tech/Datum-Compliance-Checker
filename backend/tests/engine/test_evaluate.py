@@ -1,4 +1,4 @@
-"""P2.4: evaluator, run on the real rule base and the three fixtures."""
+"""evaluator, run on the real rule base and the three fixtures."""
 
 import json
 

@@ -1,4 +1,4 @@
-"""P2.7: golden reports. Any change in engine output or rules shows up as a diff here.
+"""golden reports. Any change in engine output or rules shows up as a diff here.
 
 Regenerate with `just test-backend --update-golden`, then review the diff before keeping it.
 """

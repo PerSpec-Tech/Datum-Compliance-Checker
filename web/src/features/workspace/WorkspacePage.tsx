@@ -13,7 +13,7 @@ import Viewer, { type FocusTarget } from "../viewer/Viewer";
 import IssueCard from "./IssueCard";
 import SiteWizard from "../site/SiteWizard";
 
-// P12.4: one full-screen workspace, like Revit or AutoCAD. The drawing is the screen; the top bar
+// one full-screen workspace, like Revit or AutoCAD. The drawing is the screen; the top bar
 // holds the view and the filters; failures show first, passes only on request; clicking an element
 // opens a small card at it; answers and site changes re-run the check in place.
 

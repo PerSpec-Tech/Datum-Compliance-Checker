@@ -13,7 +13,7 @@ using ComplianceChecker.Storage;
 namespace ComplianceChecker.AutoCAD
 {
     /// <summary>
-    /// Sends the open drawing to the server and runs the check (P11.3). The drawing goes as DXF and
+    /// Sends the open drawing to the server and runs the check. The drawing goes as DXF and
     /// is read by the server's DXF reader, the same one the web app uses, so the two always agree;
     /// entity handles survive the export, so results point back at the drawing's own entities.
     /// </summary>

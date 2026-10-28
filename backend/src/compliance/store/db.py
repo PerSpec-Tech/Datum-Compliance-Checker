@@ -1,4 +1,4 @@
-"""SQLite store (P4.1): one file, standard-library sqlite3, idempotent schema.
+"""SQLite store: one file, standard-library sqlite3, idempotent schema.
 
 A single connection guarded by a lock is plenty for the hackathon load (one demo server, a handful
 of judges). Everything JSON-shaped is stored as text.
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS reports (
     report_json      TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS reports_project ON reports(project_id, created_at);
--- Every Token Factory call (proof of Nebius/NVIDIA use for judges, P7.4).
+-- Every Token Factory call (proof of Nebius/NVIDIA use for judges).
 CREATE TABLE IF NOT EXISTS llm_usage (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
     ts                TEXT NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS llm_usage (
     latency_ms        INTEGER,
     ok                INTEGER NOT NULL
 );
--- Every Tavily call, cached or not (proof of runtime Tavily use, D26).
+-- Every Tavily call, cached or not (proof of runtime Tavily use).
 CREATE TABLE IF NOT EXISTS search_usage (
     id        INTEGER PRIMARY KEY AUTOINCREMENT,
     ts        TEXT NOT NULL,

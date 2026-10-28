@@ -6,7 +6,7 @@ import { Icon } from "../../components/ui";
 import { css } from "../../lib/theme";
 import type { LatLon } from "./MapPin";
 
-// P12.3: put the drawing on the map. The plan (model coordinates, metres) is placed by a point and a
+// put the drawing on the map. The plan (model coordinates, metres) is placed by a point and a
 // rotation; the plot is the model's own, or drawn here corner by corner, or typed as a rectangle.
 // Each side is then tagged road / neighbour / open space. Everything here becomes declared brief
 // answers: project.location, site.placement, site.boundary (when drawn), site.edges.

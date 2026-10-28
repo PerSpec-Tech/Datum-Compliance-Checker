@@ -26,8 +26,8 @@ namespace ComplianceChecker.Generated
     using System.Globalization;
 
     /// <summary>
-    /// One building, normalised from Revit or IFC (ROADMAP §5.1). SI units. Any measured value
-    /// may be null; the engine then reports 'cannot verify'.
+    /// One building, normalised from Revit or IFC. SI units. Any measured value may be null; the
+    /// engine then reports 'cannot verify'.
     /// </summary>
     public partial class BuildingModel
     {
@@ -232,7 +232,7 @@ namespace ComplianceChecker.Generated
         public Overlays Overlays { get; set; }
 
         /// <summary>
-        /// Ordered, later overrides earlier, e.g. [nbc2016, udcpr2020, pmc] (D15).
+        /// Ordered, later overrides earlier, e.g. [nbc2016, udcpr2020, pmc].
         /// </summary>
         [JsonPropertyName("rulesets")]
         public FactStringList Rulesets { get; set; }
@@ -340,7 +340,7 @@ namespace ComplianceChecker.Generated
     }
 
     /// <summary>
-    /// Spatial overlays (D18, D22).
+    /// Spatial overlays.
     /// </summary>
     public partial class Overlays
     {
@@ -411,7 +411,7 @@ namespace ComplianceChecker.Generated
     }
 
     /// <summary>
-    /// Ordered, later overrides earlier, e.g. [nbc2016, udcpr2020, pmc] (D15).
+    /// Ordered, later overrides earlier, e.g. [nbc2016, udcpr2020, pmc].
     /// </summary>
     public partial class FactStringList
     {
@@ -430,8 +430,8 @@ namespace ComplianceChecker.Generated
     }
 
     /// <summary>
-    /// Declared yes/no constraints (D19). metro_rail_within_20m triggers the Metro NOC advisory
-    /// (UDCPR 14.2.1.7).
+    /// Declared yes/no constraints. metro_rail_within_20m triggers the Metro NOC advisory (UDCPR
+    /// 14.2.1.7).
     /// </summary>
     public partial class Special
     {
@@ -488,7 +488,7 @@ namespace ComplianceChecker.Generated
     }
 
     /// <summary>
-    /// One side of the plot boundary. Road width is a legal fact: declared, never measured (D5).
+    /// One side of the plot boundary. Road width is a legal fact: declared, never measured.
     /// </summary>
     public partial class Edge
     {
@@ -660,9 +660,8 @@ namespace ComplianceChecker.Generated
     }
 
     /// <summary>
-    /// One compliance rule, stored as one YAML file under rules/&lt;ruleset&gt;/ (ROADMAP §5.2).
-    /// Expressions are Python-syntax strings evaluated only by engine/expr.py (AST whitelist,
-    /// never eval/exec).
+    /// One compliance rule, stored as one YAML file under rules/&lt;ruleset&gt;/. Expressions are
+    /// Python-syntax strings evaluated only by engine/expr.py (AST whitelist, never eval/exec).
     /// </summary>
     public partial class Rule
     {
@@ -713,7 +712,7 @@ namespace ComplianceChecker.Generated
         public Freshness Freshness { get; set; }
 
         /// <summary>
-        /// Note from a reference-only document (e.g. NBCS 2026). Never affects status (D20).
+        /// Note from a reference-only document (e.g. NBCS 2026). Never affects status.
         /// </summary>
         [JsonPropertyName("guidance_note")]
         public GuidanceNote GuidanceNote { get; set; }
@@ -725,8 +724,7 @@ namespace ComplianceChecker.Generated
         public string Id { get; set; }
 
         /// <summary>
-        /// 'check' produces pass/fail; 'advisory' produces an obligation the model can't confirm
-        /// (D23).
+        /// 'check' produces pass/fail; 'advisory' produces an obligation the model can't confirm.
         /// </summary>
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         [JsonPropertyName("kind")]
@@ -755,7 +753,7 @@ namespace ComplianceChecker.Generated
         public string Message { get; set; }
 
         /// <summary>
-        /// Tag used by the FSI headroom summary (P2.8).
+        /// Tag used by the FSI headroom summary.
         /// </summary>
         [JsonPropertyName("metric")]
         public Metric? Metric { get; set; }
@@ -767,7 +765,7 @@ namespace ComplianceChecker.Generated
         public string Overrides { get; set; }
 
         /// <summary>
-        /// Notes from the reviewer model (P3.5 --review).
+        /// Notes from the reviewer model (scripts/compile_rule.py --review).
         /// </summary>
         [JsonPropertyName("review_notes")]
         public string ReviewNotes { get; set; }
@@ -787,7 +785,7 @@ namespace ComplianceChecker.Generated
     }
 
     /// <summary>
-    /// Citation copied from source text, never from memory (D13).
+    /// Citation copied from source text, never from memory.
     /// </summary>
     public partial class Clause
     {
@@ -838,7 +836,7 @@ namespace ComplianceChecker.Generated
     }
 
     /// <summary>
-    /// Lookup table used by rule expressions via table(name, *keys) (ROADMAP §5.2). Stored under
+    /// Lookup table used by rule expressions via table(name, *keys). Stored under
     /// rules/&lt;ruleset&gt;/tables/&lt;name&gt;.yaml.
     /// - map: table(name, key) → entries[key]
     /// - bands: table(name, x) → value of the band with min &lt;= x &lt; max (max null = no upper
@@ -912,8 +910,8 @@ namespace ComplianceChecker.Generated
     }
 
     /// <summary>
-    /// Result of one compliance check job (ROADMAP §5.4). Pass/fail comes only from
-    /// engine/evaluate.py; agents only add wording (explanation) and freshness.
+    /// Result of one compliance check job. Pass/fail comes only from engine/evaluate.py; agents
+    /// only add wording (explanation) and freshness.
     /// </summary>
     public partial class CheckReport
     {
@@ -921,7 +919,7 @@ namespace ComplianceChecker.Generated
         public DateTimeOffset CreatedAt { get; set; }
 
         /// <summary>
-        /// Plain-language summary from the explainer agent (P3.8).
+        /// Plain-language summary from the explainer agent.
         /// </summary>
         [JsonPropertyName("explanation")]
         public string Explanation { get; set; }
@@ -958,8 +956,8 @@ namespace ComplianceChecker.Generated
     }
 
     /// <summary>
-    /// FSI used vs permitted, built only from rule-table limits (P2.8, D30). Numbers are null
-    /// when inputs are missing.
+    /// FSI used vs permitted, built only from rule-table limits. Numbers are null when inputs
+    /// are missing.
     /// </summary>
     public partial class FsiSummary
     {
@@ -998,7 +996,7 @@ namespace ComplianceChecker.Generated
     }
 
     /// <summary>
-    /// A missing input, ranked by how many checks it unlocks (P2.5).
+    /// A missing input, ranked by how many checks it unlocks.
     /// </summary>
     public partial class Question
     {
@@ -1104,7 +1102,7 @@ namespace ComplianceChecker.Generated
     }
 
     /// <summary>
-    /// How much the measured value must change to pass (D30). Only for comparison failures.
+    /// How much the measured value must change to pass. Only for comparison failures.
     /// </summary>
     public partial class FixBy
     {
@@ -1147,9 +1145,9 @@ namespace ComplianceChecker.Generated
     }
 
     /// <summary>
-    /// P9.1 / D32: the rule engine's limits for one project, reduced to geometry the Revit and
-    /// AutoCAD add-ins can test locally while the user models. A preview; the full check stays
-    /// the official result.
+    /// The rule engine's limits for one project, reduced to geometry the Revit and AutoCAD
+    /// add-ins can test locally while the user models. A preview; the full check stays the
+    /// official result.
     /// </summary>
     public partial class LivePack
     {
@@ -1326,7 +1324,7 @@ namespace ComplianceChecker.Generated
     }
 
     /// <summary>
-    /// Where a fact came from (D4). 'declared' always wins over the others.
+    /// Where a fact came from. 'declared' always wins over the others.
     /// </summary>
     public enum Source { Declared, Default, Inferred, Model };
 
@@ -1353,8 +1351,7 @@ namespace ComplianceChecker.Generated
     public enum FreshnessStatus { Current, PossiblySuperseded, Unchecked };
 
     /// <summary>
-    /// 'check' produces pass/fail; 'advisory' produces an obligation the model can't confirm
-    /// (D23).
+    /// 'check' produces pass/fail; 'advisory' produces an obligation the model can't confirm.
     /// </summary>
     public enum RuleKind { Advisory, Check };
 

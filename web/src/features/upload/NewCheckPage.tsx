@@ -33,7 +33,7 @@ interface Loaded {
   dxf: boolean;
 }
 
-// Upload, then straight into the workspace (P12.4). The check starts at once when the model knows
+// Upload, then straight into the workspace. The check starts at once when the model knows
 // where it is; otherwise the workspace opens on "set the site". A drawing whose layers need a look
 // stops here first.
 export default function NewCheckPage() {

@@ -1,4 +1,4 @@
-"""P2.8: FSI headroom summary, on the fixtures and the real rule base."""
+"""FSI headroom summary, on the fixtures and the real rule base."""
 
 import json
 

@@ -1,5 +1,5 @@
 """First-pass room use from the room name (same keywords as the Revit add-in's UsageGuess).
-Unrecognised names stay unknown; the Nemotron classifier (P3.7) or the architect fills them."""
+Unrecognised names stay unknown; the Nemotron classifier or the architect fills them."""
 
 from __future__ import annotations
 

@@ -1,9 +1,9 @@
-"""IFC → BuildingModel (P6.1). Reads IFC2x3/IFC4 with IfcOpenShell; SI units; never guesses.
+"""IFC → BuildingModel. Reads IFC2x3/IFC4 with IfcOpenShell; SI units; never guesses.
 
 Order of preference for every value: standard attribute / property set / quantity set, then
 geometry (plan outlines are the union of the element's triangles projected to the ground plane),
-else null — which the engine reports as "cannot verify" and turns into a question (D4).
-`source_id` is the IFC GlobalId, used to colour elements in the web viewer and in BCF (P6.2).
+else null — which the engine reports as "cannot verify" and turns into a question.
+`source_id` is the IFC GlobalId, used to colour elements in the web viewer and in BCF.
 
 Site context, so a well-modelled IFC needs no questions:
   roads      IfcRoad / IfcCivilElement / IfcGeographicElement / proxy named or typed "road"…

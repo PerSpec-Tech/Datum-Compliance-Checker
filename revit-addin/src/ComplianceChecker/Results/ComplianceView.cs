@@ -8,8 +8,8 @@ using ComplianceChecker.Generated;
 namespace ComplianceChecker.Results
 {
     /// <summary>
-    /// The "Compliance Check" 3D view (P5.8): fail red, cannot-verify amber, pass green, everything else
-    /// halftone. Only this view's graphic overrides change — never elements or other views (D11).
+    /// The "Compliance Check" 3D view: fail red, cannot-verify amber, pass green, everything else
+    /// halftone. Only this view's graphic overrides change — never elements or other views.
     /// Rooms aren't drawn in 3D; their results are reached through the results pane.
     /// </summary>
     public static class ComplianceView

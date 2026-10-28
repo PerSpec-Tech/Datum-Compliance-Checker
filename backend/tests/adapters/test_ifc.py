@@ -1,4 +1,4 @@
-"""P6.1: IFC adapter — the generated samples read back to the same model and the same results."""
+"""IFC adapter — the generated samples read back to the same model and the same results."""
 
 import json
 

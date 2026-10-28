@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- AutoCAD 2026 plug-in (P11, D35). A thin layer over ComplianceChecker.Core: ribbon, commands,
+  <!-- AutoCAD 2026 plug-in. A thin layer over ComplianceChecker.Core: ribbon, commands,
        palettes. The drawing is sent to the server as DXF and read there by the same reader as the
        web app, so AutoCAD and the browser always agree. AutoCAD assemblies come from the
        AutoCAD.NET reference package and are NOT copied to the output (AutoCAD loads its own). -->

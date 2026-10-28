@@ -1,6 +1,6 @@
 import type { LivePack } from "../../api/types";
 
-// P12.2: the margins the rules require, drawn on the plan (from the live pack of the last check).
+// the margins the rules require, drawn on the plan (from the live pack of the last check).
 // Buildable line dashed; per side the required margin, its clause and the actual gap; the part of
 // the building outside the buildable line shaded red.
 

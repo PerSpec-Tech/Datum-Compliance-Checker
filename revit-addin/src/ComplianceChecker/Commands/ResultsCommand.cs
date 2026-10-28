@@ -4,7 +4,7 @@ using Autodesk.Revit.UI;
 
 namespace ComplianceChecker.Commands
 {
-    /// <summary>Show the results pane (P5.7).</summary>
+    /// <summary>Show the results pane.</summary>
     [Transaction(TransactionMode.ReadOnly)]
     public class ResultsCommand : IExternalCommand
     {

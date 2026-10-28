@@ -8,8 +8,8 @@ using ComplianceChecker.Generated;
 namespace ComplianceChecker.Core.Api;
 
 /// <summary>
-/// HTTP client for the backend API (ROADMAP §5.5). One shared HttpClient (P5.5). All calls are async
-/// and must run off Revit's UI thread; results go back through an ExternalEvent (P5.6).
+/// HTTP client for the backend API. One shared HttpClient. All calls are async
+/// and must run off Revit's UI thread; results go back through an ExternalEvent.
 /// </summary>
 public sealed class ApiClient
 {
@@ -50,7 +50,7 @@ public sealed class ApiClient
         return (await ReadAsync<ModelVersionResponse>(await _http.SendAsync(req, ct), ct)).ModelVersion;
     }
 
-    /// <summary>Upload a 2D drawing as DXF (AutoCAD plug-in, P11): the server reads it with the same
+    /// <summary>Upload a 2D drawing as DXF (AutoCAD plug-in): the server reads it with the same
     /// reader as the web app. Returns what was read and every layer's role.</summary>
     public async Task<DrawingUpload> UploadDxfAsync(string projectId, byte[] dxf, CancellationToken ct = default)
     {
@@ -95,7 +95,7 @@ public sealed class ApiClient
     }
 
     /// <summary>Where each floor plan of the uploaded drawing sits and how it was moved into plot
-    /// coordinates, plus the layer roles (GET /drawing/frames; AutoCAD live mode, P11.4).</summary>
+    /// coordinates, plus the layer roles (GET /drawing/frames; AutoCAD live mode).</summary>
     public Task<DrawingFrames> GetDrawingFramesAsync(string projectId, CancellationToken ct = default) =>
         SendAsync<DrawingFrames>(HttpMethod.Get, $"api/projects/{Uri.EscapeDataString(projectId)}/drawing/frames", null, ct);
 
@@ -166,7 +166,7 @@ public sealed class ApiClient
             yield return last;
     }
 
-    /// <summary>The latest check's live pack (P9.1); null if the project has no check yet.</summary>
+    /// <summary>The latest check's live pack; null if the project has no check yet.</summary>
     public async Task<Live.LivePack?> GetLivePackAsync(string projectId, CancellationToken ct = default)
     {
         using var req = Request(HttpMethod.Get, $"api/projects/{projectId}/live-pack");

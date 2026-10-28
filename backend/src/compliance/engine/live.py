@@ -1,4 +1,4 @@
-"""Live pack (P9.1, D32): the rule engine's limits for one project, as geometry and numbers the
+"""Live pack: the rule engine's limits for one project, as geometry and numbers the
 Revit / AutoCAD add-ins can test locally while the user models. Deterministic, no LLM.
 
 Everything here comes from an evaluated check: margins and their clause refs from the margin

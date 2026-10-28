@@ -1,4 +1,4 @@
-"""Prompt loader (P3.2). Prompts live only in backend/prompts/<name>.md (CLAUDE.md):
+"""Prompt loader. Prompts live only in backend/prompts/<name>.md:
 
     ---
     role: compiler            # what the prompt is for

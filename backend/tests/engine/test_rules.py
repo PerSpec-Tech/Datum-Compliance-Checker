@@ -1,4 +1,4 @@
-"""P2.3: rule and table loader."""
+"""rule and table loader."""
 
 import copy
 

@@ -11,7 +11,7 @@ namespace ComplianceChecker.Export
 {
     /// <summary>
     /// Reads the open Revit document into a <see cref="RawModel"/> (SI units, model coordinates).
-    /// Read-only (D11): the only transaction it opens is rolled back (used to compute room volumes).
+    /// Read-only: the only transaction it opens is rolled back (used to compute room volumes).
     /// Anything it can't read is left null and listed in <see cref="RawModel.Warnings"/>.
     /// </summary>
     public static class RevitExporter

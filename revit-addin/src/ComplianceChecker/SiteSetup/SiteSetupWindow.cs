@@ -13,8 +13,8 @@ using WpfLine = System.Windows.Shapes.Line;
 namespace ComplianceChecker.SiteSetup
 {
     /// <summary>
-    /// Site Setup (P5.4): tag each plot edge (road / neighbour / open space, road width, basis) on a small
-    /// plan, and declare the legal facts the model can't give (D5). Edits a copy of the <see cref="Brief"/>;
+    /// Site Setup: tag each plot edge (road / neighbour / open space, road width, basis) on a small
+    /// plan, and declare the legal facts the model can't give. Edits a copy of the <see cref="Brief"/>;
     /// the caller saves it only if the user clicks Save.
     /// </summary>
     internal sealed class SiteSetupWindow : Window

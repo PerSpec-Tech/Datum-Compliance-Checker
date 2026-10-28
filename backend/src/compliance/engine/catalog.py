@@ -1,5 +1,5 @@
 """What rule expressions may read: every attribute path, generated from the BuildingModel schema
-(so it can't drift from the contract) plus the derived values. Used by the rule compiler (P3.5) to
+(so it can't drift from the contract) plus the derived values. Used by the rule compiler to
 reject expressions that read fields which don't exist, and to tell the model what it can use.
 """
 

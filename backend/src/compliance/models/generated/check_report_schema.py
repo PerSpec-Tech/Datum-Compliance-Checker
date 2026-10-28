@@ -40,7 +40,7 @@ class FixDirection(StrEnum):
 
 class FixBy(BaseModel):
     """
-    How much the measured value must change to pass (D30). Only for comparison failures.
+    How much the measured value must change to pass. Only for comparison failures.
     """
 
     model_config = ConfigDict(
@@ -81,7 +81,7 @@ class InputType(StrEnum):
 
 class Question(BaseModel):
     """
-    A missing input, ranked by how many checks it unlocks (P2.5).
+    A missing input, ranked by how many checks it unlocks.
     """
 
     model_config = ConfigDict(
@@ -97,7 +97,7 @@ class Question(BaseModel):
 
 class FsiSummary(BaseModel):
     """
-    FSI used vs permitted, built only from rule-table limits (P2.8, D30). Numbers are null when inputs are missing.
+    FSI used vs permitted, built only from rule-table limits. Numbers are null when inputs are missing.
     """
 
     model_config = ConfigDict(
@@ -149,7 +149,7 @@ class Result(BaseModel):
 
 class CheckReport(BaseModel):
     """
-    Result of one compliance check job (ROADMAP §5.4). Pass/fail comes only from engine/evaluate.py; agents only add wording (explanation) and freshness.
+    Result of one compliance check job. Pass/fail comes only from engine/evaluate.py; agents only add wording (explanation) and freshness.
     """
 
     model_config = ConfigDict(
@@ -168,6 +168,6 @@ class CheckReport(BaseModel):
     results: list[Result]
     questions: list[Question]
     explanation: str | None = Field(
-        ..., description="Plain-language summary from the explainer agent (P3.8)."
+        ..., description="Plain-language summary from the explainer agent."
     )
     fsi: FsiSummary | None

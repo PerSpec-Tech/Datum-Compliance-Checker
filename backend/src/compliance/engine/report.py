@@ -1,7 +1,7 @@
 """Assemble a CheckReport (schemas/check-report.schema.json) from a model and the rule base.
 
-Deterministic: no LLM. The explainer (P3.8) may later fill `explanation`, and the freshness stage
-(P3.6) may update each result's `freshness`; neither changes a status.
+Deterministic: no LLM. The explainer may later fill `explanation`, and the freshness stage
+ may update each result's `freshness`; neither changes a status.
 """
 
 from __future__ import annotations

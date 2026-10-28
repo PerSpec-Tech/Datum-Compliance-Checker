@@ -1,4 +1,4 @@
-"""P1.6: the fixtures match the contracts, and the validator rejects bad data."""
+"""the fixtures match the contracts, and the validator rejects bad data."""
 
 import copy
 import json

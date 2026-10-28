@@ -8,7 +8,7 @@ namespace ComplianceChecker.Storage
     /// <summary>
     /// Saves the declared site facts (<see cref="Brief"/>) as one JSON string in Extensible Storage on
     /// ProjectInformation, so they travel with the .rvt. This is the ONLY model write the add-in makes
-    /// apart from the "Compliance Check" view (D11).
+    /// apart from the "Compliance Check" view.
     /// </summary>
     public static class BriefStore
     {

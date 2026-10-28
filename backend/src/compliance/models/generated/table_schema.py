@@ -30,7 +30,7 @@ class Band(BaseModel):
 
 class LookupTable(BaseModel):
     """
-    Lookup table used by rule expressions via table(name, *keys) (ROADMAP §5.2). Stored under rules/<ruleset>/tables/<name>.yaml.
+    Lookup table used by rule expressions via table(name, *keys). Stored under rules/<ruleset>/tables/<name>.yaml.
     - map: table(name, key) → entries[key]
     - bands: table(name, x) → value of the band with min <= x < max (max null = no upper bound)
     - map_of_bands: table(name, key, x) → bands of map[key], then as 'bands'

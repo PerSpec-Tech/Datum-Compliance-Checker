@@ -13,7 +13,7 @@ using Result = Autodesk.Revit.UI.Result;
 namespace ComplianceChecker.Commands
 {
     /// <summary>
-    /// Saves the exported BuildingModel as JSON (P5.2 manual check: `just validate &lt;file&gt;`).
+    /// Saves the exported BuildingModel as JSON (check it with `just validate &lt;file&gt;`).
     /// Read-only: nothing in the model changes.
     /// </summary>
     [Transaction(TransactionMode.Manual)]

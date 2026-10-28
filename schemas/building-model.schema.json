@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "BuildingModel",
-  "description": "One building, normalised from Revit or IFC (ROADMAP §5.1). SI units. Any measured value may be null; the engine then reports 'cannot verify'.",
+  "description": "One building, normalised from Revit or IFC. SI units. Any measured value may be null; the engine then reports 'cannot verify'.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "meta", "project", "site", "levels", "building", "spaces", "areas", "stairs", "doors", "units"],
@@ -37,7 +37,7 @@
       }
     },
     "Special": {
-      "description": "Declared yes/no constraints (D19). metro_rail_within_20m triggers the Metro NOC advisory (UDCPR 14.2.1.7).",
+      "description": "Declared yes/no constraints. metro_rail_within_20m triggers the Metro NOC advisory (UDCPR 14.2.1.7).",
       "type": "object",
       "additionalProperties": false,
       "required": ["heritage", "coastal", "airport_zone", "ht_line", "railway", "river_flood_line", "hill_slope_bdp", "defence_vicinity", "metro_rail_within_20m"],
@@ -54,7 +54,7 @@
       }
     },
     "Overlays": {
-      "description": "Spatial overlays (D18, D22).",
+      "description": "Spatial overlays.",
       "type": "object",
       "additionalProperties": false,
       "required": ["nearest_metro_station", "metro_tod", "plot_share_in_tod"],
@@ -72,7 +72,7 @@
         "name": { "type": "string" },
         "location": { "$ref": "common.schema.json#/definitions/FactLatLon" },
         "authority_id": { "$ref": "common.schema.json#/definitions/FactString", "description": "e.g. 'pmc'; matches rules/cities/<id>/." },
-        "rulesets": { "$ref": "common.schema.json#/definitions/FactStringList", "description": "Ordered, later overrides earlier, e.g. [nbc2016, udcpr2020, pmc] (D15)." },
+        "rulesets": { "$ref": "common.schema.json#/definitions/FactStringList", "description": "Ordered, later overrides earlier, e.g. [nbc2016, udcpr2020, pmc]." },
         "occupancy": { "$ref": "common.schema.json#/definitions/FactOccupancy" },
         "zone": { "$ref": "common.schema.json#/definitions/FactString", "description": "Development Plan land-use zone, as declared." },
         "congested_area": { "$ref": "common.schema.json#/definitions/FactBool", "description": "Plot lies in a congested area as shown in the Development Plan / Gaothan (UDCPR 6.1 vs 6.2 margins and FSI). Declared." },
@@ -82,7 +82,7 @@
       }
     },
     "Edge": {
-      "description": "One side of the plot boundary. Road width is a legal fact: declared, never measured (D5).",
+      "description": "One side of the plot boundary. Road width is a legal fact: declared, never measured.",
       "type": "object",
       "additionalProperties": false,
       "required": ["id", "a", "b", "kind", "road_width_m", "road_width_basis"],

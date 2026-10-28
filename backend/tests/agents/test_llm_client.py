@@ -1,4 +1,4 @@
-"""P3.1 / P3.2: LLM client (mocked — no tokens spent) and prompt loader."""
+"""LLM client (mocked — no tokens spent) and prompt loader."""
 
 from types import SimpleNamespace
 

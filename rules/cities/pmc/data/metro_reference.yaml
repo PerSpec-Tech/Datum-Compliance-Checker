@@ -1,6 +1,6 @@
 # Pune Metro reference list, transcribed by hand from sources/pmc/Metro station list.png (captured 2026-10-11)
 # from https://www.punemetrorail.org/route-map.aspx
-# Used only to cross-check OSM station data in P3.10 (D22). Names are as printed in the screenshot.
+# Used only to cross-check OSM station data (scripts/fetch_metro_stations.py). Names are as printed in the screenshot.
 # Status values: operational | under_construction | proposed
 
 lines:
@@ -55,7 +55,7 @@ depots:
   - Range Hill Depot
   - Hill View Park Car Depot
 
-# Stations on under-construction and proposed lines are taken from OSM in P3.10 and checked by hand against the
+# Stations on under-construction and proposed lines are taken from OSM by scripts/fetch_metro_stations.py and checked by hand against the
 # map in the screenshot. They aren't transcribed here because the map labels are too dense to read reliably.
 
 # Reference name → name used in OpenStreetMap (checked 2026-10-20 against the Overpass results).

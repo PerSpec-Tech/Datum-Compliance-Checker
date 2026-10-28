@@ -15,7 +15,7 @@ using ComplianceChecker.Generated;
 namespace ComplianceChecker.AutoCAD
 {
     /// <summary>
-    /// Results on the drawing (P11.4, D36). Each failing element gets a red revision cloud and a short
+    /// Results on the drawing. Each failing element gets a red revision cloud and a short
     /// label on the layer COMPLIANCE ISSUES; can't-verify ones a grey cloud. Every entity the plug-in
     /// adds carries the PERSPEC_COMPLIANCE XData tag, so a re-check or CCCLEAR removes exactly those:
     /// nothing else in the drawing is ever changed. Clicking a result adds a temporary red fill

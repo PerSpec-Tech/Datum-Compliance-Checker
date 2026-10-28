@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- Revit 2026 add-in (D16). Thin layer over ComplianceChecker.Core: ribbon, Revit export,
+  <!-- Revit 2026 add-in. Thin layer over ComplianceChecker.Core: ribbon, Revit export,
        Extensible Storage, WPF UI. Revit API assemblies come from NuGet and are NOT copied to the
        output (Revit loads its own). -->
   <PropertyGroup>

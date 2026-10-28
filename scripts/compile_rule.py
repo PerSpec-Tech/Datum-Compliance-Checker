@@ -1,4 +1,4 @@
-"""P3.5: compile a clause file into a checked draft rule.
+"""compile a clause file into a checked draft rule.
 
 Usage:
   just compile-rule fixtures/clauses/udcpr-9.4.1-bath.txt [--review] [--save]

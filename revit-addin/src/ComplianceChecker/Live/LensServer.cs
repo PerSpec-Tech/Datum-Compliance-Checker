@@ -10,8 +10,8 @@ using ComplianceChecker.Core.Model;
 namespace ComplianceChecker.Live
 {
     /// <summary>
-    /// The compliance lens (P9.3): transient graphics drawn by Revit's DirectContext3D over 3D and
-    /// plan views. Never part of the model and never in the undo history (D32, D11). Draws:
+    /// The compliance lens: transient graphics drawn by Revit's DirectContext3D over 3D and
+    /// plan views. Never part of the model and never in the undo history. Draws:
     /// - the buildable line (the plot inset by each side's margin) in grey;
     /// - every element that crosses it, outlined in red (thin when it's under 10 cm in, P9 calm rules),
     ///   and the part of it past the line as a red hatched volume, from its bottom to its top;

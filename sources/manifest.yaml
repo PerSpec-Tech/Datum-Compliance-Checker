@@ -1,10 +1,10 @@
-# Source documents for the rule base (D17, D20).
+# Source documents for the rule base.
 # PDFs go in sources/<group>/ and are git-ignored. Only this manifest is committed.
 # Rules cite sources as "<id> p.<printed page>" (the page number printed on the page, not the PDF index).
 #
 # index: true   → extracted and searchable with `just find-clause`
 # pdf_pages     → limit extraction to this PDF page range (1-based, inclusive)
-# text_fix      → special handling needed during extraction (see ROADMAP P0.9)
+# text_fix      → special handling needed during extraction
 # authority     → primary = basis for pass/fail rules · fallback = only where the primary source defers to it ·
 #                 reference = never used for pass/fail; only for "newer guidance" notes and freshness flags
 
@@ -61,10 +61,10 @@ documents:
     authority: reference             # self-declared "voluntary and non-binding"; excludes FAR, DCRs, parking, open spaces, ground coverage
     index: true
     pdf_pages: [2729, 2974]          # Part F Fire and Life Safety (starts p.2731; Index of Terms at p.2975). Checked 2026-10-11
-    notes: "Used only to flag where the newer national fire guidance differs from NBC 2016 Part 4 (D20)."
+    notes: "Used only to flag where the newer national fire guidance differs from NBC 2016 Part 4."
     sha256: 2c4b2ec601b19575b8722c28988d275257efce51f1ad471cecdd719fea77a0cb
 
-  # --- Maharashtra fire law — PRIMARY (advisory rules only, D23) -------------
+  # --- Maharashtra fire law — PRIMARY (advisory rules only) -------------
   - id: mfa2006
     title: "The Maharashtra Fire Prevention and Life Safety Measures Act, 2006 (text as on 7 July 2025)"
     group: mfa2006
@@ -78,14 +78,14 @@ documents:
     sha256: 46d3c693f83560c7535fb47bd9de4ecb4da19b51b3c037d382ebfd1b498c0f21
 
   # --- Pune Municipal Corporation -------------------------------------------
-  # The TOD rules for PMC are in UDCPR Reg. 14.2.1 (PDF pp.287–292). No official TOD delineation map found (D22).
+  # The TOD rules for PMC are in UDCPR Reg. 14.2.1 (PDF pp.287–292). No official TOD delineation map found.
   - id: pune-metro-map
     title: "Pune Metro route map and station list (screenshot)"
     group: pmc
     file: "sources/pmc/Metro station list.png"
     url: https://www.punemetrorail.org/route-map.aspx
     captured: 2026-10-11
-    authority: reference             # used only to check station data (P3.10); transcribed to rules/cities/pmc/data/metro_reference.yaml
+    authority: reference             # used only to check station data; transcribed to rules/cities/pmc/data/metro_reference.yaml
     index: false
     sha256: 7b811ec4021d2f8d25150d0d45c00d6d21f50c0f71fabf5adaa23d113e3afa9a
 
@@ -95,7 +95,7 @@ documents:
     file: "sources/predcr/Maharashtra_Predcr_Help_Manual.pdf"
     url: https://autodcr.pmc.gov.in/SWC.Client/Downloads/Maharashtra_Predcr%20Help%20Manual.pdf
     captured: 2026-10-21
-    authority: reference             # drawing conventions for AutoDCR, not regulations; layer table → rules/cities/pmc/data/predcr_layers.yaml (P10.1)
+    authority: reference             # drawing conventions for AutoDCR, not regulations; layer table → rules/cities/pmc/data/predcr_layers.yaml
     index: false
     sha256: 7b0256178d4fec7ef70ee6f0230b592625e661a8d0970955b56d6b74b00adca0
 

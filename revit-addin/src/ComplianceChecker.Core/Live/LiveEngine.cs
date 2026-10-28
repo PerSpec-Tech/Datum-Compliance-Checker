@@ -21,7 +21,7 @@ public sealed record SetbackIssue(
     string? RuleId, string? ClauseRef)
 {
     public double DeficitM => Math.Round(RequiredM - DistanceM, 3);
-    /// <summary>Under 10 cm in: a thin outline, not a red band (calm by design, P9).</summary>
+    /// <summary>Under 10 cm in: a thin outline, not a red band (calm by design).</summary>
     public bool Slight => DeficitM < 0.10;
 }
 
@@ -62,7 +62,7 @@ public sealed record LiveStatus(
 }
 
 /// <summary>
-/// Live preview (P9.2, D32): the live pack's limits against what the model has right now. Pure
+/// Live preview: the live pack's limits against what the model has right now. Pure
 /// geometry and comparisons, no network, milliseconds. The full check stays the official result.
 /// </summary>
 public static class LiveEngine

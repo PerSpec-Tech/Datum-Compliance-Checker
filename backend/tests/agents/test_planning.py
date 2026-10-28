@@ -1,4 +1,4 @@
-"""Planning-fact suggestions (P12.1): building type, occupancy, congested area, land use."""
+"""Planning-fact suggestions: building type, occupancy, congested area, land use."""
 
 from __future__ import annotations
 

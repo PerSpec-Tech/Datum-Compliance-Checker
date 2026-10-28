@@ -1,4 +1,4 @@
-# Single container (P7.1): Node builds web/dist, then FastAPI serves the API and the static app.
+# Single container: Node builds web/dist, then FastAPI serves the API and the static app.
 # Build from the repo root:  docker build -f deploy/Dockerfile -t compliance-checker .
 
 FROM node:22.11.0-slim AS web

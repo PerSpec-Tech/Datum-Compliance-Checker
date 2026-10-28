@@ -1,4 +1,4 @@
-"""P10.2: 2D DXF in the PreDCR layer standard reads to the same results as the 3D fixture, except
+"""2D DXF in the PreDCR layer standard reads to the same results as the 3D fixture, except
 what a plan can't show (room clear heights, door heights)."""
 
 import json
@@ -338,7 +338,7 @@ def test_floors_line_up_on_the_stair_core_when_a_floor_projects(tmp_path):
 
 @pytest.mark.parametrize("name", NAMES)
 def test_frames_map_drawing_points_onto_the_model(name):
-    """AutoCAD live (P11.4): a room's drawing vertices × scale + its floor's shift = the model's
+    """AutoCAD live: a room's drawing vertices × scale + its floor's shift = the model's
     polygon, so the plug-in can measure edits in plot coordinates without the server."""
     import ezdxf
 

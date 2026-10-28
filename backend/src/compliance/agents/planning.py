@@ -1,7 +1,7 @@
-"""Planning facts suggested from the model and the site (P12.1). Deterministic: no LLM.
+"""Planning facts suggested from the model and the site. Deterministic: no LLM.
 
 Every suggestion is `inferred`, carries a note saying where it came from, and never replaces a value
-from the model or one the architect declared (D4). The web app shows them dashed, one click to
+from the model or one the architect declared. The web app shows them dashed, one click to
 confirm.
 
 - building type and occupancy: from the rooms and units (NBC 2016 Part 4, 3.1.1.2 and 3.1.2);

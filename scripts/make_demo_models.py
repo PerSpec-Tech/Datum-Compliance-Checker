@@ -1,4 +1,4 @@
-"""Generate the two demo buildings as BuildingModel JSON (P8.1).
+"""Generate the two demo buildings as BuildingModel JSON.
 
 Usage: just make-samples   (runs this, then turns every fixture into an IFC)
 

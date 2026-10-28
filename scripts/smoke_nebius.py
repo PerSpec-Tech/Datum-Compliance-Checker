@@ -1,4 +1,4 @@
-"""P0.5: verify Nemotron models on Nebius Token Factory and record capabilities per role.
+"""verify Nemotron models on Nebius Token Factory and record capabilities per role.
 
 Usage: just smoke-llm            (report only)
        just smoke-llm --write    (also rewrite backend/config/models.yaml)
@@ -20,7 +20,7 @@ ROLE_MATCH = {  # role -> (must contain all, must contain none)
     "reviewer": (["nemotron", "ultra"], ["omni"]),
 }
 
-# Token Factory serves models from regional endpoints (D28); list each one.
+# Token Factory serves models from regional endpoints; list each one.
 REGION_URLS = ["https://api.tokenfactory.us-central1.nebius.com/v1/"]
 
 TOOL = {
@@ -156,7 +156,7 @@ def main() -> int:
     write = "--write" in sys.argv
     s = get_settings()
     if not s.nebius_api_key:
-        print("NEBIUS_API_KEY is empty. Fill in .env (P0.3) first.")
+        print("NEBIUS_API_KEY is empty. Fill in .env first.")
         return 1
 
     host: dict[str, str] = {}  # model id -> base_url that lists it

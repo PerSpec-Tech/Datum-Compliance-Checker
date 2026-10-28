@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace ComplianceChecker.Core.Live;
 
-// The live pack (schemas/live-pack.schema.json, P9.1): the rule engine's limits for one project as
+// The live pack (schemas/live-pack.schema.json): the rule engine's limits for one project as
 // numbers and geometry. These small records mirror the schema for the live engine only; the
 // LiveEngineTests parse the Python-side golden pack, so a schema change that breaks them fails a test.
 

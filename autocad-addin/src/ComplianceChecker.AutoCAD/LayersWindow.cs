@@ -9,7 +9,7 @@ using ComplianceChecker.Core.Api;
 namespace ComplianceChecker.AutoCAD
 {
     /// <summary>
-    /// Layer setup (P11.2): what each layer is. PreDCR layers are recognised by name; the rest are
+    /// Layer setup: what each layer is. PreDCR layers are recognised by name; the rest are
     /// suggested by Nemotron from the layer's name and contents (marked "suggested") or chosen here.
     /// The choices are stored with the project on the server, the same table as in the web app.
     /// </summary>

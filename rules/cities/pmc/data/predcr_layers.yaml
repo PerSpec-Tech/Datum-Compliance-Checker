@@ -1,4 +1,4 @@
-# PreDCR layer standard (P10.1): the layers AutoDCR reads in a Maharashtra building-permit DWG.
+# PreDCR layer standard: the layers AutoDCR reads in a Maharashtra building-permit DWG.
 # Source: "PreDCR help Manual : Maharashtra", section "PREDCR SHORT-CUT COMMANDS", printed pp.100–113,
 # downloaded 2026-10-21 from https://autodcr.pmc.gov.in/SWC.Client/Downloads/Maharashtra_Predcr%20Help%20Manual.pdf
 # (kept in sources/predcr/, not committed). Descriptions are copied from the manual; `role` is ours.

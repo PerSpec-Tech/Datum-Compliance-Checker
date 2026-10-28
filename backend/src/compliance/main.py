@@ -1,4 +1,4 @@
-"""FastAPI app (P4.2). Run locally with `just dev-backend`."""
+"""FastAPI app. Run locally with `just dev-backend`."""
 
 from __future__ import annotations
 
@@ -54,7 +54,7 @@ def create_app(
 
 
 def _serve_web(app: FastAPI) -> None:
-    """Serve the built web app (web/dist) from the same origin, with SPA fallback (P7.1)."""
+    """Serve the built web app (web/dist) from the same origin, with SPA fallback."""
     from fastapi import HTTPException
     from fastapi.responses import FileResponse
     from fastapi.staticfiles import StaticFiles

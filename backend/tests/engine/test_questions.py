@@ -1,4 +1,4 @@
-"""P2.5: question planner."""
+"""question planner."""
 
 import json
 

@@ -1,4 +1,4 @@
-"""P9.1: the live pack reproduces the engine's verdicts for everything it covers."""
+"""the live pack reproduces the engine's verdicts for everything it covers."""
 
 import json
 

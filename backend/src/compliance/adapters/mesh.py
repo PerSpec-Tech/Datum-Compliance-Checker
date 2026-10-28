@@ -1,4 +1,4 @@
-"""IFC → lightweight triangle meshes for the web viewer (P6.8).
+"""IFC → lightweight triangle meshes for the web viewer.
 
 One entry per element with geometry: {guid, parent, type, name, v: [x,y,z,…] metres, f: [i,j,k,…]}.
 `parent` is the aggregating element's GlobalId (IfcStair for an IfcStairFlight), because results

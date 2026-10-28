@@ -1,4 +1,4 @@
-"""P3.5: rule compiler — the deterministic checks and the retry / review loop (fake LLM)."""
+"""rule compiler — the deterministic checks and the retry / review loop (fake LLM)."""
 
 import json
 

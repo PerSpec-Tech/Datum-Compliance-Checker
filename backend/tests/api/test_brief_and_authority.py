@@ -1,4 +1,4 @@
-"""Brief merge (P4.2) and authority resolver (P3.4, location part)."""
+"""Brief merge and authority resolver (location part)."""
 
 import json
 

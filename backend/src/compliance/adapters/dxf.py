@@ -1,7 +1,7 @@
-"""2D DXF → BuildingModel (P10.2). Reads drawings in the PreDCR layer standard that AutoDCR uses.
+"""2D DXF → BuildingModel. Reads drawings in the PreDCR layer standard that AutoDCR uses.
 
 Layer roles come from rules/cities/pmc/data/predcr_layers.yaml (copied from the official manual);
-`roles` can override or extend them (the web app's layer table, P10.3/P10.5). Names are matched
+`roles` can override or extend them (the web app's layer table). Names are matched
 ignoring case, spaces and underscores.
 
 How the drawing is read:
@@ -498,7 +498,7 @@ def layer_report(
 
 
 def layer_profiles(path: str | Path, roles: dict[str, str] | None = None) -> list[dict[str, Any]]:
-    """What is on each layer, for the layer-role agent (P10.3): counts, sample texts, areas."""
+    """What is on each layer, for the layer-role agent: counts, sample texts, areas."""
     d = _load(Path(path), roles)
     # Comparative facts a layer name alone can't give: how its biggest outline ranks against the
     # other layers', and whether all its outlines sit inside that biggest outline of another layer.
@@ -661,7 +661,7 @@ def _floor_shifts(
     return out
 
 
-# Drawing classes for the web plan view (P10.5): how each layer is drawn, never what it means.
+# Drawing classes for the web plan view: how each layer is drawn, never what it means.
 _SKIP_ROLES = {"fsi_resi", "fsi_comm", "fsi_other", "carpet", "floor", "floor_height", "ground",
                "plot", "road", "footprint"}  # fmt: skip
 
@@ -779,7 +779,7 @@ def drawing(path: str | Path, roles: dict[str, str] | None = None) -> dict[str, 
 
 def frames(path: str | Path, roles: dict[str, str] | None = None) -> dict[str, Any]:
     """Where each floor plan sits in the drawing and how it was moved into plot coordinates
-    (P11.4, AutoCAD live mode): {scale, roles: {layer: role}, floors: [{name, nums, bounds,
+    (AutoCAD live mode): {scale, roles: {layer: role}, floors: [{name, nums, bounds,
     shift}]}. `bounds` are the frame in drawing units; `shift` is in metres, so a point of the
     drawing maps to the model at (x * scale + dx, y * scale + dy)."""
     d = _load(Path(path), roles)

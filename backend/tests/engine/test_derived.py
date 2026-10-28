@@ -1,4 +1,4 @@
-"""P2.2: derived values, hand-checked against the three fixtures."""
+"""derived values, hand-checked against the three fixtures."""
 
 import json
 

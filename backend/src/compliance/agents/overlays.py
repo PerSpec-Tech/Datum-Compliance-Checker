@@ -1,4 +1,4 @@
-"""Metro TOD overlay (P3.10, D18, D22). Deterministic: no LLM.
+"""Metro TOD overlay. Deterministic: no LLM.
 
 Finds the nearest metro station to the site location (OpenStreetMap stations, checked against the
 Pune Metro route map) and infers whether the site is in the TOD zone. UDCPR 14.2.1.1 measures 500 m

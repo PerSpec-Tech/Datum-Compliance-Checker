@@ -1,4 +1,4 @@
-"""P1.5: generate Python, TypeScript and C# types from schemas/ (D10). Run with `just codegen`.
+"""generate Python, TypeScript and C# types from schemas/. Run with `just codegen`.
 
 Outputs (never edit by hand; re-run this instead):
   backend/src/compliance/models/generated/   pydantic v2 (datamodel-codegen)

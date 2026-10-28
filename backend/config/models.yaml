@@ -1,5 +1,5 @@
-# Nebius Token Factory model IDs per role. The ONLY place model IDs appear (CLAUDE.md).
-# IDs come from the official catalog (D28). Rewritten by `just smoke-llm --write` after live checks.
+# Nebius Token Factory model IDs per role. The ONLY place model IDs appear.
+# IDs come from the official catalog. Rewritten by `just smoke-llm --write` after live checks.
 # base_url: the regional endpoint that serves the model (null = NEBIUS_BASE_URL from .env).
 # verified: false means the ID hasn't been checked with a live call yet.
 

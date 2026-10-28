@@ -1,4 +1,4 @@
-"""FSI headroom summary (P2.8, D30): how much FSI is used, what's permitted, and what's left in m².
+"""FSI headroom summary: how much FSI is used, what's permitted, and what's left in m².
 
 Built only from evaluated results of rules tagged with `metric` — the permitted values come from
 the rules' own table limits, never from constants here. Numbers are None when inputs are missing.

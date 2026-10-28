@@ -19,7 +19,7 @@ using Polyline = Autodesk.AutoCAD.DatabaseServices.Polyline;
 namespace ComplianceChecker.AutoCAD
 {
     /// <summary>
-    /// Live preview while drawing (P11.4, D32): after a check, the margins and FSI are measured again
+    /// Live preview while drawing: after a check, the margins and FSI are measured again
     /// on every edit, against the live pack the server compiled from the rules. Edits are noticed
     /// through the database events, and measured once AutoCAD is idle and the drawing has been still
     /// for a moment. Local geometry only: no network, no model, milliseconds. The full check stays

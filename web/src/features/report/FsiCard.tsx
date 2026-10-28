@@ -1,7 +1,7 @@
 import type { FsiSummary } from "../../api/types";
 import { Icon, fmt, humanPath } from "../../components/ui";
 
-// FSI headroom (D30). The used FSI is the lead data series (Corazon); limits are hairline ticks.
+// FSI headroom. The used FSI is the lead data series (Corazon); limits are hairline ticks.
 export default function FsiCard({ fsi }: { fsi: FsiSummary }) {
   const top = Math.max(fsi.max_permissible ?? 0, fsi.base_permissible ?? 0, fsi.used ?? 0) * 1.1 || 1;
   const at = (v: number | null) => `${Math.min(100, ((v ?? 0) / top) * 100)}%`;

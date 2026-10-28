@@ -4,7 +4,7 @@ using System.Windows.Controls;
 
 namespace ComplianceChecker.Results
 {
-    /// <summary>Modeless progress window: Revit stays usable while the check runs (P5.6).</summary>
+    /// <summary>Modeless progress window: Revit stays usable while the check runs.</summary>
     internal sealed class ProgressWindow : Window
     {
         private readonly TextBlock _stage = new() { FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 0, 0, 4) };

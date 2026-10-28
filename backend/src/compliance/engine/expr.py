@@ -1,8 +1,8 @@
-"""Safe evaluator for rule expressions (P2.1, ROADMAP §5.2).
+"""Safe evaluator for rule expressions.
 
 Rule files hold small Python-syntax expressions such as ``item.width_m >= limit``. They are parsed
 with ``ast`` and run by a tiny tree-walking interpreter over an allow-list of node types. Python's
-``eval``/``exec`` are never used (CLAUDE.md hard rule).
+``eval``/``exec`` are never used.
 
 Two things make this more than a calculator:
 

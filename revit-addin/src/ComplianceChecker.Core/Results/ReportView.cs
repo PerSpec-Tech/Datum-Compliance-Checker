@@ -6,7 +6,7 @@ namespace ComplianceChecker.Core.Results;
 
 public enum Change { None, New, Fixed }
 
-/// <summary>One result as the panel shows it (P5.7). Plain strings: no Revit or WPF types.</summary>
+/// <summary>One result as the panel shows it. Plain strings: no Revit or WPF types.</summary>
 public sealed record ResultRow(
     string RuleId,
     string Title,
@@ -34,7 +34,7 @@ public sealed record ResultRow(
 
 public sealed record ResultGroup(Status Status, string Title, IReadOnlyList<ResultRow> Rows);
 
-/// <summary>Turns a CheckReport (+ the previous one) into what the results panel shows (P5.7, P5.9).</summary>
+/// <summary>Turns a CheckReport (+ the previous one) into what the results panel shows.</summary>
 public sealed class ReportView
 {
     private static readonly (Status Status, string Title)[] Order =
@@ -53,7 +53,7 @@ public sealed class ReportView
     public IReadOnlyList<Question> Questions { get; }
     public string? Explanation { get; }
 
-    /// <summary>Worst status per model element (source_id), for colouring the Compliance view (P5.8).</summary>
+    /// <summary>Worst status per model element (source_id), for colouring the Compliance view.</summary>
     public IReadOnlyDictionary<string, Status> ElementStatus { get; }
 
     public ReportView(CheckReport report, CheckReport? previous = null)

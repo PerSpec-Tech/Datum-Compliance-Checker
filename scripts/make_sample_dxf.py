@@ -1,4 +1,4 @@
-"""Draw the demo buildings as 2D DXF files in the PreDCR layer standard (P10.2).
+"""Draw the demo buildings as 2D DXF files in the PreDCR layer standard.
 
 Usage: just make-samples   (after the IFC samples; writes fixtures/dxf/*.dxf and web/public/samples/)
 
@@ -283,10 +283,10 @@ def build(name: str) -> None:
         office(doc, m)
         path = OUT / f"{name}_office.dxf"
         doc.saveas(path)
-        print(f"wrote {path.relative_to(REPO_ROOT).as_posix()} (office layer names, for P10.3)")
+        print(f"wrote {path.relative_to(REPO_ROOT).as_posix()} (office layer names)")
 
 
-# The same drawing as many offices name it, plus layers a checker must ignore (P10.3 tests).
+# The same drawing as many offices name it, plus layers a checker must ignore (layer-mapping tests).
 OFFICE_VARIANTS = {"demo_house"}
 OFFICE_NAMES = {
     "_Main Plot": "SITE BOUNDARY", "_Main Road": "ROAD", "_PropWork": "BUILDING OUTLINE",

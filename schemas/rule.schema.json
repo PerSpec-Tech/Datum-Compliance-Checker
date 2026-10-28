@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Rule",
-  "description": "One compliance rule, stored as one YAML file under rules/<ruleset>/ (ROADMAP §5.2). Expressions are Python-syntax strings evaluated only by engine/expr.py (AST whitelist, never eval/exec).",
+  "description": "One compliance rule, stored as one YAML file under rules/<ruleset>/. Expressions are Python-syntax strings evaluated only by engine/expr.py (AST whitelist, never eval/exec).",
   "type": "object",
   "additionalProperties": false,
   "required": ["id", "title", "authority", "clause", "status", "severity", "check", "message", "compiled_by"],
@@ -28,7 +28,7 @@
     },
     "severity": { "$ref": "#/definitions/Severity" },
     "kind": {
-      "description": "'check' produces pass/fail; 'advisory' produces an obligation the model can't confirm (D23).",
+      "description": "'check' produces pass/fail; 'advisory' produces an obligation the model can't confirm.",
       "$ref": "#/definitions/RuleKind"
     },
     "for_each": {
@@ -50,7 +50,7 @@
     },
     "freshness": { "$ref": "common.schema.json#/definitions/Freshness" },
     "metric": {
-      "description": "Tag used by the FSI headroom summary (P2.8).",
+      "description": "Tag used by the FSI headroom summary.",
       "anyOf": [{ "$ref": "#/definitions/Metric" }, { "type": "null" }]
     },
     "fix_unit": {
@@ -58,11 +58,11 @@
       "type": ["string", "null"]
     },
     "guidance_note": {
-      "description": "Note from a reference-only document (e.g. NBCS 2026). Never affects status (D20).",
+      "description": "Note from a reference-only document (e.g. NBCS 2026). Never affects status.",
       "anyOf": [{ "$ref": "#/definitions/GuidanceNote" }, { "type": "null" }]
     },
     "review_notes": {
-      "description": "Notes from the reviewer model (P3.5 --review).",
+      "description": "Notes from the reviewer model (scripts/compile_rule.py --review).",
       "type": ["string", "null"]
     }
   },

@@ -1,4 +1,4 @@
-"""Model roles (D8, D28): the only code that reads backend/config/models.yaml."""
+"""Model roles: the only code that reads backend/config/models.yaml."""
 
 from __future__ import annotations
 

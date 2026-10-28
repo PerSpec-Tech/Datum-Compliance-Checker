@@ -1,4 +1,4 @@
-"""P3.3, P3.6–P3.9 with a fake LLM and a fake Tavily (no tokens or credits spent)."""
+"""The agents with a fake LLM and a fake Tavily (no tokens or credits spent)."""
 
 import copy
 import json
@@ -42,7 +42,7 @@ def model(name="compliant_house"):
     return json.loads((REPO_ROOT / "fixtures" / "models" / f"{name}.json").read_text("utf-8"))
 
 
-# ------------------------------------------------------------------ classify (P3.7)
+# ------------------------------------------------------------------ classify
 
 
 def test_classify_fills_unknown_rooms_only():
@@ -71,7 +71,7 @@ def test_classify_skips_when_nothing_to_do():
     assert classify.classify_spaces(model(), FakeLLM()) is None
 
 
-# ------------------------------------------------------------------ explain (P3.8)
+# ------------------------------------------------------------------ explain
 
 
 def apartment_report(rulebase):
@@ -104,7 +104,7 @@ def test_explain_regenerates_then_strips_invented_clause_refs(rulebase):
     assert len(llm.calls) == 2  # one regeneration attempt
 
 
-# ------------------------------------------------------------------ questions (P3.9)
+# ------------------------------------------------------------------ questions
 
 
 QS = [
@@ -137,7 +137,7 @@ def test_reword_rejects_reordered_answers():
     assert questions_text.reword(qs, llm) == 0 and qs == QS
 
 
-# ------------------------------------------------------------------ Tavily client (P3.3)
+# ------------------------------------------------------------------ Tavily client
 
 
 class FakeTavily:
@@ -166,7 +166,7 @@ def test_search_uses_authority_domains_caches_and_logs(store):
     assert len(s.extract("https://pmc.gov.in/x.pdf")) == 60_000
 
 
-# ------------------------------------------------------------------ freshness (P3.6)
+# ------------------------------------------------------------------ freshness
 
 
 def test_freshness_flags_only_with_a_real_url_and_caches(rulebase, store):

@@ -1,4 +1,4 @@
-"""Rule and table loader (P2.3, ROADMAP §5.2).
+"""Rule and table loader.
 
 Layout under rules/:
   <ruleset>/*.yaml              one rule per file           (e.g. rules/udcpr2020/stair-width.yaml)

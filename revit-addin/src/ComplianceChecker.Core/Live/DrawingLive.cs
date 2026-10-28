@@ -7,7 +7,7 @@ namespace ComplianceChecker.Core.Live;
 public sealed record DrawingPolyline(string Handle, string Layer, IReadOnlyList<Pt> Points);
 
 /// <summary>
-/// AutoCAD live mode (P11.4): the open drawing's polylines → a <see cref="LiveSnapshot"/> in plot
+/// AutoCAD live mode: the open drawing's polylines → a <see cref="LiveSnapshot"/> in plot
 /// coordinates, using the server's floor frames (which floor plan a polyline is on, and how that
 /// plan was moved onto the plot). Footprints on the site plan are already in plot coordinates.
 ///

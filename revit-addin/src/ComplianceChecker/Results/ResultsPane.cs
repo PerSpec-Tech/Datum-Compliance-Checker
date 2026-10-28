@@ -20,8 +20,8 @@ using Visibility = System.Windows.Visibility;
 namespace ComplianceChecker.Results
 {
     /// <summary>
-    /// Dockable results pane (P5.7): summary, FSI headroom, what's missing (questions), results grouped
-    /// by status with NEW / FIXED markers (P5.9), and a detail panel citing the clause. Clicking
+    /// Dockable results pane: summary, FSI headroom, what's missing (questions), results grouped
+    /// by status with NEW / FIXED markers, and a detail panel citing the clause. Clicking
     /// "Select in model" selects the element by UniqueId and zooms to it.
     /// </summary>
     public sealed class ResultsPane : IDockablePaneProvider
@@ -33,7 +33,7 @@ namespace ComplianceChecker.Results
         private UiActionQueue? _ui;
         private ListBox? _selectedList;
 
-        // Live strip (P9.2/P9.3): one calm line at the top, plus the lens toggle. Hidden until a check
+        // Live strip: one calm line at the top, plus the lens toggle. Hidden until a check
         // has produced a live pack for the open model.
         private readonly Border _live = new()
         {

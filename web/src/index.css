@@ -155,7 +155,7 @@
   .chip {
     @apply inline-flex h-5 items-center gap-1.5 whitespace-nowrap rounded-sm border border-line px-1.5 text-2xs text-fg-2;
   }
-  /* Model-generated or assumed: dashed, never colour alone (§10). */
+  /* Model-generated or assumed: dashed, never colour alone. */
   .chip-predicted {
     @apply chip border-dashed text-fg-3;
   }
@@ -233,8 +233,8 @@
   box-shadow: none !important;
 }
 
-/* P12.5: the report prints as a document (the page switches to the light theme on beforeprint). */
-/* P12.5: print-only rows (the PerSpec band on every printed page) are hidden on screen. */
+/* the report prints as a document (the page switches to the light theme on beforeprint). */
+/* print-only rows (the PerSpec band on every printed page) are hidden on screen. */
 .print-only {
   display: none;
 }

@@ -55,7 +55,7 @@ class GuidanceNote(BaseModel):
 
 class Rule(BaseModel):
     """
-    One compliance rule, stored as one YAML file under rules/<ruleset>/ (ROADMAP §5.2). Expressions are Python-syntax strings evaluated only by engine/expr.py (AST whitelist, never eval/exec).
+    One compliance rule, stored as one YAML file under rules/<ruleset>/. Expressions are Python-syntax strings evaluated only by engine/expr.py (AST whitelist, never eval/exec).
     """
 
     model_config = ConfigDict(
@@ -81,7 +81,7 @@ class Rule(BaseModel):
     severity: Severity
     kind: RuleKind | None = Field(
         "check",
-        description="'check' produces pass/fail; 'advisory' produces an obligation the model can't confirm (D23).",
+        description="'check' produces pass/fail; 'advisory' produces an obligation the model can't confirm.",
     )
     for_each: Collection | None = Field(
         None,
@@ -112,15 +112,16 @@ class Rule(BaseModel):
     )
     freshness: common_schema.Freshness | None = None
     metric: Metric | None = Field(
-        None, description="Tag used by the FSI headroom summary (P2.8)."
+        None, description="Tag used by the FSI headroom summary."
     )
     fix_unit: str | None = Field(
         None, description="Unit shown with fix_by, e.g. 'm', 'm2'. Null = no unit."
     )
     guidance_note: GuidanceNote | None = Field(
         None,
-        description="Note from a reference-only document (e.g. NBCS 2026). Never affects status (D20).",
+        description="Note from a reference-only document (e.g. NBCS 2026). Never affects status.",
     )
     review_notes: str | None = Field(
-        None, description="Notes from the reviewer model (P3.5 --review)."
+        None,
+        description="Notes from the reviewer model (scripts/compile_rule.py --review).",
     )

@@ -4,8 +4,8 @@ using System.Text.Json.Serialization;
 namespace ComplianceChecker.Core.Model;
 
 /// <summary>
-/// Facts the architect declares in Site Setup (D5): legal facts that geometry can't give.
-/// Stored as JSON in the model's Extensible Storage (D11), so it travels with the .rvt file.
+/// Facts the architect declares in Site Setup: legal facts that geometry can't give.
+/// Stored as JSON in the model's Extensible Storage, so it travels with the .rvt file.
 /// Everything here becomes a Fact with source "declared", which always wins.
 /// </summary>
 public sealed class Brief

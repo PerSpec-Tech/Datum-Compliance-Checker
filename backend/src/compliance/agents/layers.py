@@ -1,4 +1,4 @@
-"""Layer-role agent (P10.3): Nemotron Nano suggests what each unknown DXF layer is.
+"""Layer-role agent: Nemotron Nano suggests what each unknown DXF layer is.
 
 Only layers the PreDCR table and the user haven't mapped are sent. Suggestions below
 MIN_CONFIDENCE are dropped (the layer stays "not understood" and the web table asks). Suggestions

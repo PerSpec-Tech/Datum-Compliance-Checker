@@ -1,9 +1,9 @@
-"""Question planner (P2.5). Deterministic, no LLM.
+"""Question planner. Deterministic, no LLM.
 
 Collects the missing inputs behind every 'unverifiable' result, groups them into questions, and
 ranks them by how many rules each answer would unlock. Wording here is a plain template; the
-`fast` model may rephrase it later (P3.9) but never changes which questions are asked.
-Advisory rules never create questions (D23).
+`fast` model may rephrase it later but never changes which questions are asked.
+Advisory rules never create questions.
 """
 
 from __future__ import annotations

@@ -11,7 +11,7 @@ namespace ComplianceChecker.Core.Model;
 /// Turns what the exporter read (<see cref="RawModel"/>) plus the declared <see cref="Brief"/> into the
 /// BuildingModel contract (schemas/building-model.schema.json). Every fact records where it came from:
 /// model (measured), inferred (guessed, to be confirmed), declared (the architect said so) or default
-/// (unknown). Unknowns stay null so the engine reports "cannot verify" instead of guessing (D4).
+/// (unknown). Unknowns stay null so the engine reports "cannot verify" instead of guessing.
 /// </summary>
 public static class ModelBuilder
 {

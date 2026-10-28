@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- AutoCAD loads every .bundle in %AppData%\Autodesk\ApplicationPlugins at start-up (P11). -->
+<!-- AutoCAD loads every .bundle in %AppData%\Autodesk\ApplicationPlugins at start-up. -->
 <ApplicationPackage SchemaVersion="1.0" AppVersion="0.1.0" Name="Datum by PerSpec"
                     Description="Datum by PerSpec, your compliance checker. Checks a drawing against UDCPR 2020 / NBC 2016 (Pune)."
                     Author="PERSPEC" ProductType="Application"

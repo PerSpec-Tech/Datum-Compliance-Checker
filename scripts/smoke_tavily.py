@@ -1,4 +1,4 @@
-"""P0.6: verify Tavily search + extract against Pune/Maharashtra government domains.
+"""verify Tavily search + extract against Pune/Maharashtra government domains.
 
 Usage: just smoke-tavily
 """
@@ -19,7 +19,7 @@ DCR_WORDS = ("regulation", "fsi", "development control", "udcpr", "notification"
 def main() -> int:
     s = get_settings()
     if not s.tavily_api_key:
-        print("TAVILY_API_KEY is empty. Fill in .env (P0.3) first.")
+        print("TAVILY_API_KEY is empty. Fill in .env first.")
         return 1
     authority = yaml.safe_load(
         (s.rules_dir / "cities" / "pmc" / "authority.yaml").read_text("utf-8")

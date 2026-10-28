@@ -1,4 +1,4 @@
-"""Validate JSON/YAML files against the contracts in schemas/ (P1.6).
+"""Validate JSON/YAML files against the contracts in schemas/.
 
 Usage:
   just validate <file>        validate one file; the schema is picked from its path
