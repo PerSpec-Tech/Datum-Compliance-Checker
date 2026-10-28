@@ -3,11 +3,11 @@
      ComplianceChecker\ folder next to it (see install\install.ps1). -->
 <RevitAddIns>
   <AddIn Type="Application">
-    <Name>Compliance Checker</Name>
+    <Name>Datum by PerSpec</Name>
     <Assembly>ComplianceChecker\ComplianceChecker.dll</Assembly>
     <FullClassName>ComplianceChecker.App</FullClassName>
     <ClientId>7d1c3f0e-5a2b-4c8e-9f41-2b6d8a0c4e17</ClientId>
     <VendorId>PERSPEC</VendorId>
-    <VendorDescription>PERSPEC — bylaw compliance checker (Pune UDCPR)</VendorDescription>
+    <VendorDescription>Datum by PerSpec, your compliance checker (Pune, UDCPR 2020)</VendorDescription>
   </AddIn>
 </RevitAddIns>

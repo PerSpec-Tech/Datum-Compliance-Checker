@@ -38,14 +38,14 @@ namespace ComplianceChecker.Results
         {
             if (IsRunning)
             {
-                TaskDialog.Show("Compliance Checker", "A check is already running.");
+                TaskDialog.Show("Datum", "A check is already running.");
                 return;
             }
             AddinSettings settings = AddinSettings.Load();
             string? token = AddinSettings.LoadToken();
             if (token is null)
             {
-                TaskDialog.Show("Compliance Checker", "Pair with the web app first (Compliance › Pair).");
+                TaskDialog.Show("Datum", "Pair with the web app first (Datum › Pair).");
                 return;
             }
 
@@ -114,7 +114,7 @@ namespace ComplianceChecker.Results
                 }
                 catch (Exception e)
                 {
-                    _ui.Post(_ => TaskDialog.Show("Compliance Checker", "The check didn't complete:\n" + e.Message));
+                    _ui.Post(_ => TaskDialog.Show("Datum", "The check didn't complete:\n" + e.Message));
                 }
                 finally
                 {

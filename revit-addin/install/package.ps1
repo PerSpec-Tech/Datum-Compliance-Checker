@@ -21,7 +21,7 @@ Compliance Checker for Revit 2026 (v$Version)
 
 1. Close Revit.
 2. Right-click install.ps1 > Run with PowerShell.
-3. Start Revit 2026: use the 'Compliance' tab.
+3. Start Revit 2026: use the 'Datum' tab.
    Pair > Site Setup > Run Check. Export JSON saves the exported model.
 
 Licensed under Apache-2.0.

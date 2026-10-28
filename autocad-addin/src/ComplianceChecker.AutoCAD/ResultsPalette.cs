@@ -70,7 +70,7 @@ namespace ComplianceChecker.AutoCAD
             catch (Exception e)
             {
                 Log.Error("palette report", e);
-                doc.Editor.WriteMessage($"\nCompliance: couldn't show the palette ({e.Message}); details in {Log.FilePath}");
+                doc.Editor.WriteMessage($"\nDatum: couldn't show the palette ({e.Message}); details in {Log.FilePath}");
             }
         }
 
@@ -113,7 +113,7 @@ namespace ComplianceChecker.AutoCAD
             Passes.Unchecked += (_, _) => Render();
             Summary.Text = "Not checked yet";
 
-            _set = new PaletteSet("Compliance", new Guid("6f1c2a0e-3b1d-4b7e-9a43-6a2f4c1d7e21"))
+            _set = new PaletteSet("Datum", new Guid("6f1c2a0e-3b1d-4b7e-9a43-6a2f4c1d7e21"))
             {
                 MinimumSize = new System.Drawing.Size(300, 300),
                 Style = PaletteSetStyles.ShowCloseButton | PaletteSetStyles.ShowAutoHideButton | PaletteSetStyles.ShowPropertiesMenu,

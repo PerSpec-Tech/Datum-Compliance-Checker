@@ -56,7 +56,7 @@ namespace ComplianceChecker.AutoCAD
             DrawingFrames frames = await api.GetDrawingFramesAsync(projectId);
             if (pack is null)
             {
-                SetPane("Compliance: no live preview for this drawing (run the check again).", null);
+                SetPane("Datum: no live preview for this drawing (run the check again).", null);
                 return;
             }
             _doc = doc;
@@ -104,11 +104,11 @@ namespace ComplianceChecker.AutoCAD
             if (!_on)
             {
                 ClearLens();
-                SetPane("Compliance: live preview paused (CCLIVE to resume).", null);
+                SetPane("Datum: live preview paused (CCLIVE to resume).", null);
                 return "live preview paused.";
             }
             if (_pack is null)
-                return "live preview on; it starts after the next check (Compliance › 4 Run Check).";
+                return "live preview on; it starts after the next check (Datum › 4 Run Check).";
             Evaluate();
             return "live preview on.";
         }
@@ -162,7 +162,7 @@ namespace ComplianceChecker.AutoCAD
                 return;
             }
             ClearLens();
-            SetPane("Compliance: live preview is on another drawing.", null);
+            SetPane("Datum: live preview is on another drawing.", null);
         }
 
         private static void OnClosing(object? sender, DocumentCollectionEventArgs e)
@@ -182,14 +182,14 @@ namespace ComplianceChecker.AutoCAD
                 var started = DateTime.UtcNow;
                 LiveSnapshot snap = drawing.Snapshot(ReadPolylines(doc.Database), pack.Fsi.UsedM2);
                 _status = LiveEngine.Evaluate(pack, snap);
-                SetPane("Compliance (preview): " + _status.StripText(), Tooltip(_status));
+                SetPane("Datum (preview): " + _status.StripText(), Tooltip(_status));
                 Draw();
                 Log.Info($"live: {_status.StripText()} ({(DateTime.UtcNow - started).TotalMilliseconds:0} ms)");
             }
             catch (System.Exception e)
             {
                 Log.Error("live", e);
-                SetPane("Compliance: live preview stopped (details in the log).", e.Message);
+                SetPane("Datum: live preview stopped (details in the log).", e.Message);
             }
         }
 
@@ -314,7 +314,7 @@ namespace ComplianceChecker.AutoCAD
                 {
                     _pane = new Pane { Style = PaneStyles.Normal | PaneStyles.PopUp, Visible = true, Enabled = true };
                     _pane.MouseDown += (_, _) =>
-                        AcApp.DocumentManager.MdiActiveDocument?.Editor.WriteMessage("\nCompliance: " + ToggleLens());
+                        AcApp.DocumentManager.MdiActiveDocument?.Editor.WriteMessage("\nDatum: " + ToggleLens());
                     AcApp.StatusBar.Panes.Add(_pane);
                 }
                 _pane.Text = text;

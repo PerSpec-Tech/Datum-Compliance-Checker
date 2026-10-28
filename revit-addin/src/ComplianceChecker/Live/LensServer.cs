@@ -83,7 +83,7 @@ namespace ComplianceChecker.Live
         public string GetVendorId() => "PERSPEC";
         public ExternalServiceId GetServiceId() => ExternalServices.BuiltInExternalServices.DirectContext3DService;
         public string GetName() => "Compliance lens";
-        public string GetDescription() => "Buildable line and setback issues from the compliance checker's live pack.";
+        public string GetDescription() => "Buildable line and setback issues from Datum's live pack.";
         public string GetApplicationId() => "";
         public string GetSourceId() => "";
         public bool UsesHandles() => false;

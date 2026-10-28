@@ -38,7 +38,7 @@ namespace ComplianceChecker.Commands
             string summary =
                 $"Levels {raw.Levels.Count} · rooms {raw.Rooms.Count} · areas {raw.Areas.Count} · stairs {raw.Stairs.Count} · " +
                 $"doors {raw.Doors.Count} · property-line segments {raw.PropertyLineSegments.Count}";
-            var td = new TaskDialog("Compliance Checker")
+            var td = new TaskDialog("Datum")
             {
                 MainInstruction = "Model exported",
                 MainContent = summary + (raw.Warnings.Count > 0 ? "\n\nWarnings:\n• " + string.Join("\n• ", raw.Warnings) : ""),

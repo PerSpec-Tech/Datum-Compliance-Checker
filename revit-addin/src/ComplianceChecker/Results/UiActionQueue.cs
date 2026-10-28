@@ -32,12 +32,12 @@ namespace ComplianceChecker.Results
                 }
                 catch (Exception e)
                 {
-                    TaskDialog.Show("Compliance Checker", "Something went wrong applying the results:\n" + e.Message);
+                    TaskDialog.Show("Datum", "Something went wrong applying the results:\n" + e.Message);
                 }
             }
         }
 
-        public string GetName() => "Compliance Checker";
+        public string GetName() => "Datum";
 
         public void Dispose() => _event.Dispose();
     }

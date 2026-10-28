@@ -14,7 +14,9 @@ namespace ComplianceChecker.Results
     /// </summary>
     public static class ComplianceView
     {
-        public const string ViewName = "Compliance Check";
+        public const string ViewName = "Datum Check";
+        /// <summary>The view's name before Datum: an existing one is renamed, not duplicated.</summary>
+        private const string OldViewName = "Compliance Check";
 
         private static readonly Color Fail = new(220, 38, 38);
         private static readonly Color Unverifiable = new(245, 158, 11);
@@ -22,7 +24,7 @@ namespace ComplianceChecker.Results
 
         public static View3D Apply(Document doc, ReportView report)
         {
-            using var t = new Transaction(doc, "Compliance Checker: update Compliance Check view");
+            using var t = new Transaction(doc, "Datum: update Compliance Check view");
             t.Start();
             View3D view = GetOrCreate(doc);
             ElementId solid = SolidFill(doc);
@@ -51,9 +53,13 @@ namespace ComplianceChecker.Results
         private static View3D GetOrCreate(Document doc)
         {
             View3D? existing = new FilteredElementCollector(doc).OfClass(typeof(View3D)).Cast<View3D>()
-                .FirstOrDefault(v => !v.IsTemplate && v.Name == ViewName);
+                .FirstOrDefault(v => !v.IsTemplate && (v.Name == ViewName || v.Name == OldViewName));
             if (existing is not null)
+            {
+                if (existing.Name != ViewName)
+                    existing.Name = ViewName;
                 return existing;
+            }
             ViewFamilyType type = new FilteredElementCollector(doc).OfClass(typeof(ViewFamilyType)).Cast<ViewFamilyType>()
                 .First(v => v.ViewFamily == ViewFamily.ThreeDimensional);
             View3D view = View3D.CreateIsometric(doc, type.Id);

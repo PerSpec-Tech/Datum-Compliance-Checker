@@ -97,7 +97,7 @@ namespace ComplianceChecker.AutoCAD
                 outline = Outline(db, tr, row, unit);
             if (outline is not { Count: > 2 })
             {
-                doc.Editor.WriteMessage("\nCompliance: this result has no place on the drawing (it is about the whole project).");
+                doc.Editor.WriteMessage("\nDatum: this result has no place on the drawing (it is about the whole project).");
                 return;
             }
             try
@@ -196,7 +196,7 @@ namespace ComplianceChecker.AutoCAD
                 Name = LayerName,
                 Color = Color.FromColorIndex(ColorMethod.ByAci, 1),
                 LineWeight = LineWeight.LineWeight050,
-                Description = "Compliance check results (PERSPEC). Redrawn by every check; CCCLEAR removes them.",
+                Description = "Datum by PerSpec: compliance issues. Redrawn by every check; CCCLEAR removes them.",
             };
             layers.UpgradeOpen();
             ObjectId id = layers.Add(ltr);

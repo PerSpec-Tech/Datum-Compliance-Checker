@@ -97,7 +97,7 @@ namespace ComplianceChecker.Export
 
             // Room volumes give the average clear height (volume ÷ area). Volume computation is a
             // document setting, so turn it on inside a transaction, read, and roll back: no change.
-            using var t = new Transaction(doc, "Compliance Checker: read room volumes");
+            using var t = new Transaction(doc, "Datum: read room volumes");
             bool rolledBack = false;
             try
             {

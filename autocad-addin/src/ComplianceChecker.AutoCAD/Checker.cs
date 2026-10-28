@@ -31,7 +31,7 @@ namespace ComplianceChecker.AutoCAD
             string? token = AddinSettings.LoadToken();
             if (token is null)
             {
-                ed.WriteMessage("\nCompliance: pair with the web app first (Compliance › 1 Pair, or CCPAIR).");
+                ed.WriteMessage("\nDatum: pair with the web app first (Datum › 1 Pair, or CCPAIR).");
                 return null;
             }
             return new ApiClient(ServerUrl, token);
@@ -97,7 +97,7 @@ namespace ComplianceChecker.AutoCAD
             Editor ed = doc.Editor;
             if (_busy)
             {
-                ed.WriteMessage("\nCompliance: a check is already running.");
+                ed.WriteMessage("\nDatum: a check is already running.");
                 return;
             }
             ApiClient? api = Api(ed);
@@ -107,7 +107,7 @@ namespace ComplianceChecker.AutoCAD
             try
             {
                 Log.Info($"CCCHECK {doc.Name}");
-                ed.WriteMessage("\nCompliance: sending the drawing…");
+                ed.WriteMessage("\nDatum: sending the drawing…");
                 ResultsPalette.SetStatus("Sending the drawing…");
                 string pid = await SendAsync(doc, api);
                 Log.Info($"sent: project {pid}, {(Upload?.Counts is { } c && c.TryGetValue("spaces", out int n) ? n : 0)} rooms, {Upload?.Unmapped} unknown layers");
@@ -124,14 +124,14 @@ namespace ComplianceChecker.AutoCAD
                 // A drawing that doesn't know where it is goes to the site setup first (which checks after).
                 if (!HasLocation(await api.GetModelJsonAsync(pid)))
                 {
-                    ed.WriteMessage("\nCompliance: this drawing has no location yet. Opening the site setup…");
+                    ed.WriteMessage("\nDatum: this drawing has no location yet. Opening the site setup…");
                     ResultsPalette.SetStatus("Set the site first: where it is, the plot and the road.");
                     _busy = false;
                     await SiteSetup.RunAsync(doc, api);
                     return;
                 }
                 ResultsPalette.SetStatus("Checking…");
-                ed.WriteMessage("\nCompliance: checking…");
+                ed.WriteMessage("\nDatum: checking…");
                 string job = await api.StartCheckAsync(pid);
                 string? reportId = null;
                 await foreach (JobEvent e in api.StreamJobAsync(job))
@@ -163,7 +163,7 @@ namespace ComplianceChecker.AutoCAD
                 catch (Exception e)
                 {
                     Log.Error("clouds", e);
-                    ed.WriteMessage($"\nCompliance: couldn't draw the issue clouds ({e.Message}).");
+                    ed.WriteMessage($"\nDatum: couldn't draw the issue clouds ({e.Message}).");
                 }
                 try
                 {
@@ -183,13 +183,13 @@ namespace ComplianceChecker.AutoCAD
                 }
                 var s = Report.Summary;
                 Log.Info($"report {reportId}: {s.Fail} fail, {s.Unverifiable} unverifiable, {clouds} clouds");
-                ed.WriteMessage($"\nCompliance: {s.Fail} fail · {s.Unverifiable} can't verify · {s.Pass} pass. "
+                ed.WriteMessage($"\nDatum: {s.Fail} fail · {s.Unverifiable} can't verify · {s.Pass} pass. "
                                 + $"Issues are clouded on layer {Highlighter.LayerName}; see the Compliance palette.");
             }
             catch (Exception e)
             {
                 Log.Error("CCCHECK", e);
-                ed.WriteMessage("\nCompliance: the check stopped: " + e.Message + $"\n  (details in {Log.FilePath})");
+                ed.WriteMessage("\nDatum: the check stopped: " + e.Message + $"\n  (details in {Log.FilePath})");
                 ResultsPalette.SetStatus("The check stopped: " + e.Message);
             }
             finally

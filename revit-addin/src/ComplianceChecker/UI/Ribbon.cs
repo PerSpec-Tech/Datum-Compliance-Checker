@@ -7,7 +7,7 @@ namespace ComplianceChecker.UI
 {
     internal static class Ribbon
     {
-        public const string TabName = "Compliance";
+        public const string TabName = "Datum";
 
         public static void Build(UIControlledApplication app)
         {

@@ -52,7 +52,7 @@ namespace ComplianceChecker.AutoCAD
             _api = api;
             _projectId = projectId;
             _s = state;
-            Title = "Compliance Checker — Site";
+            Title = "Datum — Site";
             Width = 560;
             Height = 720;
             Background = Paper;

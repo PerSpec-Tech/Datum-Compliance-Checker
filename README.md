@@ -1,8 +1,8 @@
-# Bylaw Compliance Checker
+# Datum by PerSpec — your compliance checker
 
-Check a building design against Pune's building bylaws **while you are still designing it**: inside Revit, inside AutoCAD, or by uploading an IFC model or a DXF drawing to the web app.
+Datum checks a building design against Pune's building bylaws **while you are still designing it**: inside Revit, inside AutoCAD, or by uploading an IFC model or a DXF drawing to the web app.
 
-Every result names the clause it comes from (UDCPR 2020 or NBC 2016), shows the measured value against the limit, and says how much to change (for example "increase by 0.15 m"). When the design doesn't contain a fact that a rule needs, such as the Development Plan width of the road, the checker says it **can't verify** that clause and asks one question, instead of guessing a pass.
+Every result names the clause it comes from (UDCPR 2020 or NBC 2016), shows the measured value against the limit, and says how much to change (for example "increase by 0.15 m"). When the design doesn't contain a fact that a rule needs, such as the Development Plan width of the road, Datum says it **can't verify** that clause and asks one question, instead of guessing a pass.
 
 Built by [PerSpec](https://getperspec.com) for the Nebius × NVIDIA Global AI Hackathon (2026), Best Apps and Agents track. Powered by NVIDIA Nemotron models on Nebius Token Factory, with Tavily search running during every check.
 
@@ -80,7 +80,7 @@ Prerequisites: [uv](https://docs.astral.sh/uv/) (Python 3.12), Node.js 22+, [jus
    just dev-backend  # http://127.0.0.1:8000 serves the API and the web app
    ```
    Open http://127.0.0.1:8000 and click a sample, or upload an IFC or DXF. For web development with hot reload, also run `just dev-web` and open http://localhost:5173.
-4. **Revit (optional).** Close Revit, run `just install-addin`, start Revit and choose *Always Load*. In the web app, open **pair Revit · AutoCAD** for a code, then in Revit use *Compliance → Pair* (server `http://localhost:8000` for a local run), *Site Setup* and *Run Check*. `just package-addin` builds the release zip with `install.ps1`.
+4. **Revit (optional).** Close Revit, run `just install-addin`, start Revit and choose *Always Load*. In the web app, open **pair Revit · AutoCAD** for a code, then in Revit use *Datum → Pair* (server `http://localhost:8000` for a local run), *Site Setup* and *Run Check*. `just package-addin` builds the release zip with `install.ps1`.
 5. **AutoCAD (optional).** Close AutoCAD, run `just install-autocad`, start AutoCAD and open the **Compliance** ribbon tab: *1 Pair*, *2 Layers*, *3 Site*, *4 Run Check*. `just package-autocad` builds the release zip.
 
 **Docker:** `docker compose -f deploy/docker-compose.yml up --build` serves the app on port 8000 (with Caddy for HTTPS when `DOMAIN` is set). On Railway, [railway.json](railway.json) builds the same Dockerfile; mount a volume at `/data` and set the two keys as variables.

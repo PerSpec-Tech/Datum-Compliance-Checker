@@ -32,4 +32,4 @@ Copy-Item -Path (Join-Path $Source "*") -Destination $target -Recurse -Force -Ex
 Copy-Item -Path $manifest -Destination $addins -Force
 
 Write-Host "Installed to $target"
-Write-Host "Start Revit 2026: a 'Compliance' tab should appear on the ribbon."
+Write-Host "Start Revit 2026: a 'Datum' tab should appear on the ribbon."

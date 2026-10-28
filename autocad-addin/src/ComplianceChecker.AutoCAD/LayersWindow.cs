@@ -33,7 +33,7 @@ namespace ComplianceChecker.AutoCAD
         {
             _api = api;
             _projectId = projectId;
-            Title = "Compliance Checker — Layers";
+            Title = "Datum — Layers";
             Width = 520;
             Height = 560;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;

@@ -28,7 +28,7 @@ namespace ComplianceChecker
             var ui = new UiActionQueue();
             ResultsPane = new ResultsPane();
             ResultsPane.Attach(ui);
-            application.RegisterDockablePane(ResultsPaneId, "Compliance results", ResultsPane);
+            application.RegisterDockablePane(ResultsPaneId, "Datum · results", ResultsPane);
             CheckRunner = new CheckRunner(ResultsPane, ui);
 
             // Live mode (P9.2/P9.3): the lens joins Revit's DirectContext3D service once Revit is up.

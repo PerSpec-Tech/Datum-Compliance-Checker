@@ -18,7 +18,7 @@ namespace ComplianceChecker.UI
 
         public PairWindow(AddinSettings settings)
         {
-            Title = "Compliance Checker — Pair with the web app";
+            Title = "Datum — Pair with the web app";
             Width = 420;
             SizeToContent = SizeToContent.Height;
             ResizeMode = ResizeMode.NoResize;

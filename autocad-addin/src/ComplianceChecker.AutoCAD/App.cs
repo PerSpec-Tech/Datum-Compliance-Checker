@@ -43,7 +43,7 @@ namespace ComplianceChecker.AutoCAD
             try
             {
                 AcApp.DocumentManager.MdiActiveDocument?.Editor.WriteMessage(
-                    "\nCompliance Checker loaded: Compliance tab on the ribbon (or type CCCHECK, CCPAIR, CCRIBBON).");
+                    "\nDatum by PerSpec loaded: Datum tab on the ribbon (or type CCCHECK, CCPAIR, CCRIBBON).");
             }
             catch (System.Exception)
             {

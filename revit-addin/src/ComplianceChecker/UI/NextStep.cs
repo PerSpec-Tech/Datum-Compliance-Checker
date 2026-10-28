@@ -11,7 +11,7 @@ namespace ComplianceChecker.UI
         /// <returns>true if the user chose to go to the next step now.</returns>
         public static bool Offer(string title, string done, string next, string nextDetail)
         {
-            var dialog = new TaskDialog("Compliance Checker")
+            var dialog = new TaskDialog("Datum")
             {
                 MainInstruction = title,
                 MainContent = done,
@@ -25,7 +25,7 @@ namespace ComplianceChecker.UI
         /// <returns>CommandLink1 = do the missing step, CommandLink2 = continue anyway, else cancel.</returns>
         public static TaskDialogResult Missing(string title, string why, string fix, string fixDetail, string anyway, string anywayDetail)
         {
-            var dialog = new TaskDialog("Compliance Checker")
+            var dialog = new TaskDialog("Datum")
             {
                 MainInstruction = title,
                 MainContent = why,

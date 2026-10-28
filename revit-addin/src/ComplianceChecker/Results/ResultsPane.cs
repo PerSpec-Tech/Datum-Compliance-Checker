@@ -103,7 +103,7 @@ namespace ComplianceChecker.Results
             dock.Children.Add(detailBorder);
             dock.Children.Add(new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Content = _body });
             _page.Content = dock;
-            _header.Children.Add(new TextBlock { Text = "Run a check (Compliance › Run Check) to see results here.", TextWrapping = TextWrapping.Wrap });
+            _header.Children.Add(new TextBlock { Text = "Run a check (Datum › Run Check) to see results here.", TextWrapping = TextWrapping.Wrap });
         }
 
         public void Attach(UiActionQueue ui) => _ui = ui;
@@ -193,7 +193,7 @@ namespace ComplianceChecker.Results
                 if (id is not null)
                     app.PostCommand(id);
                 else
-                    TaskDialog.Show("Compliance Checker", "Open Compliance › Site Setup to answer these.");
+                    TaskDialog.Show("Datum", "Open Datum › Site Setup to answer these.");
             });
             list.Children.Add(open);
             return new Expander { Header = Header($"What's missing ({questions.Count})", Brushes.DarkOrange), IsExpanded = true, Content = list, Margin = new Thickness(0, 4, 0, 4) };
@@ -275,7 +275,7 @@ namespace ComplianceChecker.Results
             UIDocument? uidoc = app.ActiveUIDocument;
             if (uidoc?.Document.GetElement(uniqueId) is not Element e)
             {
-                TaskDialog.Show("Compliance Checker", "That element is no longer in the model. Run the check again.");
+                TaskDialog.Show("Datum", "That element is no longer in the model. Run the check again.");
                 return;
             }
             uidoc.Selection.SetElementIds(new List<ElementId> { e.Id });

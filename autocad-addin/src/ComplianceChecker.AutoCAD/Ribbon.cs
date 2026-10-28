@@ -30,7 +30,7 @@ namespace ComplianceChecker.AutoCAD
                     return true;
                 }
                 AddTab(ribbon);
-                Log.Info("ribbon: Compliance tab added");
+                Log.Info("ribbon: Datum tab added");
                 return true;
             }
             catch (System.Exception e)
@@ -42,7 +42,7 @@ namespace ComplianceChecker.AutoCAD
 
         private static void AddTab(RibbonControl ribbon)
         {
-            var tab = new RibbonTab { Title = "Compliance", Id = TabId };
+            var tab = new RibbonTab { Title = "Datum", Id = TabId };
 
             tab.Panels.Add(Panel("Set up",
                 Button("1 Pair", "CCPAIR", Icons.Plug, "Pair with the compliance web app (once per computer)."),

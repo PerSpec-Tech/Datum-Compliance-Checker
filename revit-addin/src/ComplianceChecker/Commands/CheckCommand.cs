@@ -15,7 +15,7 @@ namespace ComplianceChecker.Commands
         {
             if (App.Current is null)
             {
-                message = "The Compliance Checker add-in didn't start correctly.";
+                message = "The Datum add-in didn't start correctly.";
                 return Result.Failed;
             }
             UIApplication app = commandData.Application;

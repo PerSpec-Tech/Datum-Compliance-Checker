@@ -28,4 +28,4 @@ Copy-Item -Path (Join-Path $Source "*") -Destination $contents -Recurse -Force -
 Copy-Item -Path (Join-Path $PSScriptRoot "PackageContents.xml") -Destination $bundle -Force
 
 Write-Host "Installed to $bundle"
-Write-Host "Start AutoCAD 2026: a 'Compliance' tab should appear on the ribbon."
+Write-Host "Start AutoCAD 2026: a 'Datum' tab should appear on the ribbon."

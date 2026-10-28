@@ -25,7 +25,7 @@ namespace ComplianceChecker.Storage
 
         public static void Write(Document doc, Brief brief)
         {
-            using var t = new Transaction(doc, "Compliance Checker: save site setup");
+            using var t = new Transaction(doc, "Datum: save site setup");
             t.Start();
             var entity = new Entity(GetOrCreateSchema());
             entity.Set(Field, brief.ToJson());

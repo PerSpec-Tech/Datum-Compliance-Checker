@@ -97,7 +97,7 @@ export default function ReportPage() {
           {/* ------------------------------------------------------------- header */}
           <header className="border-b border-line pb-6">
             <Brand className="no-print mb-4" />
-        <p className="meta font-mono">compliance memo · {created.toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}</p>
+        <p className="meta font-mono">Datum compliance memo · {created.toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}</p>
             <h1 className="display mt-2">
               {m?.project.name ?? "compliance report"}
               <span className="stop">.</span>
@@ -396,12 +396,12 @@ function PrintBand({ name, date, top = false }: { name: string; date: Date; top?
     <div className="mb-6 flex items-end justify-between border-b border-line pb-3">
       <Brand size={30} />
       <span className="text-right font-mono text-2xs text-fg-3">
-        {name} · compliance memo · {date.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}
+        {name} · Datum compliance memo · {date.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}
       </span>
     </div>
   ) : (
     <div className="mt-6 flex items-center justify-between border-t border-line-subtle pt-2 font-mono text-2xs text-fg-3">
-      <span>PerSpec compliance checker · a design-time pre-check, not a permit</span>
+      <span>Datum by PerSpec · a design-time pre-check, not a permit</span>
       <span>UDCPR 2020 → NBC 2016 · PMC</span>
     </div>
   );

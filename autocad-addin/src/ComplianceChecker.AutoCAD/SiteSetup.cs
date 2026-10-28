@@ -50,7 +50,7 @@ namespace ComplianceChecker.AutoCAD
         public static async Task RunAsync(Document doc, ApiClient api)
         {
             Editor ed = doc.Editor;
-            ed.WriteMessage("\nCompliance: reading the drawing for the site…");
+            ed.WriteMessage("\nDatum: reading the drawing for the site…");
             string pid = await Checker.SendAsync(doc, api);
             Markup markup = Markup.FromModelJson(await api.GetModelJsonAsync(pid), doc.Database);
             double scale = Markup.MetresPerUnit(doc.Database);
@@ -113,7 +113,7 @@ namespace ComplianceChecker.AutoCAD
                             }
                             else
                             {
-                                ed.WriteMessage("\nCompliance: site saved in the project and in this drawing (save the DWG to keep it). Run Check when you're ready.");
+                                ed.WriteMessage("\nDatum: site saved in the project and in this drawing (save the DWG to keep it). Run Check when you're ready.");
                                 ResultsPalette.SetStatus("Site saved. Run Check when you're ready.");
                             }
                             return;
@@ -166,7 +166,7 @@ namespace ComplianceChecker.AutoCAD
             var pts = Enumerable.Range(0, pl.NumberOfVertices).Select(pl.GetPoint2dAt).ToList();
             if (pts.Count < 3)
             {
-                ed.WriteMessage("\nCompliance: a plot needs at least 3 corners.");
+                ed.WriteMessage("\nDatum: a plot needs at least 3 corners.");
                 return;
             }
             if (SignedArea(pts) < 0)
@@ -181,7 +181,7 @@ namespace ComplianceChecker.AutoCAD
         {
             if (s.Sides.Count == 0)
             {
-                ed.WriteMessage("\nCompliance: set the plot first.");
+                ed.WriteMessage("\nDatum: set the plot first.");
                 return;
             }
             PromptPointResult p = ed.GetPoint("\nClick on the plot side that faces a road: ");

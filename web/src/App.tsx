@@ -61,8 +61,11 @@ export default function App() {
       <aside className="z-[1000] flex flex-col border-b border-line-subtle bg-canvas lg:fixed lg:inset-y-0 lg:left-0 lg:w-[var(--sidebar)] lg:border-b-0 lg:border-r">
         <NavLink to="/" className="flex h-14 items-center gap-2.5 px-5 text-fg">
           <Glyph />
-          <span className="text-[15px] font-semibold tracking-[-0.02em]">
-            compliance check<span className="stop">.</span>
+          <span className="flex flex-col leading-tight">
+            <span className="text-[15px] font-semibold tracking-[-0.02em]">
+              datum<span className="stop">.</span>
+            </span>
+            <span className="text-2xs text-fg-3">by perspec · your compliance checker</span>
           </span>
         </NavLink>
         <nav className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col lg:gap-0.5 lg:pb-0 lg:pt-2" aria-label="Primary">
@@ -88,10 +91,7 @@ export default function App() {
           ))}
         </nav>
         <div className="mt-auto hidden border-t border-line-subtle px-5 py-4 lg:block">
-          <p className="font-mono text-2xs leading-5 text-fg-3" title="A design aid, not a permit. Every result cites its clause.">
-            PMC · UDCPR 2020
-          </p>
-          <p className="mt-1 text-2xs leading-4 text-fg-3">A design aid, not a permit. Maps © OpenStreetMap contributors.</p>
+          <p className="text-2xs leading-4 text-fg-3">Maps © OpenStreetMap contributors.</p>
           <div className="mt-2 flex items-center justify-between">
             <p className="text-xs font-semibold tracking-[-0.02em] text-fg-2">
               perspec<span className="stop">.</span>

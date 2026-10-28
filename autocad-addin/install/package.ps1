@@ -21,7 +21,7 @@ Compliance Checker for AutoCAD 2026 (v$Version)
 
 1. Close AutoCAD.
 2. Right-click install.ps1 > Run with PowerShell.
-3. Start AutoCAD 2026: use the 'Compliance' tab.
+3. Start AutoCAD 2026: use the 'Datum' tab.
    1 Pair > 2 Layers > 3 Site > 4 Run Check. Results open in the Compliance palette.
 
 Licensed under Apache-2.0.

@@ -81,7 +81,7 @@ export default function Viewer({ modelVersion, statusByGuid, focus, onPick, proj
           <div>
             <p className="h2 text-fg">results are in Revit</p>
             <p className="mt-1">
-              This model was sent from the Revit add-in. Open <em>Compliance → Results</em> to see each issue on the
+              This model was sent from the Revit add-in. Open <em>Datum → Results</em> to see each issue on the
               element itself.
             </p>
           </div>

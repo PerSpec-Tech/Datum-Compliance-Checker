@@ -63,7 +63,7 @@ namespace ComplianceChecker.SiteSetup
         {
             _brief = Brief.FromJson(brief.ToJson()); // edit a copy
             Result = _brief;
-            Title = "Compliance Checker — Site Setup";
+            Title = "Datum — Site Setup";
             Width = 900;
             Height = 700;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;

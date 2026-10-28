@@ -15,7 +15,7 @@ namespace ComplianceChecker.Results
 
         public ProgressWindow()
         {
-            Title = "Compliance Checker — checking";
+            Title = "Datum — checking";
             Width = 420;
             SizeToContent = SizeToContent.Height;
             ResizeMode = ResizeMode.NoResize;

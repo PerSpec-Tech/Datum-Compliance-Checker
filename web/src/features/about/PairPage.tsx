@@ -37,7 +37,7 @@ export default function PairPage() {
         </Step>
 
         <Step n={2} title="pair">
-          <p>Compliance tab → 1 Pair (one code pairs both)</p>
+          <p>Datum tab → 1 Pair (one code pairs both)</p>
           <div className="mt-3 divide-y divide-line-subtle rounded-sm border border-line-subtle">
             <div className="flex items-baseline gap-4 px-3 py-2.5">
               <span className="w-24 text-xs text-fg-2">server URL</span>
