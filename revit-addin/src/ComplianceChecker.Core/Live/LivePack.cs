@@ -43,7 +43,9 @@ public sealed record FsiBudget(
 public sealed record HeightSamples(
     [property: JsonPropertyName("current_m")] double? CurrentM,
     [property: JsonPropertyName("step_m")] double StepM,
-    [property: JsonPropertyName("max_m")] double MaxM);
+    [property: JsonPropertyName("max_m")] double MaxM,
+    [property: JsonPropertyName("limit_m")] double? LimitM = null,
+    [property: JsonPropertyName("limit_clause_ref")] string? LimitClauseRef = null);
 
 public sealed record Threshold(
     [property: JsonPropertyName("rule_id")] string RuleId,

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { ApiError, api, type Mesh } from "../../api/client";
 import type { LivePack, Status } from "../../api/types";
 import { Icon, STATUS_META, Spinner, StatusMark } from "../../components/ui";
@@ -199,6 +200,13 @@ function build(
   const shell: THREE.Mesh[] = []; // walls, slabs, roofs: see-through in X-ray mode
   let pickTargets: THREE.Mesh[] = meshes; // in X-ray mode clicks go through the shell to the rooms
   const byGuid = new Map<string, THREE.Mesh[]>();
+  // Everything but the dashed "can't verify" items is drawn merged by look: a few draw calls per
+  // colour instead of two per element, so a tower stays smooth. Each element's own mesh stays in the
+  // scene, hidden, for picking and for the focus highlight.
+  type Look = { color: number; transparent: boolean; opacity: number; depthWrite: boolean; edges: boolean; shell: boolean };
+  const plain = new Map<string, { geoms: THREE.BufferGeometry[]; look: Look }>();
+  const batched = new Set<THREE.Mesh>();
+  const batches: { mesh: THREE.Mesh; edges: THREE.LineSegments; shell: boolean }[] = [];
   const add = (m: Mesh, isSpace: boolean) => {
     const g = new THREE.BufferGeometry();
     g.setAttribute("position", new THREE.Float32BufferAttribute(m.v, 3));
@@ -219,16 +227,21 @@ function build(
     });
     const mesh = new THREE.Mesh(g, mat);
     mesh.userData = { guid: m.parent && statusByGuid.has(m.parent) ? m.parent : m.guid, label: `${m.name} · ${m.type.replace(/^Ifc/, "")}`, base: color, isSpace };
-    if (status && STATUS_META[status].dashed) {
+    if (!(status && STATUS_META[status].dashed)) {
+      const look: Look = { color, transparent: mat.transparent, opacity: mat.opacity, depthWrite: mat.depthWrite, edges: !isSpace, shell: isShell };
+      const key = JSON.stringify(look);
+      const b = plain.get(key) ?? { geoms: [], look };
+      b.geoms.push(g);
+      plain.set(key, b);
+      mesh.visible = false;
+      batched.add(mesh);
+    } else {
       // can't verify: a dashed outline, never colour alone (guidelines 10)
       const edges = new THREE.LineSegments(
         new THREE.EdgesGeometry(g, 30),
         new THREE.LineDashedMaterial({ color: light ? 0x0a0a0b : 0xf2f2f3, dashSize: 0.25, gapSize: 0.18 }),
       );
       edges.computeLineDistances();
-      mesh.add(edges);
-    } else if (!isSpace) {
-      const edges = new THREE.LineSegments(new THREE.EdgesGeometry(g, 30), new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.45 }));
       mesh.add(edges);
     }
     scene.add(mesh);
@@ -239,6 +252,21 @@ function build(
   };
   elements.forEach((m) => add(m, false));
   spaces.forEach((m) => add(m, true));
+  for (const { geoms, look } of plain.values()) {
+    const g = mergeGeometries(geoms, false);
+    if (!g) continue;
+    const mesh = new THREE.Mesh(
+      g,
+      new THREE.MeshStandardMaterial({ color: look.color, transparent: look.transparent, opacity: look.opacity, depthWrite: look.depthWrite, roughness: 0.8, side: THREE.DoubleSide }),
+    );
+    const edges = new THREE.LineSegments(
+      look.edges ? (mergeGeometries(geoms.map((x) => new THREE.EdgesGeometry(x, 30)), false) ?? new THREE.BufferGeometry()) : new THREE.BufferGeometry(),
+      new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.45 }),
+    );
+    mesh.add(edges);
+    scene.add(mesh);
+    batches.push({ mesh, edges, shell: look.shell });
+  }
 
   // Site context: plot ground, roads, neighbours. Hover shows the name; not selectable.
   const contextMeshes: THREE.Mesh[] = [];
@@ -263,7 +291,7 @@ function build(
   }
 
   const all = new THREE.Box3();
-  meshes.forEach((m) => all.expandByObject(m));
+  meshes.forEach((m) => all.expandByObject(m, true));
   const building = all.clone(); // the building alone (all also takes in the plot)
   let marker: THREE.Object3D | null = null;
   const addMarker = (o: THREE.Object3D) => {
@@ -452,7 +480,7 @@ function build(
     xray(on: boolean) {
       const shellSet = new Set(shell);
       pickTargets = on ? meshes.filter((m) => !shellSet.has(m)) : meshes;
-      for (const m of shell) {
+      for (const m of [...shell.filter((x) => !batched.has(x)), ...batches.filter((b) => b.shell).map((b) => b.mesh)]) {
         const mat = m.material as THREE.MeshStandardMaterial;
         mat.transparent = on;
         mat.opacity = on ? 0.12 : 1;
@@ -476,6 +504,7 @@ function build(
       meshes.forEach((m) => {
         const mat = m.material as THREE.MeshStandardMaterial;
         mat.emissive.setHex(0x000000);
+        if (batched.has(m)) m.visible = false;
       });
       renderer.clippingPlanes = [];
       dropMarker();
@@ -523,8 +552,16 @@ function build(
       if (!targets.length) return;
       const box = new THREE.Box3();
       targets.forEach((m) => {
-        (m.material as THREE.MeshStandardMaterial).emissive.setHex(0x505057);
-        box.expandByObject(m);
+        const mat = m.material as THREE.MeshStandardMaterial;
+        mat.emissive.setHex(0x505057);
+        if (batched.has(m)) {
+          // drawn over its merged copy while it is the focus
+          m.visible = true;
+          mat.polygonOffset = true;
+          mat.polygonOffsetFactor = -1;
+          mat.polygonOffsetUnits = -1;
+        }
+        box.expandByObject(m, true);
       });
       // An element through several storeys (a stair) is shown at its lowest storey.
       if (box.max.z - box.min.z > 4.5) box.max.z = box.min.z + 3.2;
@@ -554,6 +591,12 @@ function build(
       [...meshes, ...contextMeshes].forEach((m) => {
         m.geometry.dispose();
         (m.material as THREE.Material).dispose();
+      });
+      batches.forEach((b) => {
+        b.mesh.geometry.dispose();
+        (b.mesh.material as THREE.Material).dispose();
+        b.edges.geometry.dispose();
+        (b.edges.material as THREE.Material).dispose();
       });
       renderer.dispose();
       renderer.domElement.remove();

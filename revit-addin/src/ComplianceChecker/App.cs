@@ -10,6 +10,7 @@ namespace ComplianceChecker
     public class App : IExternalApplication
     {
         public static readonly DockablePaneId ResultsPaneId = new(new Guid("2f8f4c61-0d2a-4f3b-9a8e-5b1f6c7d9e21"));
+        public static readonly DockablePaneId LivePaneId = new(new Guid("8c1d0e52-3b7a-4f96-a2e4-71d5c9b0f348"));
 
         /// <summary>Set in OnStartup; commands use it to reach shared services.</summary>
         public static App? Current { get; private set; }
@@ -33,7 +34,9 @@ namespace ComplianceChecker
 
             // Live mode (P9.2/P9.3): the lens joins Revit's DirectContext3D service once Revit is up.
             _lens = new LensServer();
-            Live = new LiveController(ResultsPane, _lens);
+            var livePane = new LivePane();
+            application.RegisterDockablePane(LivePaneId, "Datum · live", livePane);
+            Live = new LiveController(ResultsPane, livePane.Gauge, _lens);
             Live.Hook(application);
             application.ControlledApplication.ApplicationInitialized += (_, _) => LensServer.Register(_lens);
             return Result.Succeeded;

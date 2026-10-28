@@ -28,6 +28,7 @@
   <ItemGroup>
     <Compile Include="..\..\..\revit-addin\src\ComplianceChecker\Storage\AddinSettings.cs" Link="Shared\AddinSettings.cs" />
     <Compile Include="..\..\..\revit-addin\src\ComplianceChecker\UI\PairWindow.cs" Link="Shared\PairWindow.cs" />
+    <Compile Include="..\..\..\revit-addin\src\ComplianceChecker\UI\LiveGauge.cs" Link="Shared\LiveGauge.cs" />
   </ItemGroup>
 
 </Project>

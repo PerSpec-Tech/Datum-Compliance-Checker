@@ -25,9 +25,10 @@ namespace ComplianceChecker.AutoCAD
     /// for a moment. Local geometry only: no network, no model, milliseconds. The full check stays
     /// the official result.
     ///
-    /// Calm by design: never modal, never a sound. The result is one line on the status bar; the
-    /// lens (the buildable line, crossing outlines in red with the shortfall) is off until asked for,
-    /// and is drawn as transient graphics, so the drawing and its undo history are untouched.
+    /// The live panel on the left shows the FSI bar, height and setbacks; one line on the status bar
+    /// repeats them. The lens (on by default) draws the buildable line, crossing outlines in red with
+    /// the shortfall, and the part past the line hatched red, all as transient graphics, so the
+    /// drawing and its undo history are untouched. One alert when the FSI first goes over its maximum.
     /// </summary>
     internal static class LiveMode
     {
@@ -39,7 +40,8 @@ namespace ComplianceChecker.AutoCAD
         private static DrawingLive? _drawing;
         private static LiveStatus? _status;
         private static bool _on = true;
-        private static bool _lens;
+        private static bool _lens = true;
+        private static bool _fsiAlerted;
         private static bool _dirty;
         private static DateTime _changed;
         private static Pane? _pane;
@@ -105,6 +107,7 @@ namespace ComplianceChecker.AutoCAD
             {
                 ClearLens();
                 SetPane("Datum: live preview paused (CCLIVE to resume).", null);
+                LivePalette.Message("Live preview paused (CCLIVE to resume).");
                 return "live preview paused.";
             }
             if (_pack is null)
@@ -183,7 +186,9 @@ namespace ComplianceChecker.AutoCAD
                 LiveSnapshot snap = drawing.Snapshot(ReadPolylines(doc.Database), pack.Fsi.UsedM2);
                 _status = LiveEngine.Evaluate(pack, snap);
                 SetPane("Datum (preview): " + _status.StripText(), Tooltip(_status));
+                LivePalette.Show(_status);
                 Draw();
+                AlertFsi(doc, _status);
                 Log.Info($"live: {_status.StripText()} ({(DateTime.UtcNow - started).TotalMilliseconds:0} ms)");
             }
             catch (System.Exception e)
@@ -231,6 +236,23 @@ namespace ComplianceChecker.AutoCAD
             return string.Join("\n", lines);
         }
 
+        /// <summary>Once when the FSI goes over its maximum (again only after it came back within).</summary>
+        private static void AlertFsi(Document doc, LiveStatus s)
+        {
+            if (!s.FsiOver)
+            {
+                _fsiAlerted = false;
+                return;
+            }
+            if (_fsiAlerted)
+                return;
+            _fsiAlerted = true;
+            string text = string.Create(CultureInfo.InvariantCulture,
+                $"FSI {s.Fsi:0.00} is over the maximum {s.FsiMax:0.00}: {-s.FsiLeftM2!.Value:0} m² of built-up area too much.");
+            doc.Editor.WriteMessage("\nDatum: " + text);
+            AcApp.ShowAlertDialog("Datum\n\n" + text + "\n\nLive preview: Run Check for the full report.");
+        }
+
         // ------------------------------------------------------------------ lens
 
         private static void Draw()
@@ -255,6 +277,8 @@ namespace ComplianceChecker.AutoCAD
                 SetbackIssue worst = issues.OrderByDescending(x => x.DeficitM).First();
                 var pts = Enumerable.Range(0, pl.NumberOfVertices).Select(i => pl.GetPoint2dAt(i)).Select(p => new Pt(p.X, p.Y)).ToList();
                 AddLens(Outline(pts, (short)(worst.Slight ? 11 : 1), (worst.Slight ? 0.03 : 0.08) * unit));
+                if (!worst.Slight)
+                    HatchPast(pack, status, drawing, pl, pts, unit);
                 var box = Markup.Box(pts.Select(p => new Point2d(p.X, p.Y)), 0);
                 AddLens(new DBText
                 {
@@ -265,6 +289,35 @@ namespace ComplianceChecker.AutoCAD
                 });
             }
             doc.Editor.UpdateScreen();
+        }
+
+        /// <summary>The part of a polyline past the buildable line, hatched red (in drawing units).</summary>
+        private static void HatchPast(LivePack pack, LiveStatus status, DrawingLive drawing, Polyline pl, List<Pt> pts, double unit)
+        {
+            // To plot metres the way the snapshot did (site plan footprint, or a room on a floor plan), and back.
+            FloorFrame? frame = drawing.RoleOf(pl.Layer) == "room" ? drawing.FloorOf(pts[0]) : null;
+            Func<Pt, Pt> toModel = frame is null ? p => new Pt(p.X * drawing.Scale, p.Y * drawing.Scale) : p => drawing.ToModel(p, frame);
+            Func<Pt, Pt> toDrawing = frame is null ? p => new Pt(p.X / drawing.Scale, p.Y / drawing.Scale) : p => drawing.ToDrawing(p, frame);
+            var outline = new LiveOutline(pl.Handle.ToString(), "", pts.Select(toModel).ToList());
+            foreach (List<Pt> piece in LiveEngine.Encroachments(pack, status, outline))
+            {
+                var loop = new Point2dCollection(piece.Select(toDrawing).Select(p => new Point2d(p.X, p.Y)).ToArray());
+                loop.Add(loop[0]);
+                try
+                {
+                    var hatch = new Hatch { ColorIndex = 1, Normal = Vector3d.ZAxis, Elevation = 0 };
+                    hatch.SetHatchPattern(HatchPatternType.PreDefined, "ANSI31");
+                    hatch.PatternScale = 0.15 * unit / 3.175; // a line every 15 cm
+                    hatch.AppendLoop(HatchLoopTypes.Default, loop, new DoubleCollection(Enumerable.Repeat(0.0, loop.Count).ToArray()));
+                    hatch.EvaluateHatch(true);
+                    AddLens(hatch);
+                }
+                catch (System.Exception e)
+                {
+                    Log.Error("lens hatch", e); // the red outline still shows
+                }
+                AddLens(Outline(piece.Select(toDrawing), 1, 0.04 * unit));
+            }
         }
 
         private static Polyline Outline(IEnumerable<Pt> pts, short color, double width)

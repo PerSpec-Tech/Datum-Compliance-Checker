@@ -100,6 +100,16 @@ def test_margin_table_follows_height(rulebase):
     assert road["margin_by_height"] == []  # constant
 
 
+def test_height_limit_from_the_road_width(rulebase):
+    """The tower stands on a 10.5 m road: over 36 m needs a 12 m road (UDCPR 10.1.1)."""
+    _, _, pack = pack_for("demo_apartment", rulebase)
+    h = pack["height"]
+    assert h["limit_m"] == pytest.approx(36.0)
+    assert h["limit_clause_ref"] == "10.1.1"
+    _, _, house = pack_for("demo_house", rulebase)
+    assert house["height"]["limit_m"] is None or house["height"]["limit_m"] >= 36.0
+
+
 def test_pack_is_saved_after_a_check_and_served(tmp_path):
     from fastapi.testclient import TestClient
 

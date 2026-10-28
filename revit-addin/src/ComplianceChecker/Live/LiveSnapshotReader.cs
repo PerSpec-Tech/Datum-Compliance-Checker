@@ -50,7 +50,8 @@ namespace ComplianceChecker.Live
                 {
                     pts = c.Tessellate().Select(P).ToList();
                 }
-                snap.Outlines.Add(new LiveOutline(w.Id.Value.ToString(), "Wall " + w.Name, pts));
+                var (wb, wt) = Span(w, groundZ);
+                snap.Outlines.Add(new LiveOutline(w.Id.Value.ToString(), "Wall " + w.Name, pts, wb, wt));
             }
 
             // Floors: their sketch outline.
@@ -67,8 +68,9 @@ namespace ComplianceChecker.Live
                         for (int i = 0; i + 1 < t.Count; i++)
                             pts.Add(P(t[i]));
                     }
+                    var (fb, ft) = Span(f, groundZ);
                     if (pts.Count >= 3)
-                        snap.Outlines.Add(new LiveOutline(f.Id.Value.ToString(), "Floor " + f.Name, pts));
+                        snap.Outlines.Add(new LiveOutline(f.Id.Value.ToString(), "Floor " + f.Name, pts, fb, ft));
                 }
             }
 
@@ -86,7 +88,7 @@ namespace ComplianceChecker.Live
                     snap.Outlines.Add(new LiveOutline(e.Id.Value.ToString(), $"{e.Category?.Name} {e.Name}", new List<Pt>
                     {
                         P(bb.Min), P(new XYZ(bb.Max.X, bb.Min.Y, 0)), P(bb.Max), P(new XYZ(bb.Min.X, bb.Max.Y, 0)),
-                    }));
+                    }, Units.M(bb.Min.Z - groundZ), Units.M(bb.Max.Z - groundZ)));
                 }
             }
             foreach (Wall w in new FilteredElementCollector(doc).OfClass(typeof(Wall)).Cast<Wall>())
@@ -170,5 +172,9 @@ namespace ComplianceChecker.Live
         }
 
         private static Pt P(XYZ p) => new(Units.M(p.X), Units.M(p.Y));
+
+        /// <summary>An element's bottom and top in metres above ground, for the 3D lens.</summary>
+        private static (double?, double?) Span(Element e, double groundZ) =>
+            e.get_BoundingBox(null) is BoundingBoxXYZ bb ? (Units.M(bb.Min.Z - groundZ), Units.M(bb.Max.Z - groundZ)) : (null, null);
     }
 }

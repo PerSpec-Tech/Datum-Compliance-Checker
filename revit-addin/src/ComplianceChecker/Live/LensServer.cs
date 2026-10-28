@@ -12,8 +12,10 @@ namespace ComplianceChecker.Live
     /// <summary>
     /// The compliance lens (P9.3): transient graphics drawn by Revit's DirectContext3D over 3D and
     /// plan views. Never part of the model and never in the undo history (D32, D11). Draws:
-    /// - the buildable line (the plot inset by each side's margin) in light grey;
-    /// - every element that crosses it, outlined in red (thin when it's under 10 cm in, P9 calm rules).
+    /// - the buildable line (the plot inset by each side's margin) in grey;
+    /// - every element that crosses it, outlined in red (thin when it's under 10 cm in, P9 calm rules),
+    ///   and the part of it past the line as a red hatched volume, from its bottom to its top;
+    /// - the height limit as a hatched plane over the buildable area, red once the building goes through it.
     /// </summary>
     internal sealed class LensServer : IDirectContext3DServer
     {
@@ -33,8 +35,44 @@ namespace ComplianceChecker.Live
             var red = new ColorWithTransparency(245, 69, 92, 0);
             var pale = new ColorWithTransparency(250, 160, 170, 0);
 
-            if (pack.Envelope is { Count: >= 3 } env)
-                Ring(env.Select(p => new Pt(p[0], p[1])).ToList(), z, grey, lines);
+            var dark = new ColorWithTransparency(120, 120, 128, 0);
+            List<Pt>? area = pack.Envelope is { Count: >= 3 } env ? env.Select(p => new Pt(p[0], p[1])).ToList() : null;
+            if (area is not null)
+            {
+                Ring(area, z, grey, lines);
+                Ring(area, z + Ft(0.03), dark, lines);
+            }
+
+            // The height limit: a hatched plane over the buildable area (or the plot), posts at its corners.
+            if (pack.Height.LimitM is double limit)
+            {
+                List<Pt> roof = area ?? pack.Edges.Select(e => new Pt(e.A[0], e.A[1])).ToList();
+                var c = status.HeightOver ? red : new ColorWithTransparency(150, 150, 160, 0);
+                double zl = groundFeet + Ft(limit);
+                Ring(roof, zl, c, lines);
+                foreach (var (a, b) in Hatch(roof, 1.5))
+                    lines.Add((new XYZ(Ft(a.X), Ft(a.Y), zl), new XYZ(Ft(b.X), Ft(b.Y), zl), c));
+                foreach (Pt p in roof)
+                    lines.Add((new XYZ(Ft(p.X), Ft(p.Y), z), new XYZ(Ft(p.X), Ft(p.Y), zl), grey));
+            }
+
+            // The part of each element past the buildable line, as a red hatched volume.
+            foreach (LiveOutline o in snap.Outlines.Where(o => status.Setbacks.Any(s => s.ElementId == o.ElementId && !s.Slight)))
+            {
+                double z0 = groundFeet + Ft(o.BottomM ?? 0), z1 = groundFeet + Ft(o.TopM ?? status.HeightM ?? 3);
+                foreach (List<Pt> piece in LiveEngine.Encroachments(pack, status, o))
+                {
+                    Ring(piece, z0, red, lines);
+                    Ring(piece, z1, red, lines);
+                    foreach (Pt p in piece)
+                        lines.Add((new XYZ(Ft(p.X), Ft(p.Y), z0), new XYZ(Ft(p.X), Ft(p.Y), z1), red));
+                    foreach (var (a, b) in Hatch(piece, 0.25))
+                    {
+                        lines.Add((new XYZ(Ft(a.X), Ft(a.Y), z1), new XYZ(Ft(b.X), Ft(b.Y), z1), red));
+                        lines.Add((new XYZ(Ft(a.X), Ft(a.Y), z0 + Ft(0.02)), new XYZ(Ft(b.X), Ft(b.Y), z0 + Ft(0.02)), red));
+                    }
+                }
+            }
             var bad = status.Setbacks.GroupBy(s => s.ElementId).ToDictionary(g => g.Key, g => g.All(s => s.Slight));
             foreach (LiveOutline o in snap.Outlines.Where(o => bad.ContainsKey(o.ElementId)))
             {
@@ -146,6 +184,32 @@ namespace ComplianceChecker.Live
                     break;
                 into.Add((new XYZ(Ft(a.X), Ft(a.Y), z), new XYZ(Ft(b.X), Ft(b.Y), z), c));
             }
+        }
+
+        /// <summary>45° hatch lines inside a polygon, every <paramref name="spacing"/> metres (even-odd scanlines).</summary>
+        private static List<(Pt, Pt)> Hatch(IReadOnlyList<Pt> poly, double spacing)
+        {
+            // Rotate so the hatch runs along x, scan in y, rotate the segments back.
+            const double k = 0.70710678118654752;
+            Pt Rot(Pt p) => new(k * (p.X + p.Y), k * (p.Y - p.X));
+            Pt Back(Pt p) => new(k * (p.X - p.Y), k * (p.X + p.Y));
+            var r = poly.Select(Rot).ToList();
+            var segments = new List<(Pt, Pt)>();
+            double y0 = r.Min(p => p.Y), y1 = r.Max(p => p.Y);
+            for (double y = Math.Ceiling(y0 / spacing) * spacing; y < y1 && segments.Count < 4000; y += spacing)
+            {
+                var xs = new List<double>();
+                for (int i = 0; i < r.Count; i++)
+                {
+                    Pt a = r[i], b = r[(i + 1) % r.Count];
+                    if ((a.Y <= y) != (b.Y <= y))
+                        xs.Add(a.X + (y - a.Y) / (b.Y - a.Y) * (b.X - a.X));
+                }
+                xs.Sort();
+                for (int i = 0; i + 1 < xs.Count; i += 2)
+                    segments.Add((Back(new Pt(xs[i], y)), Back(new Pt(xs[i + 1], y))));
+            }
+            return segments;
         }
 
         private static double Ft(double metres) => UnitUtils.ConvertToInternalUnits(metres, UnitTypeId.Meters);

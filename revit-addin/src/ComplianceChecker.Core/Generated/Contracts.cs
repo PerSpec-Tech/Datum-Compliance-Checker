@@ -1271,6 +1271,20 @@ namespace ComplianceChecker.Generated
         [JsonPropertyName("current_m")]
         public double? CurrentM { get; set; }
 
+        [JsonPropertyName("limit_clause_ref")]
+        public string LimitClauseRef { get; set; }
+
+        /// <summary>
+        /// The tallest the building may be on this plot as checked (the first sampled height a
+        /// building-height rule fails, less one step); null when no rule limits it or it can't be
+        /// known.
+        /// </summary>
+        [JsonPropertyName("limit_m")]
+        public double? LimitM { get; set; }
+
+        [JsonPropertyName("limit_rule_id")]
+        public string LimitRuleId { get; set; }
+
         [JsonPropertyName("max_m")]
         public double MaxM { get; set; }
 

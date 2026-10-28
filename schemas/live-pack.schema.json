@@ -213,7 +213,10 @@
       "required": [
         "current_m",
         "step_m",
-        "max_m"
+        "max_m",
+        "limit_m",
+        "limit_rule_id",
+        "limit_clause_ref"
       ],
       "additionalProperties": false,
       "description": "Heights for the margin tables: samples every step_m from 0 to max_m (floors held as in the check).",
@@ -229,6 +232,25 @@
         },
         "max_m": {
           "type": "number"
+        },
+        "limit_m": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "The tallest the building may be on this plot as checked (the first sampled height a building-height rule fails, less one step); null when no rule limits it or it can't be known."
+        },
+        "limit_rule_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "limit_clause_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       }
     },

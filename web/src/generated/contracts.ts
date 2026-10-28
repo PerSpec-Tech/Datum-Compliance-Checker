@@ -706,9 +706,17 @@ export interface FsiBudget {
  * the check).
  */
 export interface HeightBand {
-    current_m: number | null;
-    max_m:     number;
-    step_m:    number;
+    current_m:        number | null;
+    limit_clause_ref: null | string;
+    /**
+     * The tallest the building may be on this plot as checked (the first sampled height a
+     * building-height rule fails, less one step); null when no rule limits it or it can't be
+     * known.
+     */
+    limit_m:       number | null;
+    limit_rule_id: null | string;
+    max_m:         number;
+    step_m:        number;
 }
 
 export interface Threshold {

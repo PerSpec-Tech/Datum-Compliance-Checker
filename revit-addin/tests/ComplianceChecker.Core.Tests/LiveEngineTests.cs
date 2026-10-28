@@ -91,6 +91,25 @@ public class LiveEngineTests
     }
 
     [Fact]
+    public void Height_limit_and_the_part_past_the_line()
+    {
+        LivePack p = Pack();
+        Assert.Equal(36.0, p.Height.LimitM!.Value, 3);
+        LiveStatus s = LiveEngine.Evaluate(p, Snapshot(dx: -0.35, dy: 0.6, height: 40.0));
+        Assert.True(s.HeightOver);
+        Assert.Contains("height 40.0 / 36.0 m ✕", s.StripText());
+
+        // The building is 0.65 m too close to side e2 at 40 m: the piece past the line is a strip
+        // 0.65 m deep along that side, inside the building.
+        SetbackIssue issue = s.Setbacks.First(x => x.EdgeId == "e2");
+        LiveOutline o = Snapshot(dx: -0.35, dy: 0.6, height: 40.0).Outlines.First(x => x.ElementId == issue.ElementId);
+        List<Pt> piece = Assert.Single(LiveEngine.Encroachments(p, s, o), x => true);
+        EdgeMargin e2 = p.Edges.Single(e => e.EdgeId == "e2");
+        double depth = piece.Max(q => 8.0 - LiveEngine.DistanceToSegment(new List<Pt> { q, q }, new Pt(e2.A[0], e2.A[1]), new Pt(e2.B[0], e2.B[1])));
+        Assert.Equal(issue.DeficitM, depth, 2);
+    }
+
+    [Fact]
     public void Distance_is_zero_when_an_outline_crosses_the_plot_line()
     {
         var square = new List<Pt> { new(-1, -1), new(1, -1), new(1, 1), new(-1, 1) };

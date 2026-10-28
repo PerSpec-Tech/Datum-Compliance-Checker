@@ -2211,7 +2211,10 @@
   "height": {
     "current_m": 36.4,
     "step_m": 0.1,
-    "max_m": 70.0
+    "max_m": 70.0,
+    "limit_m": 36.0,
+    "limit_rule_id": "pmc.ch10.height-road-width",
+    "limit_clause_ref": "10.1.1"
   },
   "thresholds": [
     {

@@ -62,10 +62,10 @@ export default function App() {
         <NavLink to="/" className="flex h-14 items-center gap-2.5 px-5 text-fg">
           <Glyph />
           <span className="flex flex-col leading-tight">
-            <span className="text-[15px] font-semibold tracking-[-0.02em]">
-              datum<span className="stop">.</span>
+            <span className="whitespace-nowrap text-[15px] font-semibold tracking-[-0.02em]">
+              datum<span className="stop">.</span> <span className="text-xs font-normal tracking-normal text-fg-3">by perspec</span>
             </span>
-            <span className="text-2xs text-fg-3">by perspec · your compliance checker</span>
+            <span className="whitespace-nowrap text-2xs text-fg-3">your compliance checker</span>
           </span>
         </NavLink>
         <nav className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col lg:gap-0.5 lg:pb-0 lg:pt-2" aria-label="Primary">

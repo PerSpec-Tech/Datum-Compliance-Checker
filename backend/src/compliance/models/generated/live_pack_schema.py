@@ -60,6 +60,12 @@ class HeightBand(BaseModel):
     current_m: float | None
     step_m: float
     max_m: float
+    limit_m: float | None = Field(
+        ...,
+        description="The tallest the building may be on this plot as checked (the first sampled height a building-height rule fails, less one step); null when no rule limits it or it can't be known.",
+    )
+    limit_rule_id: str | None
+    limit_clause_ref: str | None
 
 
 class ForEach(StrEnum):

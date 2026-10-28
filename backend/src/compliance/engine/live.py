@@ -40,6 +40,7 @@ def build_live_pack(
     if envelope is None and edges:
         notes.append("Some plot sides have no known margin yet: answer the brief, then re-check.")
     _margin_tables(model, rules, rulebase, derived, edges)
+    limit = _height_limit(model, rules, rulebase, derived)
 
     fsi = report.get("fsi") or {}
     plot = fsi.get("plot_area_m2")
@@ -68,6 +69,7 @@ def build_live_pack(
             "current_m": derived.values.get("building_height_m"),
             "step_m": STEP_M,
             "max_m": MAX_M,
+            **limit,
         },
         "thresholds": _thresholds(report, rulebase),
         "notes": notes,
@@ -154,6 +156,32 @@ def _margin_tables(
     for e in edges:
         col = table[e["edge_id"]]
         e["margin_by_height"] = [] if len(set(col)) == 1 else col  # constant: no table needed
+
+
+def _height_limit(
+    model: Mapping[str, Any], rules: list[Any], rulebase: RuleBase, derived: Derived
+) -> dict[str, Any]:
+    """The tallest the building may be: the first sampled height a building-height rule fails,
+    less one step (the road-width rule: over 36 m needs a 12 m road). None if nothing limits it."""
+    none = {"limit_m": None, "limit_rule_id": None, "limit_clause_ref": None}
+    tall = [r for r in rules if r.for_each is None and "building_height_m" in str(r.doc)]
+    if not tall:
+        return none
+    prev = 0.0
+    for i in range(int(MAX_M / STEP_M) + 1):
+        h = round(i * STEP_M, 2)
+        d = dataclasses.replace(derived, values={**derived.values, "building_height_m": h})
+        failed = [r for r in evaluate(model, tall, rulebase.tables, d) if r["status"] == "fail"]
+        if failed:
+            if h == 0:
+                return none  # fails whatever the height: not a height limit
+            return {
+                "limit_m": prev,
+                "limit_rule_id": failed[0]["rule_id"],
+                "limit_clause_ref": failed[0]["clause"]["ref"],
+            }
+        prev = h
+    return none
 
 
 def _thresholds(report: Mapping[str, Any], rulebase: RuleBase) -> list[dict[str, Any]]:

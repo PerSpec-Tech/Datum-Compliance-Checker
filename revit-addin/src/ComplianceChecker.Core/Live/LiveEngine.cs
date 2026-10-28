@@ -13,7 +13,8 @@ public sealed class LiveSnapshot
     public Dictionary<string, Dictionary<string, double?>> Values { get; } = new();
 }
 
-public sealed record LiveOutline(string ElementId, string Label, List<Pt> Points);
+/// <summary>An element seen from above; Bottom/Top (metres above ground) when the add-in knows them, for the 3D lens.</summary>
+public sealed record LiveOutline(string ElementId, string Label, List<Pt> Points, double? BottomM = null, double? TopM = null);
 
 public sealed record SetbackIssue(
     string ElementId, string Label, string EdgeId, string? EdgeKind, double DistanceM, double RequiredM,
@@ -34,9 +35,13 @@ public sealed record ThresholdIssue(
 public sealed record LiveStatus(
     double? FsiUsedM2, double? FsiMaxM2, double? FsiBaseM2, double? FsiLeftM2, double? Fsi, double? FsiMax,
     double? HeightM, IReadOnlyList<SetbackIssue> Setbacks, IReadOnlyList<ThresholdIssue> Thresholds,
-    IReadOnlyDictionary<string, double?> MarginsNow)
+    IReadOnlyDictionary<string, double?> MarginsNow, double? HeightLimitM = null, string? HeightClauseRef = null)
 {
     public int IssueCount => Setbacks.Select(s => s.ElementId).Distinct().Count() + Thresholds.Count;
+
+    public bool FsiOver => FsiLeftM2 is double l && l < 0;
+
+    public bool HeightOver => HeightM is double h && HeightLimitM is double lim && h > lim + 1e-6;
 
     /// <summary>The one-line strip: "FSI 2.31 / 2.50 · 186 m² left · height 14.2 m · margins ✓ · 2 elements ✕".</summary>
     public string StripText()
@@ -48,7 +53,7 @@ public sealed record LiveStatus(
             parts.Add($"FSI {f:0.00} / {fm:0.00}{(left.Length > 0 ? " · " + left : "")}");
         }
         if (HeightM is double h)
-            parts.Add($"height {h:0.0} m");
+            parts.Add(HeightLimitM is double lim ? $"height {h:0.0} / {lim:0.0} m{(HeightOver ? " ✕" : "")}" : $"height {h:0.0} m");
         int setbacks = Setbacks.Select(s => s.ElementId).Distinct().Count();
         parts.Add(setbacks == 0 ? "margins ✓" : $"margins ✕ {setbacks}");
         parts.Add(Thresholds.Count == 0 ? "sizes ✓" : $"sizes ✕ {Thresholds.Count}");
@@ -104,7 +109,56 @@ public static class LiveEngine
             used, pack.Fsi.MaxBuiltUpM2, pack.Fsi.BaseBuiltUpM2,
             used is double u && pack.Fsi.MaxBuiltUpM2 is double max ? Math.Round(max - u, 1) : null,
             used is double u2 && plot is double p && p > 0 ? Math.Round(u2 / p, 3) : null,
-            pack.Fsi.Max, height, setbacks, thresholds, margins);
+            pack.Fsi.Max, height, setbacks, thresholds, margins, pack.Height.LimitM, pack.Height.LimitClauseRef);
+    }
+
+    /// <summary>
+    /// The parts of an outline that lie past the buildable line: for each side it crosses, the
+    /// outline clipped to the strip between that side and its margin. Plot metres, for the lens fill.
+    /// </summary>
+    public static List<List<Pt>> Encroachments(LivePack pack, LiveStatus status, LiveOutline outline)
+    {
+        var pieces = new List<List<Pt>>();
+        if (outline.Points.Count < 3 || pack.Edges.Count == 0)
+            return pieces;
+        // The plot's middle, to tell which way is inward from each side.
+        double cx = pack.Edges.Average(e => (e.A[0] + e.B[0]) / 2), cy = pack.Edges.Average(e => (e.A[1] + e.B[1]) / 2);
+        foreach (string edgeId in status.Setbacks.Where(s => s.ElementId == outline.ElementId).Select(s => s.EdgeId).Distinct())
+        {
+            EdgeMargin e = pack.Edges.First(x => x.EdgeId == edgeId);
+            if (status.MarginsNow.GetValueOrDefault(edgeId) is not double need)
+                continue;
+            double dx = e.B[0] - e.A[0], dy = e.B[1] - e.A[1], len = Math.Sqrt(dx * dx + dy * dy);
+            if (len == 0)
+                continue;
+            double nx = -dy / len, ny = dx / len;
+            if ((cx - e.A[0]) * nx + (cy - e.A[1]) * ny < 0)
+                (nx, ny) = (-nx, -ny);
+            // Keep what is closer to the side than the margin: depth(p) = (p − a)·n ≤ need.
+            List<Pt> piece = Clip(outline.Points, p => need - ((p.X - e.A[0]) * nx + (p.Y - e.A[1]) * ny));
+            if (piece.Count >= 3 && Math.Abs(DrawingLive.Area(piece)) > 1e-4)
+                pieces.Add(piece);
+        }
+        return pieces;
+    }
+
+    /// <summary>Sutherland–Hodgman against one half-plane: keeps points where inside(p) ≥ 0.</summary>
+    private static List<Pt> Clip(IReadOnlyList<Pt> poly, Func<Pt, double> inside)
+    {
+        var output = new List<Pt>();
+        for (int i = 0; i < poly.Count; i++)
+        {
+            Pt p = poly[i], q = poly[(i + 1) % poly.Count];
+            double fp = inside(p), fq = inside(q);
+            if (fp >= 0)
+                output.Add(p);
+            if ((fp >= 0) != (fq >= 0))
+            {
+                double t = fp / (fp - fq);
+                output.Add(new Pt(p.X + (q.X - p.X) * t, p.Y + (q.Y - p.Y) * t));
+            }
+        }
+        return output;
     }
 
     /// <summary>The side's margin at a building height: the larger of the two samples around it.</summary>
