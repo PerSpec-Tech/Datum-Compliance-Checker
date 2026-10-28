@@ -48,6 +48,24 @@ public class DrawingLiveTests
     }
 
     [Fact]
+    public void A_new_room_is_built_up_area_and_a_room_inside_the_fsi_outline_is_not_counted_twice()
+    {
+        var live = new DrawingLive(Frames);
+        DrawingPolyline fsi = Rect("B1", "_ResiFSI", 101_000, 3_000, 111_000, 13_000); // 100 m² × 3 floors
+        DrawingPolyline inside = Rect("R1", "_Room", 102_000, 4_000, 106_000, 8_000);
+        live.SetBaseline([fsi, inside]);
+        Assert.Equal(1234.0, live.Snapshot([fsi, inside], 1234.0).BuiltUpM2);
+
+        // A 4 × 2 m room drawn out past the FSI outline: +8 m² on each of the 3 floors.
+        DrawingPolyline bay = Rect("R2", "_Room", 103_000, 1_000, 107_000, 3_000);
+        Assert.Equal(1258.0, live.Snapshot([fsi, inside, bay], 1234.0).BuiltUpM2);
+        // The FSI outline then stretched over the same bay: no change, it isn't counted twice.
+        DrawingPolyline grown = Rect("B1", "_ResiFSI", 101_000, 1_000, 111_000, 13_000);
+        Assert.Equal(1294.0, live.Snapshot([grown, inside, bay], 1234.0).BuiltUpM2);
+        Assert.Contains(live.Snapshot([grown], null).Outlines, o => o.ElementId == "B1" && o.Label == "built-up area");
+    }
+
+    [Fact]
     public void A_point_round_trips_between_drawing_and_plot()
     {
         var live = new DrawingLive(Frames);

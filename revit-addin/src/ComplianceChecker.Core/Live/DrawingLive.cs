@@ -11,9 +11,11 @@ public sealed record DrawingPolyline(string Handle, string Layer, IReadOnlyList<
 /// coordinates, using the server's floor frames (which floor plan a polyline is on, and how that
 /// plan was moved onto the plot). Footprints on the site plan are already in plot coordinates.
 ///
-/// FSI is measured as a change: the PreDCR FSI polylines' area now, minus their area at the last
-/// check, added to the server's built-up figure. So the preview matches the report right after a
-/// check, and moves with every edit, whatever the server deducts.
+/// FSI is measured as a change: the built-up area drawn now, minus the same at the last check, added
+/// to the server's built-up figure. So the preview matches the report right after a check, and moves
+/// with every edit, whatever the server deducts. Built-up area on a floor plan is the union of the FSI
+/// outlines and the rooms: a room drawn past the FSI outline is new area at once, and a room inside it
+/// isn't counted twice. Rooms and FSI outlines both count as the building for the setbacks.
 /// </summary>
 public sealed class DrawingLive
 {
@@ -36,6 +38,9 @@ public sealed class DrawingLive
     public bool Watches(string layer) =>
         RoleOf(layer) is "room" or "footprint" or "fsi_resi" or "fsi_comm" or "fsi_other";
 
+    /// <summary>Drawn on a floor plan (moved onto the plot by the plan's frame), not on the site plan.</summary>
+    public bool OnFloorPlan(string layer) => RoleOf(layer) is "room" or "fsi_resi" or "fsi_comm" or "fsi_other";
+
     /// <summary>Remember the FSI area as it was at the check (call once, right after it).</summary>
     public void SetBaseline(IEnumerable<DrawingPolyline> polylines) => _baseFsiM2 = FsiArea(polylines);
 
@@ -51,8 +56,9 @@ public sealed class DrawingLive
             string? role = RoleOf(p.Layer);
             if (role == "footprint")
                 snap.Outlines.Add(new LiveOutline(p.Handle, "building outline", p.Points.Select(q => new Pt(q.X * s, q.Y * s)).ToList()));
-            else if (role == "room" && FloorOf(p.Points[0]) is { } f)
-                snap.Outlines.Add(new LiveOutline(p.Handle, _names.TryGetValue(p.Handle, out string? n) ? n : "room",
+            else if (OnFloorPlan(p.Layer) && FloorOf(p.Points[0]) is { } f)
+                snap.Outlines.Add(new LiveOutline(p.Handle,
+                    _names.TryGetValue(p.Handle, out string? n) ? n : role == "room" ? "room" : "built-up area",
                     p.Points.Select(q => ToModel(q, f)).ToList()));
         }
         if (checkedUsedM2 is double used && _baseFsiM2 is double before && FsiArea(list) is double now)
@@ -74,19 +80,62 @@ public sealed class DrawingLive
     public FloorFrame? FloorOf(Pt p) =>
         _frames.Floors.FirstOrDefault(f => f.Bounds[0] <= p.X && p.X <= f.Bounds[2] && f.Bounds[1] <= p.Y && p.Y <= f.Bounds[3]);
 
-    /// <summary>Built-up area on the FSI layers (m²), each floor plan counted once per floor it stands for.</summary>
+    /// <summary>
+    /// Built-up area (m²): per floor plan, the union of its FSI outlines and rooms, counted once per floor
+    /// the plan stands for. Exact along scanlines every 5 cm.
+    /// </summary>
     private double? FsiArea(IEnumerable<DrawingPolyline> polylines)
     {
         double total = 0;
         bool any = false;
-        foreach (DrawingPolyline p in polylines)
+        var byFloor = polylines
+            .Where(p => p.Points.Count >= 3 && OnFloorPlan(p.Layer))
+            .Select(p => (p.Points, Floor: FloorOf(p.Points[0])))
+            .Where(x => x.Floor is not null)
+            .GroupBy(x => x.Floor!);
+        foreach (var floor in byFloor)
         {
-            if (p.Points.Count < 3 || !FsiRoles.Contains(RoleOf(p.Layer)) || FloorOf(p.Points[0]) is not { } f)
-                continue;
-            total += Math.Abs(Area(p.Points)) * _frames.Scale * _frames.Scale * Math.Max(1, f.Nums.Count);
+            var polys = floor.Select(x => x.Points).ToList();
+            total += UnionArea(polys, 0.05 / _frames.Scale) * _frames.Scale * _frames.Scale * Math.Max(1, floor.Key.Nums.Count);
             any = true;
         }
         return any ? total : null;
+    }
+
+    /// <summary>Area covered by any of the polygons (drawing units²): exact spans on scanlines <paramref name="step"/> apart.</summary>
+    public static double UnionArea(IReadOnlyList<IReadOnlyList<Pt>> polys, double step)
+    {
+        double y0 = polys.Min(p => p.Min(q => q.Y)), y1 = polys.Max(p => p.Max(q => q.Y));
+        double area = 0;
+        var spans = new List<(double A, double B)>();
+        var xs = new List<double>();
+        for (double y = y0 + step / 2; y < y1; y += step)
+        {
+            spans.Clear();
+            foreach (IReadOnlyList<Pt> poly in polys)
+            {
+                xs.Clear();
+                for (int i = 0; i < poly.Count; i++)
+                {
+                    Pt a = poly[i], b = poly[(i + 1) % poly.Count];
+                    if ((a.Y <= y) != (b.Y <= y))
+                        xs.Add(a.X + (y - a.Y) / (b.Y - a.Y) * (b.X - a.X));
+                }
+                xs.Sort();
+                for (int i = 0; i + 1 < xs.Count; i += 2)
+                    spans.Add((xs[i], xs[i + 1]));
+            }
+            spans.Sort();
+            double end = double.MinValue;
+            foreach (var (a, b) in spans)
+            {
+                if (b <= end)
+                    continue;
+                area += (b - Math.Max(a, end)) * step;
+                end = b;
+            }
+        }
+        return area;
     }
 
     public static double Area(IReadOnlyList<Pt> p)

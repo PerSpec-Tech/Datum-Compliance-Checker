@@ -295,7 +295,7 @@ namespace ComplianceChecker.AutoCAD
         private static void HatchPast(LivePack pack, LiveStatus status, DrawingLive drawing, Polyline pl, List<Pt> pts, double unit)
         {
             // To plot metres the way the snapshot did (site plan footprint, or a room on a floor plan), and back.
-            FloorFrame? frame = drawing.RoleOf(pl.Layer) == "room" ? drawing.FloorOf(pts[0]) : null;
+            FloorFrame? frame = drawing.OnFloorPlan(pl.Layer) ? drawing.FloorOf(pts[0]) : null;
             Func<Pt, Pt> toModel = frame is null ? p => new Pt(p.X * drawing.Scale, p.Y * drawing.Scale) : p => drawing.ToModel(p, frame);
             Func<Pt, Pt> toDrawing = frame is null ? p => new Pt(p.X / drawing.Scale, p.Y / drawing.Scale) : p => drawing.ToDrawing(p, frame);
             var outline = new LiveOutline(pl.Handle.ToString(), "", pts.Select(toModel).ToList());

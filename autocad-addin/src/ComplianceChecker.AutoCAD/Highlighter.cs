@@ -24,6 +24,9 @@ namespace ComplianceChecker.AutoCAD
     internal static class Highlighter
     {
         public const string LayerName = "COMPLIANCE ISSUES";
+
+        // Clouds: red for a fail, yellow for a check that can't be verified yet (AutoCAD colours 1 and 2).
+        private const short Red = 1, Yellow = 2;
         private const string App = "PERSPEC_COMPLIANCE";
         private static readonly List<Entity> Focused = new();
 
@@ -57,7 +60,7 @@ namespace ComplianceChecker.AutoCAD
                 double arc = Math.Clamp(size / 10, 0.4 * unit, 2.5 * unit);
 
                 Polyline cloud = Markup.Cloud(box, arc);
-                Add(space, tr, cloud, layer, fail ? 1 : 8);
+                Add(space, tr, cloud, layer, fail ? Red : Yellow);
                 var label = new MText
                 {
                     Contents = Label(lead),
@@ -66,7 +69,7 @@ namespace ComplianceChecker.AutoCAD
                     Attachment = AttachmentPoint.BottomLeft,
                     Width = 0,
                 };
-                Add(space, tr, label, layer, fail ? 1 : 8);
+                Add(space, tr, label, layer, fail ? Red : Yellow);
                 drawn++;
             }
             tr.Commit();
@@ -111,7 +114,7 @@ namespace ComplianceChecker.AutoCAD
                 loop.Polyline.Add(new BulgeVertex(outline[0], 0));
                 hatch.AppendLoop(loop);
                 hatch.EvaluateHatch(true);
-                hatch.ColorIndex = row.Status == Status.Fail ? 1 : 8;
+                hatch.ColorIndex = row.Status == Status.Fail ? Red : Yellow;
                 hatch.Transparency = new Transparency(110); // about 57 % see-through
                 Transient(hatch);
             }
