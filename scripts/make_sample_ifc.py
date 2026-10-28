@@ -52,9 +52,10 @@ from compliance.config import REPO_ROOT
 NAMES = ["compliant_house", "violating_apartment", "demo_apartment", "demo_house"]
 WEB_SAMPLES = {"demo_apartment"}  # what the web app offers under "Try a sample"
 # IfcGeometricRepresentationContext.TrueNorth per sample (degrees the plan is turned anticlockwise
-# from north). The tower's front (its south side in the model) faces Gokhale Path, which runs about
-# 11° west of north there, so its site setup starts lined up with the street.
-TRUE_NORTH = {"demo_apartment": -79.0}
+# from north). The tower stands on open land beside Ramwadi metro station (Nagar Road), its front
+# (the south side in the model) on the lane east of the plot, so its site setup starts lined up
+# with the street and clear of the mapped buildings.
+TRUE_NORTH = {"demo_apartment": 98.8}
 OUT = REPO_ROOT / "fixtures" / "ifc"
 WEB = REPO_ROOT / "web" / "public" / "samples"
 

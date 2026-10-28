@@ -152,7 +152,29 @@ namespace ComplianceChecker.Export
             {
                 raw.Areas.Add(new RawArea(AreaId(a.Id), a.UniqueId, a.AreaScheme?.Name ?? "", LevelId(a.LevelId), Name(a), Units.M2(a.Area)));
             }
+            if (raw.Areas.Any(a => GrossScheme.IsMatch(a.Scheme)))
+                return;
+
+            // No gross / built-up area plans: the floor slabs at or above ground stand in for them (as the
+            // live preview measures), each on the level nearest its top. Area plans, when drawn, win.
+            double ground = raw.GroundLevelM ?? 0;
+            int n = 0;
+            foreach (Floor f in new FilteredElementCollector(doc).OfClass(typeof(Floor)).Cast<Floor>())
+            {
+                if (f.get_BoundingBox(null) is not BoundingBoxXYZ bb || f.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED) is not { HasValue: true } p)
+                    continue;
+                double top = Units.M(bb.Max.Z);
+                if (top < ground - 0.05 || raw.Levels.Count == 0)
+                    continue; // basements don't count here
+                RawLevel level = raw.Levels.OrderBy(l => Math.Abs(l.ElevationM - top)).First();
+                raw.Areas.Add(new RawArea("FS" + f.Id.Value, f.UniqueId, "Gross (from floor slabs)", level.Id, "Slab " + f.Name, Units.M2(p.AsDouble())));
+                n++;
+            }
+            if (n > 0)
+                raw.Warnings.Add($"No gross or built-up area plans: FSI uses the {n} floor slab(s) at or above ground. Draw area plans for the exact built-up area.");
         }
+
+        private static readonly Regex GrossScheme = new("gross|fsi|bua|built", RegexOptions.IgnoreCase);
 
         // ------------------------------------------------------------------ stairs & doors
 
@@ -227,7 +249,21 @@ namespace ComplianceChecker.Export
                     CollectSegments(geom, raw.PropertyLineSegments);
             }
             if (raw.PropertyLineSegments.Count == 0)
-                raw.Warnings.Add("No property lines: draw them (Massing & Site › Property Line) so margins and FSI can be checked.");
+            {
+                // Many offices draw the plot as plain lines: model lines on a "Plot" / "Property line" style count too.
+                foreach (CurveElement c in new FilteredElementCollector(doc).OfClass(typeof(CurveElement)).Cast<CurveElement>())
+                {
+                    string style = (c.LineStyle as GraphicsStyle)?.Name?.ToLowerInvariant() ?? "";
+                    if (c is ModelCurve && (style.Contains("plot") || style.Contains("property")))
+                    {
+                        IList<XYZ> pts = c.GeometryCurve.Tessellate();
+                        for (int i = 0; i + 1 < pts.Count; i++)
+                            raw.PropertyLineSegments.Add((P(pts[i]), P(pts[i + 1])));
+                    }
+                }
+            }
+            if (raw.PropertyLineSegments.Count == 0)
+                raw.Warnings.Add("No property lines: draw them (Massing & Site › Property Line), or draw the plot with model lines on a line style named 'Plot boundary', so margins and FSI can be checked.");
         }
 
         private static void CollectSegments(GeometryElement geom, List<(Pt A, Pt B)> into)

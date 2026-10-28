@@ -321,8 +321,8 @@ def apartment() -> dict:
     ]  # fmt: skip
     return model(
         b,
-        project=project_facts("Demo — mixed-use building near a metro station", 18.5165,
-                              73.842, "A-4", "mixed_use", True),  # fmt: skip
+        project=project_facts("Demo — mixed-use building near a metro station", 18.556546,
+                              73.909447, "A-4", "mixed_use", True),  # fmt: skip
         site=site_facts(50, 51, 10.5, 2550.0),
         levels=levels,
         footprint=rect(W0, f0, E1, ROWS["rear_b"][1]),

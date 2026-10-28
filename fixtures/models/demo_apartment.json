@@ -13,8 +13,8 @@
     "name": "Demo — mixed-use building near a metro station",
     "location": {
       "value": {
-        "lat": 18.5165,
-        "lon": 73.842
+        "lat": 18.556546,
+        "lon": 73.909447
       },
       "source": "declared"
     },
