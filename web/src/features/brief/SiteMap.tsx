@@ -145,6 +145,12 @@ export default function SiteMap({
   // A new tool starts with no points.
   useEffect(() => setPoints([]), [tool]);
 
+  // The crosshair goes on through classList: Leaflet owns the container's classes, and a React
+  // className would wipe them (and with them the map tiles).
+  useEffect(() => {
+    map.current?.getContainer().classList.toggle("map-drawing", tool === "draw");
+  }, [tool]);
+
   // The map itself, once.
   useEffect(() => {
     if (!host.current) return;
@@ -395,7 +401,7 @@ export default function SiteMap({
   const pl = draft.placement;
   return (
     <div className={`relative overflow-hidden rounded-md border border-line-subtle ${className}`}>
-      <div ref={host} className={`absolute inset-0 ${tool === "draw" ? "cursor-crosshair" : ""}`} />
+      <div ref={host} className="absolute inset-0" />
       <div className="pointer-events-none absolute right-3 top-3 z-[500] flex flex-col items-center rounded-sm border border-line-subtle bg-surface px-1.5 py-1 text-fg-2">
         <svg width="12" height="16" viewBox="0 0 12 16" fill="none" stroke="currentColor" strokeWidth="1.25" aria-hidden>
           <path d="M6 1l4 13-4-3-4 3 4-13z" />

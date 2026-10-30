@@ -180,7 +180,7 @@ export default function SiteWizard({
     setDirty(true);
   }
 
-  const tool = step === "plot" && drawMode ? "draw" : step === "address" || step === "north" || step === "plot" ? "place" : "none";
+  const tool = step === "plot" ? (drawMode ? "draw" : "none") : step === "address" || step === "north" ? "place" : "none";
   const city = cities.data?.find((c) => c.id === authority);
   const pin = pl ? { lat: +pl.lat.toFixed(3), lon: +pl.lon.toFixed(3) } : null;
   // A name for the spot, and whether it is in the chosen city at all.

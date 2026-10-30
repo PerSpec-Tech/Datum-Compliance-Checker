@@ -171,6 +171,10 @@
   font: inherit;
   background: var(--bg-surface-low);
 }
+.leaflet-container.map-drawing,
+.leaflet-container.map-drawing .leaflet-interactive {
+  cursor: crosshair;
+}
 .map-dark {
   filter: grayscale(1) invert(1) brightness(0.82) contrast(1.15);
 }
