@@ -56,10 +56,10 @@ def create_app(
 def _serve_web(app: FastAPI) -> None:
     """Serve the built web app (web/dist) from the same origin, with SPA fallback."""
     from fastapi import HTTPException
-    from fastapi.responses import FileResponse
+    from fastapi.responses import FileResponse, HTMLResponse, Response
     from fastapi.staticfiles import StaticFiles
 
-    from compliance.config import REPO_ROOT
+    from compliance.config import REPO_ROOT, get_settings
 
     dist = REPO_ROOT / "web" / "dist"
     if not (dist / "index.html").exists():
@@ -77,14 +77,21 @@ def _serve_web(app: FastAPI) -> None:
     # instead of a browser running a cached old app.
     fresh = {"Cache-Control": "no-cache"}
 
+    # A deployment can add its own markup to the page's <head> (HEAD_HTML); unset, the page is
+    # served as built.
+    head_html = get_settings().head_html.strip()
+    index = (dist / "index.html").read_text(encoding="utf-8")
+    if head_html:
+        index = index.replace("</head>", head_html + "\n</head>", 1)
+
     @app.get("/{path:path}", include_in_schema=False)
-    def spa(path: str) -> FileResponse:
+    def spa(path: str) -> Response:
         if path.startswith("api/"):
             raise HTTPException(404, "Not found.")
         file = dist / path
-        if path and file.is_file() and dist in file.resolve().parents:
+        if path and path != "index.html" and file.is_file() and dist in file.resolve().parents:
             return FileResponse(file, headers=fresh)
-        return FileResponse(dist / "index.html", headers=fresh)
+        return HTMLResponse(index, headers=fresh)
 
 
 def _default_runner(store: Store, rulebase: Callable[[], RuleBase]) -> JobRunner:

@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     app_db_path: Path = REPO_ROOT / "data" / "app.sqlite"
     app_public_url: str = "http://localhost:8000"
     app_secret: str = "change-me"
+    head_html: str = ""  # optional markup added to the web page's <head> by this deployment
     nominatim_user_agent: str = (
         "PERSPEC-ComplianceChecker/0.1 (hackathon demo; Revit bylaw checker)"
     )
