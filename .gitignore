@@ -52,7 +52,7 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 
-# Not part of the public repo: working notes, submission material, recordings
+# Not part of the public repo
 CLAUDE.md
 ROADMAP.md
 docs/

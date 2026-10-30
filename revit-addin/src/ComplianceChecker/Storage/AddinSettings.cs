@@ -12,7 +12,7 @@ namespace ComplianceChecker.Storage
     /// </summary>
     public sealed class AddinSettings
     {
-        public string ServerUrl { get; set; } = "https://compliance.getperspec.com";
+        public string ServerUrl { get; set; } = "https://datum.getperspec.com";
 
         private static readonly string Folder =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ComplianceChecker");

@@ -10,7 +10,7 @@ Built by [PerSpec](https://getperspec.com) for the Nebius × NVIDIA Global AI Ha
 
 ## Try it
 
-- **Hosted app: <https://compliance.getperspec.com>.** No login. Click **mixed-use tower near a metro station** (a G+11 IFC building: too tall for its 10.5 m road, and Floor 1 built too low) or **two-storey bungalow** (a 2D PreDCR-layered DXF; set the site on the map, then 2 issues).
+- **Hosted app: <https://datum.getperspec.com>.** No login. Click **mixed-use tower near a metro station** (a G+11 IFC building: too tall for its 10.5 m road, and Floor 1 built too low) or **two-storey bungalow** (a 2D PreDCR-layered DXF; set the site on the map, then 2 issues).
 - **Revit 2026 and AutoCAD 2026 plug-ins:** download them from **pair Revit · AutoCAD** in the app. They connect to the hosted app by default.
 - **Locally:** see [Run it locally](#run-it-locally).
 
@@ -63,7 +63,7 @@ Web app (React) ─────── IFC / DXF upload ───┤
 - **Web:** Vite, React, TypeScript, Tailwind, Leaflet, three.js ([web/](web/)).
 - **Revit add-in:** [revit-addin/](revit-addin/). It never modifies model elements; it only writes its own Extensible Storage and the "Compliance Check" view.
 - **AutoCAD plug-in:** [autocad-addin/](autocad-addin/). It exports a DXF copy of the open drawing (the drawing itself is untouched) and adds only its own tagged clouds and labels on the `COMPLIANCE ISSUES` layer.
-- **Hosting:** one container ([deploy/Dockerfile](deploy/Dockerfile)): Node builds the web app, FastAPI serves the API and the static files; SQLite on a mounted volume. The public instance runs on Railway at compliance.getperspec.com.
+- **Hosting:** one container ([deploy/Dockerfile](deploy/Dockerfile)): Node builds the web app, FastAPI serves the API and the static files; SQLite on a mounted volume. The public instance runs on Railway at datum.getperspec.com.
 
 ## Run it locally
 
