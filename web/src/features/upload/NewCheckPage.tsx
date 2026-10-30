@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { LAYER_ROLES, api, type UploadResult } from "../../api/client";
 import { FieldError, Icon, Spinner, Title } from "../../components/ui";
 import { recentProjects, rememberProject } from "../../lib/recent";
+import { track } from "../../lib/track";
 import Sketch from "../../components/Sketch";
 import type { LatLon } from "../brief/MapPin";
 
@@ -44,6 +45,8 @@ export default function NewCheckPage() {
 
   async function load(file: Blob, name: string, fileName = name) {
     setError(null);
+    const kind = isDxf(fileName) ? "dxf" : "ifc";
+    const isSample = SAMPLES.some((s) => s.file === fileName);
     try {
       setBusy("creating the project");
       const { id } = await api.createProject(name.replace(/\.(ifc|dxf)$/i, ""));
@@ -53,11 +56,13 @@ export default function NewCheckPage() {
       const upload = dxf ? await api.uploadDxf(id, file) : await api.uploadIfc(id, file);
       const m = await api.model(id);
       const loc = m.model.project.location.value;
+      track("file_uploaded", { kind, sample: isSample, located: !!loc });
       const l = { id, name, upload, location: loc ? { lat: loc.lat, lon: loc.lon } : null, dxf };
       const attention = dxf && ((upload.unmapped ?? 0) > 0 || upload.layers?.some((x) => x.source === "suggested"));
       if (attention) setLoaded(l);
       else await open(l);
     } catch (e) {
+      track("upload_failed", { kind, sample: isSample });
       setError(e);
     } finally {
       setBusy(null);

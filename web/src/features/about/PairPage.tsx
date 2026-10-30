@@ -2,10 +2,11 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "../../api/client";
 import { ErrorBox, Icon, Spinner, Title } from "../../components/ui";
+import { track } from "../../lib/track";
 
 // "Pair Revit": the add-in's pairing window sends people here for a 6-digit code.
 export default function PairPage() {
-  const pair = useMutation({ mutationFn: api.pairStart });
+  const pair = useMutation({ mutationFn: api.pairStart, onSuccess: () => track("pair_code_created") });
   const [left, setLeft] = useState(0);
   const server = window.location.origin;
 
@@ -27,10 +28,10 @@ export default function PairPage() {
         <Step n={1} title="install">
           <p title="Unzip, close Revit / AutoCAD, right-click install.ps1 → Run with PowerShell, then start it (Revit: choose Always Load).">unzip · run install.ps1 · start</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <a className="btn-secondary" href="/downloads/ComplianceChecker-revit2026.zip" download>
+            <a className="btn-secondary" href="/downloads/ComplianceChecker-revit2026.zip" download onClick={() => track("plugin_download", { app: "revit" })}>
               <Icon name="cube" /> add-in for Revit 2026
             </a>
-            <a className="btn-secondary" href="/downloads/ComplianceChecker-autocad2026.zip" download>
+            <a className="btn-secondary" href="/downloads/ComplianceChecker-autocad2026.zip" download onClick={() => track("plugin_download", { app: "autocad" })}>
               <Icon name="layers" /> plug-in for AutoCAD 2026
             </a>
           </div>

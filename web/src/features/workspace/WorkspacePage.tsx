@@ -6,6 +6,7 @@ import type { BuildingModel, Status } from "../../api/types";
 import { ErrorBox, Icon, STATUS_META, Spinner, StatusMark } from "../../components/ui";
 import ThemeToggle from "../../components/ThemeToggle";
 import { rememberProject } from "../../lib/recent";
+import { track } from "../../lib/track";
 import { bunchGroups, groupResults, isBunch, worstBy, type Group } from "../report/groups";
 import PlanViewer from "../viewer/PlanViewer";
 import { gapTo } from "../viewer/SetbackLayer";
@@ -43,6 +44,8 @@ export default function WorkspacePage() {
   const [error, setError] = useState<unknown>(null);
   const pointer = useRef<{ x: number; y: number } | null>(null);
   const canvas = useRef<HTMLDivElement>(null);
+  // Seconds the last check took, until its report has loaded and been counted.
+  const checked = useRef<number | null>(null);
 
   const m = model.data?.model;
   const r = report.data;
@@ -80,10 +83,12 @@ export default function WorkspacePage() {
   useEffect(() => {
     if (!job || job.error) return;
     const es = new EventSource(api.eventsUrl(job.id));
+    const started = Date.now();
     es.onmessage = (msg) => {
       const e = JSON.parse(msg.data) as JobEvent;
       if (e.stage === "done") {
         es.close();
+        checked.current = Math.round((Date.now() - started) / 1000);
         setJob(null);
         setParams((p) => { p.delete("job"); return p; }, { replace: true }); // prettier-ignore
         void qc.invalidateQueries({ queryKey: ["project", projectId] });
@@ -91,6 +96,7 @@ export default function WorkspacePage() {
         void qc.invalidateQueries({ queryKey: ["live-pack", projectId] });
       } else if (e.stage === "error") {
         es.close();
+        track("check_failed");
         setJob((j) => (j ? { ...j, error: e.error ?? e.msg ?? "The check failed." } : j));
       } else setJob((j) => (j ? { ...j, pct: e.pct ?? j.pct, msg: e.msg ?? j.msg } : j));
     };
@@ -101,9 +107,18 @@ export default function WorkspacePage() {
     return () => es.close();
   }, [job?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Count a finished check once its new report has loaded.
+  useEffect(() => {
+    if (checked.current === null || !r) return;
+    const s = r.summary;
+    track("check_done", { seconds: checked.current, fail: s.fail, unverifiable: s.unverifiable, pass: s.pass, kind: dxf ? "dxf" : "ifc" });
+    checked.current = null;
+  }, [r]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Save the site without checking: the project keeps it; the check can run later.
   async function saveSite(answers: Record<string, unknown>) {
     if (Object.keys(answers).length) await api.patchBrief(projectId, answers);
+    track("site_saved");
     await qc.invalidateQueries({ queryKey: ["project", projectId] });
     await qc.invalidateQueries({ queryKey: ["model", projectId] });
   }
@@ -114,6 +129,7 @@ export default function WorkspacePage() {
     try {
       if (answers && Object.keys(answers).length) await api.patchBrief(projectId, answers);
       const { job_id } = await api.startCheck(projectId);
+      track("check_started", { rerun: !!reportId });
       setJob({ id: job_id, pct: 0, msg: null, error: null });
       setSite(false);
     } catch (e) {
@@ -124,6 +140,7 @@ export default function WorkspacePage() {
   }
 
   function pick(key: string) {
+    track("issue_opened", { element: key.split(":")[0] });
     const p = pointer.current, c = canvas.current?.getBoundingClientRect();
     setCard({ key, x: p && c ? p.x - c.left : null, y: p && c ? p.y - c.top : null });
   }

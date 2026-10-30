@@ -5,6 +5,7 @@ import { api, type DrawingFloor } from "../../api/client";
 import type { BuildingModel, Result, Source, Status } from "../../api/types";
 import { ErrorBox, Icon, Skeleton, SourceBadge, StatusMark, fmt } from "../../components/ui";
 import { rememberProject } from "../../lib/recent";
+import { track } from "../../lib/track";
 import { applyTheme, storedTheme } from "../../lib/theme";
 import ElementThumb from "./ElementThumb";
 import FsiCard from "./FsiCard";
@@ -33,6 +34,8 @@ export default function ReportPage() {
   useEffect(() => {
     if (project.data) rememberProject({ id: project.data.id, name: project.data.name, reportId });
   }, [project.data, reportId]);
+
+  useEffect(() => track("report_opened"), [reportId]);
 
   // Print in the light theme, whatever is on screen.
   useEffect(() => {
@@ -86,10 +89,10 @@ export default function ReportPage() {
             <button className={`btn-secondary ${passes ? "border-fg text-fg" : ""}`} onClick={() => setPasses((v) => !v)} aria-pressed={passes}>
               <StatusMark status="pass" short /> {passes ? "hide passes" : "show passes"}
             </button>
-            <a className="btn-secondary" href={api.bcfUrl(report.id)} title="One BCF topic per failure, for Solibri, BIMcollab, Archicad, BlenderBIM">
+            <a className="btn-secondary" href={api.bcfUrl(report.id)} onClick={() => track("bcf_downloaded")} title="One BCF topic per failure, for Solibri, BIMcollab, Archicad, BlenderBIM">
               <Icon name="download" /> BCF
             </a>
-            <button className="btn-primary" onClick={() => window.print()}>
+            <button className="btn-primary" onClick={() => { track("report_pdf"); window.print(); }}>
               <Icon name="download" /> save as PDF
             </button>
           </div>
