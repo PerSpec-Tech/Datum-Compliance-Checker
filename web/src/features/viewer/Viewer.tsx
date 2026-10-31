@@ -76,9 +76,18 @@ export default function Viewer({ modelVersion, statusByGuid, focus, onPick, proj
 
   if (mesh.error) {
     const notFound = mesh.error instanceof ApiError && mesh.error.status === 404;
+    const expired = mesh.error instanceof ApiError && mesh.error.status === 410;
     return (
       <div className="panel grid h-full min-h-[320px] place-items-center p-6 text-center text-sm text-fg-2">
-        {notFound ? (
+        {expired ? (
+          <div>
+            <p className="h2 text-fg">3D view removed</p>
+            <p className="mt-1">
+              Uploaded files are kept for 30 days after a project was last opened. The results are all here; upload
+              the model again to see it in 3D.
+            </p>
+          </div>
+        ) : notFound ? (
           <div>
             <p className="h2 text-fg">results are in Revit</p>
             <p className="mt-1">

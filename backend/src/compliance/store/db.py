@@ -14,9 +14,10 @@ from compliance.config import get_settings
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS projects (
-    id          TEXT PRIMARY KEY,
-    name        TEXT NOT NULL,
-    created_at  TEXT NOT NULL
+    id              TEXT PRIMARY KEY,
+    name            TEXT NOT NULL,
+    created_at      TEXT NOT NULL,
+    last_opened_at  TEXT                    -- any use of the project; drives retention
 );
 CREATE TABLE IF NOT EXISTS model_versions (
     id          TEXT PRIMARY KEY,
@@ -120,6 +121,10 @@ class Database:
         """Create anything missing. Safe to run on every start."""
         with self.lock:
             self._conn.executescript(SCHEMA)
+            # Columns added after the first release: SQLite has no ADD COLUMN IF NOT EXISTS.
+            cols = {r[1] for r in self._conn.execute("PRAGMA table_info(projects)")}
+            if "last_opened_at" not in cols:
+                self._conn.execute("ALTER TABLE projects ADD COLUMN last_opened_at TEXT")
 
     def execute(self, sql: str, params: tuple | dict = ()) -> sqlite3.Cursor:
         with self.lock:

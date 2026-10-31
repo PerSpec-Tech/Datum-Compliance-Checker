@@ -50,6 +50,12 @@ export interface ProjectInfo {
   brief: Record<string, Fact<unknown>>;
 }
 
+// Where an upload is while the server reads it (GET /projects/{id}/reading).
+export type ReadingStatus =
+  | { state: "idle" }
+  | { state: "queued"; ahead: number; reading: number }
+  | { state: "reading"; pct: number; msg: string | null };
+
 export interface UploadResult {
   model_version: string;
   warnings: string[];
@@ -202,6 +208,7 @@ export const api = {
     request<{ model_version: string; model: BuildingModel; skipped_answers: string[] }>(
       `/projects/${id}/model`,
     ),
+  reading: (id: string) => request<ReadingStatus>(`/projects/${id}/reading`),
   uploadIfc: (id: string, file: Blob) =>
     request<UploadResult>(`/projects/${id}/ifc`, {
       method: "POST",

@@ -22,6 +22,15 @@ class Settings(BaseSettings):
     # Threads for reading IFC geometry. Each one holds geometry in memory, and in a container
     # the CPU count is the host's, not the container's, so this is a fixed number.
     geom_threads: int = 2
+    # Reading a model takes about 20x its file size in memory, so uploads are capped, and at
+    # most this many models are read at once; more wait their turn instead of using memory.
+    max_upload_mb: int = 50
+    geom_jobs: int = 2
+    read_queue_max: int = 10  # uploads waiting in line; more are told to try later
+    # Retention (see compliance.retention): uploaded files after this many days without
+    # use; whole projects after this many.
+    retention_files_days: int = 30
+    retention_project_days: int = 90
     head_html: str = ""  # optional markup added to the web page's <head> by this deployment
     nominatim_user_agent: str = (
         "PERSPEC-ComplianceChecker/0.1 (hackathon demo; Revit bylaw checker)"

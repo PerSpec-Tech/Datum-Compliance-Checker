@@ -8,7 +8,9 @@ from fastapi import APIRouter, Body, Depends, Header, HTTPException, Query, Requ
 from pydantic import BaseModel, Field
 from sse_starlette.sse import EventSourceResponse
 
+from compliance import files
 from compliance.jobs import JobRunner, event_json
+from compliance.retention import prune_versions
 from compliance.schemas import errors as schema_errors
 from compliance.store.repo import Store
 
@@ -40,7 +42,13 @@ def project_or_404(project_id: str, st: Store) -> dict[str, Any]:
     p = st.get_project(project_id)
     if p is None:
         raise HTTPException(404, "Project not found.")
+    st.touch_project(project_id)  # any use keeps the project's files (see retention)
     return p
+
+
+def reads(request: Request):  # type: ignore[no-untyped-def]
+    """The app's model-reading queue (ingest.ReadQueue)."""
+    return request.app.state.reads
 
 
 # ------------------------------------------------------------------ bodies
@@ -137,7 +145,7 @@ def get_thumbnail(project_id: str, st: Store = Depends(store)) -> Response:
     IFC's building in 3D (PNG, cached). A model sent from Revit has neither: a sketch instead."""
     import json
 
-    from compliance.thumbnail import floor_svg, mesh_png, plan_svg
+    from compliance.thumbnail import floor_svg, plan_svg
 
     project_or_404(project_id, st)
     if (drawing_dir(project_id, st) / "drawing.dxf").exists():
@@ -145,10 +153,7 @@ def get_thumbnail(project_id: str, st: Store = Depends(store)) -> Response:
         if svg:
             return Response(svg, media_type="image/svg+xml")
     latest = st.latest_model(project_id)
-    if latest and ifc_path(latest[0], st).exists():
-        png = ifc_path(latest[0], st).with_suffix(".thumb.png")
-        if not png.exists():
-            png.write_bytes(mesh_png(json.loads(_mesh_json(latest[0], st))))
+    if latest and (png := files.thumbnail(st, latest[0])) is not None:
         return Response(png.read_bytes(), media_type="image/png")
     model = get_project_model(project_id, st)["model"]
     return Response(plan_svg(model), media_type="image/svg+xml")
@@ -190,23 +195,49 @@ def get_live_pack(project_id: str, st: Store = Depends(store)) -> dict[str, Any]
 
 
 @router.get("/models/{version_id}/mesh")
-def get_mesh(version_id: str, st: Store = Depends(store)) -> Any:
-    """IFC geometry as triangles per element (by GlobalId) for the web viewer; cached on disk."""
-    return Response(_mesh_json(version_id, st), media_type="application/json")
+async def get_mesh(version_id: str, request: Request, st: Store = Depends(store)) -> Any:
+    """IFC geometry as triangles per element (by GlobalId) for the web viewer. Built when the
+    model is uploaded and stored gzip-compressed; sent compressed (the browser unpacks it)."""
+    gz = await _mesh_file(version_id, request, st)
+    return Response(
+        gz.read_bytes(), media_type="application/json", headers={"Content-Encoding": "gzip"}
+    )
 
 
-def _mesh_json(version_id: str, st: Store) -> bytes:
-    import json
+async def _mesh_file(version_id: str, request: Request, st: Store):  # type: ignore[no-untyped-def]
+    import gzip
+    import shutil
 
-    from compliance.adapters.mesh import ifc_to_mesh
+    from compliance import ingest
 
-    path = ifc_path(version_id, st)
-    if not path.exists():
-        raise HTTPException(404, "No IFC geometry for this model version.")
-    cache = path.with_suffix(".mesh.json")
-    if not cache.exists():
-        cache.write_text(json.dumps(ifc_to_mesh(path), separators=(",", ":")), encoding="utf-8")
-    return cache.read_bytes()
+    folder = files.model_dir(st, version_id)
+    gz = folder / ingest.MESH_GZ
+    if gz.exists():
+        return gz
+    legacy = files.legacy_ifc(st, version_id)
+    if legacy.exists():  # stored before per-version folders: move it in, compressed
+        folder.mkdir(parents=True, exist_ok=True)
+        with open(legacy, "rb") as raw, gzip.open(folder / ingest.IFC_GZ, "wb") as out:
+            shutil.copyfileobj(raw, out)
+        files.remove_model_files(st, version_id, keep_preview=True)
+    if (folder / ingest.IFC_GZ).exists():
+        try:
+            await reads(request).run(
+                f"mesh:{version_id}",
+                lambda t: ingest.build_mesh(folder / ingest.IFC_GZ, folder, t),
+            )
+        except ingest.Busy as e:
+            raise HTTPException(503, str(e)) from e
+        except ingest.ReadFailed as e:
+            raise HTTPException(422, str(e)) from e
+        return gz
+    model = st.get_model(version_id)
+    if model is not None and model.get("meta", {}).get("source_kind") == "ifc":
+        raise HTTPException(
+            410,
+            "The 3D view is removed after 30 days without use. Upload the model again to see it.",
+        )
+    raise HTTPException(404, "No IFC geometry for this model version.")
 
 
 @router.put("/projects/{project_id}/model", dependencies=[Depends(require_token)])
@@ -219,24 +250,27 @@ def put_model(
         raise HTTPException(
             422, "The model doesn't match the BuildingModel contract: " + "; ".join(errs[:5])
         )
-    return {"model_version": st.add_model_version(project_id, model)}
+    version = st.add_model_version(project_id, model)
+    prune_versions(st, project_id)
+    return {"model_version": version}
 
 
-MAX_IFC_BYTES = 60 * 1024 * 1024
+def _max_bytes() -> int:
+    from compliance.config import get_settings
+
+    return get_settings().max_upload_mb * 1024 * 1024
 
 
-def ifc_path(version_id: str, st: Store):
-    """Uploaded IFCs live next to the database (on the volume in the container)."""
-    from pathlib import Path
+def _too_large(kind: str) -> HTTPException:
+    from compliance.config import get_settings
 
-    return Path(st.db.path).parent / "ifc" / f"{version_id}.ifc"
+    mb = get_settings().max_upload_mb
+    return HTTPException(413, f"{kind} up to {mb} MB can be checked in the web app.")
 
 
-def drawing_dir(project_id: str, st: Store):
+def drawing_dir(project_id: str, st: Store):  # type: ignore[no-untyped-def]
     """A project's uploaded DXF and its layer → role mapping."""
-    from pathlib import Path
-
-    return Path(st.db.path).parent / "drawings" / project_id
+    return files.drawing_dir(st, project_id)
 
 
 def _read_drawing(project_id: str, st: Store, llm: Any = None) -> dict[str, Any]:
@@ -276,6 +310,7 @@ def _read_drawing(project_id: str, st: Store, llm: Any = None) -> dict[str, Any]
             422, "The drawing converted to an invalid model: " + "; ".join(errs[:3])
         )
     version = st.add_model_version(project_id, model)
+    prune_versions(st, project_id)
     return {
         "model_version": version,
         "warnings": warnings,
@@ -304,8 +339,8 @@ async def upload_dxf(
     data = await request.body()
     if not data:
         raise HTTPException(400, "Send the .dxf file as the request body.")
-    if len(data) > MAX_IFC_BYTES:
-        raise HTTPException(413, "Drawings up to 60 MB are supported in this demo.")
+    if len(data) > _max_bytes():
+        raise _too_large("Drawings")
     if data[:6] == b"AC1032" or data[:4] == b"AC10":
         raise HTTPException(415, "That's a DWG file. In AutoCAD use Save As → DXF, then upload it.")
     if b"SECTION" not in data[:2000]:
@@ -314,7 +349,17 @@ async def upload_dxf(
     folder.mkdir(parents=True, exist_ok=True)
     (folder / "drawing.dxf").write_bytes(data)
     llm = getattr(request.app.state, "llm", None)
-    return await asyncio.to_thread(_read_drawing, project_id, st, llm)
+
+    async def job(t: Any) -> dict[str, Any]:
+        t.pct, t.msg = 10, "reading the drawing"
+        return await asyncio.to_thread(_read_drawing, project_id, st, llm)
+
+    from compliance.ingest import Busy
+
+    try:
+        return await reads(request).run(project_id, job)
+    except Busy as e:
+        raise HTTPException(503, str(e)) from e
 
 
 @router.get("/projects/{project_id}/drawing")
@@ -404,34 +449,44 @@ async def upload_ifc(
     project_id: str, request: Request, st: Store = Depends(store)
 ) -> dict[str, Any]:
     """Body: the raw .ifc file (any content type). Converted by the IFC adapter."""
-    import asyncio
+    import shutil
     import tempfile
     from pathlib import Path
 
-    from compliance.adapters.ifc import read as read_ifc
+    from compliance import ingest
 
     project_or_404(project_id, st)
     data = await request.body()
     if not data:
         raise HTTPException(400, "Send the .ifc file as the request body.")
-    if len(data) > MAX_IFC_BYTES:
-        raise HTTPException(413, "IFC files up to 60 MB are supported in this demo.")
+    if len(data) > _max_bytes():
+        raise _too_large("IFC files")
     if b"ISO-10303-21" not in data[:200]:
         raise HTTPException(415, "That doesn't look like an IFC (STEP) file.")
-    with tempfile.TemporaryDirectory() as tmp:
-        path = Path(tmp) / "upload.ifc"
-        path.write_bytes(data)
+    staging = files.root(st) / "tmp"
+    staging.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=staging) as tmp:
+        src, out = Path(tmp) / "upload.ifc", Path(tmp) / "out"
+        src.write_bytes(data)
+        del data  # the child reads the file; don't hold a second copy while it does
         try:
-            model, warnings = await asyncio.to_thread(read_ifc, path)
-        except Exception as e:  # noqa: BLE001 - any parser failure is the file's problem
-            raise HTTPException(422, f"Couldn't read this IFC file: {e}") from e
-    errs = schema_errors("building-model.schema.json", model)
-    if errs:
-        raise HTTPException(422, "The IFC converted to an invalid model: " + "; ".join(errs[:3]))
-    version = st.add_model_version(project_id, model)
-    target = ifc_path(version, st)
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_bytes(data)
+            model, warnings = await reads(request).run(
+                project_id, lambda t: ingest.read_ifc(src, out, t)
+            )
+        except ingest.Busy as e:
+            raise HTTPException(503, str(e)) from e
+        except ingest.ReadFailed as e:
+            raise HTTPException(422, str(e)) from e
+        errs = schema_errors("building-model.schema.json", model)
+        if errs:
+            raise HTTPException(
+                422, "The IFC converted to an invalid model: " + "; ".join(errs[:3])
+            )
+        version = st.add_model_version(project_id, model)
+        target = files.model_dir(st, version)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(str(out), str(target))
+    prune_versions(st, project_id)
     return {
         "model_version": version,
         "warnings": warnings,
@@ -442,12 +497,29 @@ async def upload_ifc(
     }
 
 
+@router.get("/projects/{project_id}/reading")
+def reading_status(project_id: str, request: Request) -> dict[str, Any]:
+    """Where this project's upload is while it waits or is read: {state: queued, ahead,
+    reading} or {state: reading, pct, msg}; {state: idle} otherwise. Polled by the web app."""
+    return reads(request).status(project_id) or {"state": "idle"}
+
+
 @router.get("/models/{version_id}/ifc")
 def get_ifc(version_id: str, st: Store = Depends(store)):
     """The uploaded IFC, for the web 3D viewer."""
     from fastapi.responses import FileResponse
 
-    path = ifc_path(version_id, st)
+    from compliance.ingest import IFC_GZ
+
+    gz = files.model_dir(st, version_id) / IFC_GZ
+    if gz.exists():  # stored compressed: sent as is, the browser unpacks it
+        return FileResponse(
+            gz,
+            media_type="application/x-step",
+            filename="model.ifc",
+            headers={"Content-Encoding": "gzip"},
+        )
+    path = files.legacy_ifc(st, version_id)
     if not path.exists():
         raise HTTPException(404, "No IFC file for this model version.")
     return FileResponse(path, media_type="application/x-step", filename="model.ifc")
@@ -642,6 +714,8 @@ def suggest(
 def orientation(project_id: str, st: Store = Depends(store)) -> dict[str, Any]:
     """North as the file states it (IFC TrueNorth, or a DXF's geographic location), so the site
     setup can skip turning the plan by hand. rotation_deg is null when the file doesn't say."""
+    import json
+
     from compliance.adapters import dxf, ifc
 
     project_or_404(project_id, st)
@@ -651,7 +725,10 @@ def orientation(project_id: str, st: Store = Depends(store)) -> dict[str, Any]:
     try:
         if drawing.exists():
             deg, source = dxf.north_deg(drawing), "the drawing's geographic location"
-        elif latest is not None and (path := ifc_path(latest[0], st)).exists():
+        elif latest is not None and (meta := files.meta(st, latest[0])).exists():
+            deg = json.loads(meta.read_text("utf-8")).get("north_deg")
+            source = "the IFC's true north"
+        elif latest is not None and (path := files.legacy_ifc(st, latest[0])).exists():
             deg, source = ifc.north_deg(path), "the IFC's true north"
     except Exception:  # noqa: BLE001 - an unreadable north is just not known
         deg = None

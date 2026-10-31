@@ -31,8 +31,8 @@ import ifcopenshell.util.unit as uunit
 from shapely.geometry import Polygon
 from shapely.ops import unary_union
 
+from compliance.adapters import mesh
 from compliance.adapters.usage import guess
-from compliance.config import get_settings
 
 _GROUND = re.compile(r"\b(ground|gf|g\.f\.|level 0|level 00|00)\b", re.I)
 _COMMERCIAL = re.compile(r"shop|retail|commercial|showroom", re.I)
@@ -50,29 +50,18 @@ def _f(value: Any, source: str = "model", note: str | None = None) -> dict[str, 
 
 
 class _Reader:
-    def __init__(self, ifc: ifcopenshell.file) -> None:
+    def __init__(self, ifc: ifcopenshell.file, shapes: mesh.Shapes | None = None) -> None:
         self.ifc = ifc
         self.scale = uunit.calculate_unit_scale(ifc)  # project length unit → metres
-        self.settings = ifcopenshell.geom.settings()
-        self.settings.set("use-world-coords", True)
+        self.settings = mesh.settings()
         self.warnings: list[str] = []
-        self._shapes: dict[str, Any] | None = None
+        self._shapes = shapes
 
-    def _all_shapes(self) -> dict[str, Any]:
-        """One multi-threaded tessellation pass over the file (much faster than per element)."""
+    def _all_shapes(self) -> mesh.Shapes:
+        """One multi-threaded tessellation pass over the file (much faster than per element),
+        unless the caller already ran it (an upload shares it with the viewer mesh)."""
         if self._shapes is None:
-            self._shapes = {}
-            threads = max(1, get_settings().geom_threads)
-            it = ifcopenshell.geom.iterator(self.settings, self.ifc, threads)
-            if it.initialize():
-                while True:
-                    sh = it.get()
-                    geom = SimpleNamespace(
-                        verts=tuple(sh.geometry.verts), faces=tuple(sh.geometry.faces)
-                    )
-                    self._shapes[sh.guid] = SimpleNamespace(geometry=geom)
-                    if not it.next():
-                        break
+            self._shapes = mesh.tessellate(self.ifc)
         return self._shapes
 
     def length(self, v: Any) -> float | None:
@@ -92,7 +81,8 @@ class _Reader:
             return None
         cached = self._all_shapes().get(el.GlobalId)
         if cached is not None:
-            return cached
+            verts, faces = cached
+            return SimpleNamespace(geometry=SimpleNamespace(verts=verts, faces=faces))
         try:
             return ifcopenshell.geom.create_shape(self.settings, el)
         except Exception as e:  # noqa: BLE001 - bad geometry: skip the element's geometry only
@@ -251,10 +241,12 @@ def _planning(r: _Reader, site, building) -> dict[str, dict[str, Any]]:
     return out
 
 
-def read(path: str | Path) -> tuple[dict[str, Any], list[str]]:
-    """(BuildingModel dict, warnings)."""
-    ifc = ifcopenshell.open(str(path))
-    r = _Reader(ifc)
+def read(
+    path: str | Path, *, ifc: ifcopenshell.file | None = None, shapes: mesh.Shapes | None = None
+) -> tuple[dict[str, Any], list[str]]:
+    """(BuildingModel dict, warnings). Pass the opened file and its geometry pass to reuse them."""
+    ifc = ifc or ifcopenshell.open(str(path))
+    r = _Reader(ifc, shapes)
     project = (ifc.by_type("IfcProject") or [None])[0]
     site = (ifc.by_type("IfcSite") or [None])[0]
     building = (ifc.by_type("IfcBuilding") or [None])[0]

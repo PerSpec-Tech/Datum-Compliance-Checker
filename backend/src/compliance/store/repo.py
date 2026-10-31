@@ -39,6 +39,35 @@ class Store:
         row = self.db.one("SELECT * FROM projects WHERE id = ?", (project_id,))
         return dict(row) if row else None
 
+    def touch_project(self, project_id: str) -> None:
+        """Note that the project is in use (retention counts from the last use)."""
+        self.db.execute("UPDATE projects SET last_opened_at = ? WHERE id = ?", (now(), project_id))
+
+    def idle_projects(self, days: int) -> list[str]:
+        """Projects not used for `days` days (never opened counts from creation)."""
+        cutoff = (datetime.now(UTC) - timedelta(days=days)).isoformat(timespec="seconds")
+        rows = self.db.query(
+            "SELECT id FROM projects WHERE COALESCE(last_opened_at, created_at) < ?", (cutoff,)
+        )
+        return [r["id"] for r in rows]
+
+    def delete_project(self, project_id: str) -> None:
+        """The project and everything stored with it in the database (cascades)."""
+        self.db.execute("DELETE FROM jobs WHERE project_id = ?", (project_id,))
+        self.db.execute("DELETE FROM projects WHERE id = ?", (project_id,))
+
+    def model_versions(self, project_id: str) -> list[str]:
+        """The project's model versions, newest first."""
+        rows = self.db.query(
+            "SELECT id FROM model_versions WHERE project_id = ? ORDER BY created_at DESC, rowid DESC",
+            (project_id,),
+        )
+        return [r["id"] for r in rows]
+
+    def delete_model_versions(self, version_ids: list[str]) -> None:
+        for vid in version_ids:
+            self.db.execute("DELETE FROM model_versions WHERE id = ?", (vid,))
+
     def rename_project(self, project_id: str, name: str) -> None:
         self.db.execute("UPDATE projects SET name = ? WHERE id = ?", (name, project_id))
 

@@ -26,6 +26,12 @@ const SAMPLES = [
 
 const isDxf = (name: string) => /\.dxf$/i.test(name);
 
+// Same limit as the server (Settings.max_upload_mb): reading a model takes about 20x its size
+// in memory. Checked here first so a big file isn't uploaded only to be refused.
+const MAX_UPLOAD_MB = 50;
+// From this size on, the upload page suggests the plug-ins (no file to upload or wait for).
+const BIG_FILE_MB = 15;
+
 interface Loaded {
   id: string;
   name: string;
@@ -42,18 +48,50 @@ export default function NewCheckPage() {
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<unknown>(null);
+  const [bigFile, setBigFile] = useState(false);
 
   async function load(file: Blob, name: string, fileName = name) {
     setError(null);
     const kind = isDxf(fileName) ? "dxf" : "ifc";
     const isSample = SAMPLES.some((s) => s.file === fileName);
+    if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
+      track("upload_too_large", { kind, mb: Math.round(file.size / 1048576) });
+      setError(
+        new Error(
+          `This ${kind === "dxf" ? "drawing" : "model"} is ${Math.round(file.size / 1048576)} MB; the web app reads files up to ${MAX_UPLOAD_MB} MB. ` +
+            (kind === "dxf"
+              ? "Purge unused blocks and layers, or keep only the plans, sections and plot, then save again."
+              : "Export only the building: leave out linked models, furniture, site context and other detail the bylaws don't need. Or check it inside Revit with the add-in."),
+        ),
+      );
+      return;
+    }
+    setBigFile(file.size > BIG_FILE_MB * 1024 * 1024);
+    let poll: ReturnType<typeof setInterval> | undefined;
     try {
       setBusy("creating the project");
       const { id } = await api.createProject(name.replace(/\.(ifc|dxf)$/i, ""));
       rememberProject({ id, name });
       const dxf = isDxf(fileName);
-      setBusy(dxf ? "reading the 2D drawing" : "reading the IFC model");
+      const reading = dxf ? "reading the 2D drawing" : "reading the IFC model";
+      setBusy(file.size > 1048576 ? "uploading" : reading);
+      // While the server has the file: our place in line, then how far the reading is.
+      poll = setInterval(() => {
+        api
+          .reading(id)
+          .then((s) => {
+            if (s.state === "queued")
+              setBusy(
+                s.ahead === 0
+                  ? "waiting for the server · you're next"
+                  : `waiting for the server · ${s.ahead} model${s.ahead > 1 ? "s" : ""} ahead of you`,
+              );
+            else if (s.state === "reading") setBusy(`${s.msg ?? reading} · ${s.pct}%`);
+          })
+          .catch(() => undefined);
+      }, 1000);
       const upload = dxf ? await api.uploadDxf(id, file) : await api.uploadIfc(id, file);
+      clearInterval(poll);
       const m = await api.model(id);
       const loc = m.model.project.location.value;
       track("file_uploaded", { kind, sample: isSample, located: !!loc });
@@ -65,6 +103,7 @@ export default function NewCheckPage() {
       track("upload_failed", { kind, sample: isSample });
       setError(e);
     } finally {
+      clearInterval(poll);
       setBusy(null);
     }
   }
@@ -98,6 +137,7 @@ export default function NewCheckPage() {
         onSample={(f, n) => void sample(f, n)}
         onReset={() => setLoaded(null)}
         onRemapped={(upload) => setLoaded((l) => (l ? { ...l, upload } : l))}
+        bigFile={!!busy && bigFile}
         onNext={() => loaded && void open(loaded).catch(setError)}
       />
     </div>
@@ -113,6 +153,7 @@ function ModelStep({
   onReset,
   onRemapped,
   onNext,
+  bigFile,
 }: {
   loaded: Loaded | null;
   busy: string | null;
@@ -122,6 +163,7 @@ function ModelStep({
   onReset: () => void;
   onRemapped: (u: UploadResult) => void;
   onNext: () => void;
+  bigFile: boolean;
 }) {
   const [dragging, setDragging] = useState(false);
   const recent = recentProjects();
@@ -215,6 +257,7 @@ function ModelStep({
             <span className="flex items-center gap-1.5 rounded-sm border border-line-subtle px-2 py-1">
               <Icon name="layers" size={14} /> DXF from AutoCAD (PreDCR or your layers)
             </span>
+            <span className="flex items-center px-1 py-1 text-fg-3">up to {MAX_UPLOAD_MB} MB</span>
           </span>
         </span>
         {!busy && (
@@ -234,6 +277,18 @@ function ModelStep({
         />
       </label>
       {error ? <FieldError error={error} /> : null}
+      {bigFile && (
+        <p className="mt-3 flex items-start gap-2 text-xs text-fg-2">
+          <Icon name="plug" size={14} className="mt-0.5 shrink-0" />
+          <span>
+            Big project? The Revit add-in and AutoCAD plug-in check the model as you work, with no file to upload
+            or wait for.{" "}
+            <Link to="/revit" className="text-fg underline">
+              get the plug-ins
+            </Link>
+          </span>
+        </p>
+      )}
 
       <p className="label mt-10">or try a sample</p>
       <div className="grid gap-4 sm:grid-cols-2">
@@ -403,7 +458,7 @@ function Elapsed() {
   return (
     <span className="mt-1 block font-mono text-xs text-fg-3">
       {Math.floor(s / 60)}:{String(s % 60).padStart(2, "0")}
-      {s >= 8 ? " · a large model takes a minute or two (a 50 MB Revit export about 1½ min)" : ""}
+      {s >= 8 ? " · a large model takes a minute or two" : ""}
     </span>
   );
 }

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import asyncio
+import logging
 from collections.abc import Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -13,6 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from compliance.api.routes import router
 from compliance.config import get_settings
 from compliance.engine.rules import RuleBase, load_rulebase
+from compliance.ingest import ReadQueue
 from compliance.jobs import JobRunner
 from compliance.llm.client import LLMClient
 from compliance.store.db import Database
@@ -36,10 +39,13 @@ def create_app(
     async def lifespan(app: FastAPI):
         # Jobs need the running event loop, so the runner is created here.
         app.state.runner = (runner_factory or _default_runner)(store, rulebase)
+        cleanup = asyncio.create_task(_retention_loop(store))
         yield
+        cleanup.cancel()
 
     app = FastAPI(title="Compliance Checker", version="0.1.0", lifespan=lifespan)
     app.state.store = store
+    app.state.reads = ReadQueue(settings.geom_jobs, settings.read_queue_max)
     app.state.rulebase = rulebase
     app.state.llm = LLMClient(store) if settings.nebius_api_key else None
     app.add_middleware(
@@ -53,6 +59,18 @@ def create_app(
     return app
 
 
+async def _retention_loop(store: Store, every_hours: float = 6) -> None:
+    """Apply the retention rules on start and then every few hours."""
+    from compliance.retention import sweep
+
+    while True:
+        try:
+            await asyncio.to_thread(sweep, store)
+        except Exception:  # noqa: BLE001 - a failed sweep is retried next time
+            logging.getLogger(__name__).exception("retention sweep failed")
+        await asyncio.sleep(every_hours * 3600)
+
+
 def _serve_web(app: FastAPI) -> None:
     """Serve the built web app (web/dist) from the same origin, with SPA fallback."""
     from fastapi import HTTPException
@@ -64,6 +82,7 @@ def _serve_web(app: FastAPI) -> None:
     dist = REPO_ROOT / "web" / "dist"
     if not (dist / "index.html").exists():
         return
+
     class Assets(StaticFiles):
         """Built files carry a content hash in their name, so they can be cached for good."""
 
