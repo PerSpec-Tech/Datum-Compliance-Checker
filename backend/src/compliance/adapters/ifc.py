@@ -17,7 +17,6 @@ Site context, so a well-modelled IFC needs no questions:
 
 from __future__ import annotations
 
-import multiprocessing
 import re
 from datetime import UTC, datetime
 from pathlib import Path
@@ -33,6 +32,7 @@ from shapely.geometry import Polygon
 from shapely.ops import unary_union
 
 from compliance.adapters.usage import guess
+from compliance.config import get_settings
 
 _GROUND = re.compile(r"\b(ground|gf|g\.f\.|level 0|level 00|00)\b", re.I)
 _COMMERCIAL = re.compile(r"shop|retail|commercial|showroom", re.I)
@@ -62,7 +62,7 @@ class _Reader:
         """One multi-threaded tessellation pass over the file (much faster than per element)."""
         if self._shapes is None:
             self._shapes = {}
-            threads = max(1, multiprocessing.cpu_count() - 1)
+            threads = max(1, get_settings().geom_threads)
             it = ifcopenshell.geom.iterator(self.settings, self.ifc, threads)
             if it.initialize():
                 while True:

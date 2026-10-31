@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     app_db_path: Path = REPO_ROOT / "data" / "app.sqlite"
     app_public_url: str = "http://localhost:8000"
     app_secret: str = "change-me"
+    # Threads for reading IFC geometry. Each one holds geometry in memory, and in a container
+    # the CPU count is the host's, not the container's, so this is a fixed number.
+    geom_threads: int = 2
     head_html: str = ""  # optional markup added to the web page's <head> by this deployment
     nominatim_user_agent: str = (
         "PERSPEC-ComplianceChecker/0.1 (hackathon demo; Revit bylaw checker)"

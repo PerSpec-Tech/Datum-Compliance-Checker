@@ -9,13 +9,14 @@ three.js. Coordinates are rounded to millimetres to keep the payload small.
 
 from __future__ import annotations
 
-import multiprocessing
 from pathlib import Path
 from typing import Any
 
 import ifcopenshell
 import ifcopenshell.geom
 import ifcopenshell.util.element as uel
+
+from compliance.config import get_settings
 
 SKIP = ("IfcOpeningElement", "IfcAnnotation", "IfcGrid")
 
@@ -27,7 +28,7 @@ def ifc_to_mesh(path: str | Path) -> dict[str, Any]:
     elements: list[dict[str, Any]] = []
     spaces: list[dict[str, Any]] = []
     context: list[dict[str, Any]] = []  # plot ground, roads, neighbouring buildings
-    it = ifcopenshell.geom.iterator(settings, ifc, max(1, multiprocessing.cpu_count() - 1))
+    it = ifcopenshell.geom.iterator(settings, ifc, max(1, get_settings().geom_threads))
     if it.initialize():
         while True:
             shape = it.get()
