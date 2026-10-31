@@ -559,11 +559,11 @@ def read(
     return model, r.warnings
 
 
-def north_deg(path: str | Path) -> float | None:
+def north_deg(path: str | Path, ifc: Any = None) -> float | None:
     """The model's true north as the site setup's rotation (degrees, anticlockwise: how far the
     model's +y is turned from north towards west), from the model context's TrueNorth. None when
     the file doesn't say."""
-    ifc = ifcopenshell.open(str(path))
+    ifc = ifc or ifcopenshell.open(str(path))
     for ctx in ifc.by_type("IfcGeometricRepresentationContext"):
         if ctx.is_a("IfcGeometricRepresentationSubContext") or ctx.ContextType not in (
             None,

@@ -52,16 +52,20 @@ class ReadQueue:
         self._line: deque[Ticket] = deque()
         self._running: list[Ticket] = []
         self._cond: asyncio.Condition | None = None
+        # Reads that outlive their upload request: per project, the task and how it ended.
+        self.tasks: dict[str, asyncio.Task[Any]] = {}
+        self.outcomes: dict[str, dict[str, Any]] = {}
 
     def status(self, key: str) -> dict[str, Any] | None:
-        """Where this project's read is: in line (and how many are ahead), or how far along."""
+        """Where this project's read is: in line (and how many are ahead), how far along, or
+        how it ended ({state: done, result} or {state: failed, status, detail})."""
         for t in self._running:
             if t.key == key:
                 return {"state": "reading", "pct": round(t.pct), "msg": t.msg}
         for i, t in enumerate(self._line):
             if t.key == key:
                 return {"state": "queued", "ahead": i, "reading": len(self._running)}
-        return None
+        return self.outcomes.get(key)
 
     async def run(self, key: str, job: Callable[[Ticket], Awaitable[T]]) -> T:
         if self._cond is None:
@@ -124,7 +128,7 @@ def _child(src: str, out: str, conn: Any) -> None:
         except Exception:  # noqa: BLE001 - a missing thumbnail is only cosmetic
             pass
         try:
-            north = ifc_adapter.north_deg(src)
+            north = ifc_adapter.north_deg(src, f)
         except Exception:  # noqa: BLE001 - an unreadable north is just not known
             north = None
         (folder / META).write_text(json.dumps({"north_deg": north}), encoding="utf-8")
@@ -132,7 +136,7 @@ def _child(src: str, out: str, conn: Any) -> None:
             shutil.copyfileobj(raw, gz)
         conn.send(("done", model, warnings))
     except Exception as e:  # noqa: BLE001 - any parser failure is the file's problem
-        conn.send(("error", str(e) or e.__class__.__name__))
+        conn.send(("error", str(e) or e.__class__.__name__, None))
     finally:
         conn.close()
 
@@ -153,7 +157,7 @@ def _mesh_child(src_gz: str, out: str, conn: Any) -> None:
             json.dump(view, fh, separators=(",", ":"))
         conn.send(("done", None, None))
     except Exception as e:  # noqa: BLE001
-        conn.send(("error", str(e) or e.__class__.__name__))
+        conn.send(("error", str(e) or e.__class__.__name__, None))
     finally:
         conn.close()
 

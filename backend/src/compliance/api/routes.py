@@ -51,6 +51,60 @@ def reads(request: Request):  # type: ignore[no-untyped-def]
     return request.app.state.reads
 
 
+# A quick read answers the upload itself; a longer one carries on after the request (proxies such
+# as Railway's cut requests that run for minutes) and the browser polls GET /reading for the end.
+UPLOAD_WAIT_S = 20.0
+
+
+async def _read_upload(request: Request, project_id: str, work: Any) -> Any:
+    """Run work(saving), the queued read and storing its result, as a task of its own; answer
+    with the result if it ends within UPLOAD_WAIT_S, else 202 {state: reading}. saving() marks
+    the step after the read, so the status never falls back to idle in between."""
+    import asyncio
+    import logging
+
+    from fastapi.responses import JSONResponse
+
+    q = reads(request)
+    running = q.tasks.get(project_id)
+    if running is not None and not running.done():
+        raise HTTPException(503, "A model for this project is already being read.")
+
+    def saving() -> None:
+        q.outcomes[project_id] = {"state": "reading", "pct": 98, "msg": "saving the model"}
+
+    async def run() -> None:
+        try:
+            result = await work(saving)
+            q.outcomes[project_id] = {"state": "done", "result": result}
+        except HTTPException as e:
+            q.outcomes[project_id] = {
+                "state": "failed",
+                "status": e.status_code,
+                "detail": e.detail,
+            }
+        except Exception:  # noqa: BLE001 - reported to the browser, logged here
+            logging.getLogger(__name__).exception("reading an upload failed")
+            q.outcomes[project_id] = {
+                "state": "failed",
+                "status": 500,
+                "detail": "Reading the model failed. Please try again.",
+            }
+        finally:
+            q.tasks.pop(project_id, None)
+
+    q.outcomes[project_id] = {"state": "queued", "ahead": 0, "reading": 0}
+    task = asyncio.create_task(run())
+    q.tasks[project_id] = task
+    await asyncio.wait({task}, timeout=UPLOAD_WAIT_S)  # never cancels the read
+    if not task.done():
+        return JSONResponse({"state": "reading"}, status_code=202)
+    end = q.outcomes.pop(project_id)
+    if end["state"] == "failed":
+        raise HTTPException(end["status"], end["detail"])
+    return end["result"]
+
+
 # ------------------------------------------------------------------ bodies
 
 
@@ -356,10 +410,13 @@ async def upload_dxf(
 
     from compliance.ingest import Busy
 
-    try:
-        return await reads(request).run(project_id, job)
-    except Busy as e:
-        raise HTTPException(503, str(e)) from e
+    async def work(saving: Any) -> dict[str, Any]:
+        try:
+            return await reads(request).run(project_id, job)
+        except Busy as e:
+            raise HTTPException(503, str(e)) from e
+
+    return await _read_upload(request, project_id, work)
 
 
 @router.get("/projects/{project_id}/drawing")
@@ -465,42 +522,51 @@ async def upload_ifc(
         raise HTTPException(415, "That doesn't look like an IFC (STEP) file.")
     staging = files.root(st) / "tmp"
     staging.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(dir=staging) as tmp:
-        src, out = Path(tmp) / "upload.ifc", Path(tmp) / "out"
-        src.write_bytes(data)
-        del data  # the child reads the file; don't hold a second copy while it does
+    tmp = Path(tempfile.mkdtemp(dir=staging))
+    src, out = tmp / "upload.ifc", tmp / "out"
+    src.write_bytes(data)
+    del data  # the child reads the file; don't hold a second copy while it does
+
+    async def work(saving: Any) -> dict[str, Any]:
         try:
-            model, warnings = await reads(request).run(
-                project_id, lambda t: ingest.read_ifc(src, out, t)
-            )
-        except ingest.Busy as e:
-            raise HTTPException(503, str(e)) from e
-        except ingest.ReadFailed as e:
-            raise HTTPException(422, str(e)) from e
-        errs = schema_errors("building-model.schema.json", model)
-        if errs:
-            raise HTTPException(
-                422, "The IFC converted to an invalid model: " + "; ".join(errs[:3])
-            )
-        version = st.add_model_version(project_id, model)
-        target = files.model_dir(st, version)
-        target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.move(str(out), str(target))
-    prune_versions(st, project_id)
-    return {
-        "model_version": version,
-        "warnings": warnings,
-        "counts": {
-            k: len(model[k]) for k in ("levels", "spaces", "areas", "stairs", "doors", "units")
-        },
-        "has_site_boundary": model["site"]["boundary"] is not None,
-    }
+            try:
+                model, warnings = await reads(request).run(
+                    project_id, lambda t: ingest.read_ifc(src, out, t)
+                )
+            except ingest.Busy as e:
+                raise HTTPException(503, str(e)) from e
+            except ingest.ReadFailed as e:
+                raise HTTPException(422, str(e)) from e
+            saving()
+            errs = schema_errors("building-model.schema.json", model)
+            if errs:
+                raise HTTPException(
+                    422, "The IFC converted to an invalid model: " + "; ".join(errs[:3])
+                )
+            version = st.add_model_version(project_id, model)
+            target = files.model_dir(st, version)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.move(str(out), str(target))
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+        prune_versions(st, project_id)
+        return {
+            "model_version": version,
+            "warnings": warnings,
+            "counts": {
+                k: len(model[k]) for k in ("levels", "spaces", "areas", "stairs", "doors", "units")
+            },
+            "has_site_boundary": model["site"]["boundary"] is not None,
+        }
+
+    return await _read_upload(request, project_id, work)
 
 
 @router.get("/projects/{project_id}/reading")
 def reading_status(project_id: str, request: Request) -> dict[str, Any]:
-    """Where this project's upload is while it waits or is read: {state: queued, ahead,
-    reading} or {state: reading, pct, msg}; {state: idle} otherwise. Polled by the web app."""
+    """Where this project's upload is: {state: queued, ahead, reading}, {state: reading, pct,
+    msg}, then {state: done, result} (what the upload would have answered) or {state: failed,
+    status, detail}; {state: idle} when there is nothing. Polled by the web app."""
     return reads(request).status(project_id) or {"state": "idle"}
 
 

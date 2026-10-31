@@ -118,3 +118,34 @@ def test_sweep_expires_files_after_30_days_and_projects_after_90(tmp_path):
         assert c.get(f"/api/projects/{idle}/model").status_code == 200  # reports keep working
 
         assert files.has_ifc(st, versions[fresh])
+
+
+def test_a_long_read_carries_on_after_the_upload_answers(tmp_path, monkeypatch):
+    import time
+
+    from compliance.api import routes
+
+    monkeypatch.setattr(routes, "UPLOAD_WAIT_S", 0.0)  # every read counts as long
+    app = create_app(tmp_path / "l.sqlite")
+    with TestClient(app) as c:
+        pid = c.post("/api/projects", json={"name": "long"}).json()["id"]
+        r = c.post(f"/api/projects/{pid}/ifc", content=IFC.read_bytes())
+        assert r.status_code == 202 and r.json() == {"state": "reading"}
+        assert c.post(f"/api/projects/{pid}/ifc", content=IFC.read_bytes()).status_code == 503
+        for _ in range(240):
+            s = c.get(f"/api/projects/{pid}/reading").json()
+            assert s["state"] in ("queued", "reading", "done"), s
+            if s["state"] == "done":
+                break
+            time.sleep(0.25)
+        assert s["result"]["counts"]["spaces"] > 0
+        assert c.get(f"/api/models/{s['result']['model_version']}/mesh").status_code == 200
+
+        bad = c.post(f"/api/projects/{pid}/ifc", content=b"ISO-10303-21;\nnot really")
+        assert bad.status_code == 202
+        for _ in range(240):
+            s = c.get(f"/api/projects/{pid}/reading").json()
+            if s["state"] == "failed":
+                break
+            time.sleep(0.25)
+        assert s["status"] == 422 and "Couldn't read" in s["detail"]

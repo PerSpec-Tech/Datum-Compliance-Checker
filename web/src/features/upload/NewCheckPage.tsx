@@ -1,6 +1,6 @@
-import { useEffect, useState, type DragEvent } from "react";
+import { useState, type DragEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LAYER_ROLES, api, type UploadResult } from "../../api/client";
+import { LAYER_ROLES, api, type UploadProgress, type UploadResult } from "../../api/client";
 import { FieldError, Icon, Spinner, Title } from "../../components/ui";
 import { recentProjects, rememberProject } from "../../lib/recent";
 import { track } from "../../lib/track";
@@ -49,6 +49,8 @@ export default function NewCheckPage() {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [bigFile, setBigFile] = useState(false);
+  // 0–100 while a file is uploaded and read; null when there is nothing to measure
+  const [progress, setProgress] = useState<number | null>(null);
 
   async function load(file: Blob, name: string, fileName = name) {
     setError(null);
@@ -67,31 +69,35 @@ export default function NewCheckPage() {
       return;
     }
     setBigFile(file.size > BIG_FILE_MB * 1024 * 1024);
-    let poll: ReturnType<typeof setInterval> | undefined;
     try {
       setBusy("creating the project");
       const { id } = await api.createProject(name.replace(/\.(ifc|dxf)$/i, ""));
       rememberProject({ id, name });
       const dxf = isDxf(fileName);
       const reading = dxf ? "reading the 2D drawing" : "reading the IFC model";
-      setBusy(file.size > 1048576 ? "uploading" : reading);
-      // While the server has the file: our place in line, then how far the reading is.
-      poll = setInterval(() => {
-        api
-          .reading(id)
-          .then((s) => {
-            if (s.state === "queued")
-              setBusy(
-                s.ahead === 0
-                  ? "waiting for the server · you're next"
-                  : `waiting for the server · ${s.ahead} model${s.ahead > 1 ? "s" : ""} ahead of you`,
-              );
-            else if (s.state === "reading") setBusy(`${s.msg ?? reading} · ${s.pct}%`);
-          })
-          .catch(() => undefined);
-      }, 1000);
-      const upload = dxf ? await api.uploadDxf(id, file) : await api.uploadIfc(id, file);
-      clearInterval(poll);
+      // One bar for the whole wait: sending the file (the first part, more for a big file),
+      // then the server's read. Waiting in line holds the bar where it is.
+      const upShare = file.size > 1048576 ? 15 : 0;
+      setBusy(upShare ? "uploading" : reading);
+      setProgress(0);
+      const on = (p: UploadProgress) => {
+        if (p.state === "uploading") {
+          setBusy("uploading");
+          setProgress((p.pct * upShare) / 100);
+        } else if (p.state === "queued") {
+          setBusy(
+            p.ahead === 0
+              ? "waiting for the server · you're next"
+              : `waiting for the server · ${p.ahead} model${p.ahead > 1 ? "s" : ""} ahead of you`,
+          );
+          setProgress(upShare);
+        } else {
+          setBusy(p.msg ?? reading);
+          setProgress(upShare + (p.pct * (100 - upShare)) / 100);
+        }
+      };
+      const upload = dxf ? await api.uploadDxf(id, file, on) : await api.uploadIfc(id, file, on);
+      setProgress(100);
       const m = await api.model(id);
       const loc = m.model.project.location.value;
       track("file_uploaded", { kind, sample: isSample, located: !!loc });
@@ -103,7 +109,7 @@ export default function NewCheckPage() {
       track("upload_failed", { kind, sample: isSample });
       setError(e);
     } finally {
-      clearInterval(poll);
+      setProgress(null);
       setBusy(null);
     }
   }
@@ -138,6 +144,7 @@ export default function NewCheckPage() {
         onReset={() => setLoaded(null)}
         onRemapped={(upload) => setLoaded((l) => (l ? { ...l, upload } : l))}
         bigFile={!!busy && bigFile}
+        progress={progress}
         onNext={() => loaded && void open(loaded).catch(setError)}
       />
     </div>
@@ -154,6 +161,7 @@ function ModelStep({
   onRemapped,
   onNext,
   bigFile,
+  progress,
 }: {
   loaded: Loaded | null;
   busy: string | null;
@@ -164,6 +172,7 @@ function ModelStep({
   onRemapped: (u: UploadResult) => void;
   onNext: () => void;
   bigFile: boolean;
+  progress: number | null;
 }) {
   const [dragging, setDragging] = useState(false);
   const recent = recentProjects();
@@ -249,7 +258,7 @@ function ModelStep({
         </span>
         <span className="min-w-0 flex-1">
           <span className="block text-base font-medium">{busy ?? "drop a model here"}</span>
-          {busy && <Elapsed />}
+          {busy && progress !== null && <ProgressBar pct={progress} />}
           <span className={`mt-1 flex-wrap gap-2 text-xs text-fg-2 ${busy ? "hidden" : "flex"}`}>
             <span className="flex items-center gap-1.5 rounded-sm border border-line-subtle px-2 py-1">
               <Icon name="cube" size={14} /> IFC from Revit, ArchiCAD…
@@ -448,17 +457,15 @@ function Row({ k, v }: { k: string; v: React.ReactNode }) {
   );
 }
 
-/** Seconds since a slow step started, so a big model being read doesn't look frozen. */
-function Elapsed() {
-  const [s, setS] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setS((x) => x + 1), 1000);
-    return () => clearInterval(t);
-  }, []);
+/** How far an upload is: the file going up, then the server reading it. */
+function ProgressBar({ pct }: { pct: number }) {
+  const p = Math.max(0, Math.min(100, Math.round(pct)));
   return (
-    <span className="mt-1 block font-mono text-xs text-fg-3">
-      {Math.floor(s / 60)}:{String(s % 60).padStart(2, "0")}
-      {s >= 8 ? " · a large model takes a minute or two" : ""}
+    <span className="mt-2 flex items-center gap-3" role="progressbar" aria-valuenow={p} aria-valuemin={0} aria-valuemax={100}>
+      <span className="h-1 flex-1 overflow-hidden rounded-sm bg-line-subtle">
+        <span className="block h-full bg-fg transition-[width] duration-500 ease-out" style={{ width: `${p}%` }} />
+      </span>
+      <span className="w-9 text-right font-mono text-xs text-fg-2">{p}%</span>
     </span>
   );
 }

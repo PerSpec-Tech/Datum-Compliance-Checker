@@ -263,30 +263,7 @@ def mesh_png(mesh: Mapping[str, Any], width: int = 480, height: int = 340, ss: i
     plane = np.round(np.abs(n) @ np.array([7.0, 131.0, 2027.0]) * 4).astype(np.int64)
     face = element * 1_000_003 + plane
 
-    zbuf = np.full((H, W), np.inf)
-    ids = np.full((H, W), -1, dtype=np.int64)
-    for i in range(len(T)):
-        xs, ys, zs = px[i], py[i], sz[i]
-        x0, x1 = max(int(xs.min()), 0), min(int(xs.max()) + 1, W - 1)
-        y0, y1 = max(int(ys.min()), 0), min(int(ys.max()) + 1, H - 1)
-        if x0 > x1 or y0 > y1:
-            continue
-        gx, gy = np.meshgrid(np.arange(x0, x1 + 1) + 0.5, np.arange(y0, y1 + 1) + 0.5)
-        (ax, bx, cx), (ay, by, cy) = xs, ys
-        den = (by - cy) * (ax - cx) + (cx - bx) * (ay - cy)
-        if abs(den) < 1e-9:
-            continue
-        w0 = ((by - cy) * (gx - cx) + (cx - bx) * (gy - cy)) / den
-        w1 = ((cy - ay) * (gx - cx) + (ax - cx) * (gy - cy)) / den
-        w2 = 1 - w0 - w1
-        inside = (w0 >= 0) & (w1 >= 0) & (w2 >= 0)
-        if not inside.any():
-            continue
-        depth = w0 * zs[0] + w1 * zs[1] + w2 * zs[2]
-        zb, ib = zbuf[y0 : y1 + 1, x0 : x1 + 1], ids[y0 : y1 + 1, x0 : x1 + 1]
-        win = inside & (depth < zb)
-        zb[win] = depth[win]
-        ib[win] = i
+    zbuf, ids = _raster(np, px, py, sz, W, H)
 
     hit = ids >= 0
     img = np.zeros((H, W, 4))
@@ -309,6 +286,66 @@ def mesh_png(mesh: Mapping[str, Any], width: int = 480, height: int = 340, ss: i
     rgb_out = np.where(weight > 0, rgb_sum / np.maximum(weight, 1e-9), 0)
     out = np.concatenate([rgb_out, alpha[..., None]], axis=2)
     return _png((np.clip(out, 0, 1) * 255).round().astype(np.uint8))
+
+
+def _raster(np: Any, px: Any, py: Any, sz: Any, W: int, H: int) -> tuple[Any, Any]:
+    """Z-buffer: per pixel, the depth and index of the nearest triangle. Triangles are drawn in
+    batches of similar on-screen size (a big model is mostly small triangles), so the work is in
+    numpy, not a Python loop per triangle; the biggest few are drawn one by one."""
+    zbuf = np.full(H * W, np.inf)
+    ids = np.full(H * W, -1, dtype=np.int64)
+    x0 = np.clip(np.floor(px.min(axis=1)).astype(np.int64), 0, None)
+    x1 = np.clip(np.floor(px.max(axis=1)).astype(np.int64) + 1, None, W - 1)
+    y0 = np.clip(np.floor(py.min(axis=1)).astype(np.int64), 0, None)
+    y1 = np.clip(np.floor(py.max(axis=1)).astype(np.int64) + 1, None, H - 1)
+    (ax, bx, cx), (ay, by, cy) = px.T, py.T
+    den = (by - cy) * (ax - cx) + (cx - bx) * (ay - cy)
+    ok = (x0 <= x1) & (y0 <= y1) & (np.abs(den) >= 1e-9)
+    # size class per axis: the next power of two of the box's width and height
+    bw = np.ceil(np.log2(x1 - x0 + 1)).astype(np.int64)
+    bh = np.ceil(np.log2(y1 - y0 + 1)).astype(np.int64)
+
+    def draw(sel: Any, nx: int, ny: int) -> None:
+        """Triangles `sel`, each tested against an nx x ny block of pixels from its corner."""
+        gx = x0[sel, None, None] + np.arange(nx)[None, None, :]
+        gy = y0[sel, None, None] + np.arange(ny)[None, :, None]
+        inbox = (gx <= x1[sel, None, None]) & (gy <= y1[sel, None, None])
+        fx, fy = gx + 0.5, gy + 0.5
+        a, b, c = (v[sel, None, None] for v in (ax, bx, cx))
+        d, e, f = (v[sel, None, None] for v in (ay, by, cy))
+        dn = den[sel, None, None]
+        w0 = ((e - f) * (fx - c) + (c - b) * (fy - f)) / dn
+        w1 = ((f - d) * (fx - c) + (a - c) * (fy - f)) / dn
+        w2 = 1 - w0 - w1
+        inside = inbox & (w0 >= 0) & (w1 >= 0) & (w2 >= 0)
+        z = sz[sel]
+        depth = w0 * z[:, 0, None, None] + w1 * z[:, 1, None, None] + w2 * z[:, 2, None, None]
+        tri = np.broadcast_to(sel[:, None, None], inside.shape)[inside]
+        pix = (gy * W + gx)[inside]
+        depth = depth[inside]
+        # nearest per pixel (ties: the earlier triangle, as drawing in order would)
+        order = np.lexsort((tri, depth, pix))
+        pix, depth, tri = pix[order], depth[order], tri[order]
+        first = np.ones(len(pix), dtype=bool)
+        first[1:] = pix[1:] != pix[:-1]
+        pix, depth, tri = pix[first], depth[first], tri[first]
+        win = depth < zbuf[pix]
+        zbuf[pix[win]] = depth[win]
+        ids[pix[win]] = tri[win]
+
+    idx = np.arange(len(px))
+    big = ok & ((bw > 6) | (bh > 6))
+    for i in idx[big]:  # large triangles: few, drawn one at a time
+        draw(np.array([i]), int(x1[i] - x0[i]) + 1, int(y1[i] - y0[i]) + 1)
+    small = ok & ~big
+    for kw in range(7):  # the rest in batches of one box size (up to 64 x 64 pixels)
+        for kh in range(7):
+            sel = idx[small & (bw == kw) & (bh == kh)]
+            nx, ny = 1 << kw, 1 << kh
+            step = max(1, 400_000 // (nx * ny))  # a few hundred thousand pixels per batch
+            for k in range(0, len(sel), step):
+                draw(sel[k : k + step], nx, ny)
+    return zbuf.reshape(H, W), ids.reshape(H, W)
 
 
 def _png(rgba: Any) -> bytes:

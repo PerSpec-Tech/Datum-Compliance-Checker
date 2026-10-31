@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     app_secret: str = "change-me"
     # Threads for reading IFC geometry. Each one holds geometry in memory, and in a container
     # the CPU count is the host's, not the container's, so this is a fixed number.
-    geom_threads: int = 2
+    geom_threads: int = 4
     # Reading a model takes about 20x its file size in memory, so uploads are capped, and at
     # most this many models are read at once; more wait their turn instead of using memory.
     max_upload_mb: int = 50

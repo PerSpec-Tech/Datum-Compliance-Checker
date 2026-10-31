@@ -54,7 +54,101 @@ export interface ProjectInfo {
 export type ReadingStatus =
   | { state: "idle" }
   | { state: "queued"; ahead: number; reading: number }
+  | { state: "reading"; pct: number; msg: string | null }
+  | { state: "done"; result: UploadResult }
+  | { state: "failed"; status: number; detail: string };
+
+// What uploadModel reports while it works: the bytes going up, then the server's read.
+export type UploadProgress =
+  | { state: "uploading"; pct: number }
+  | { state: "queued"; ahead: number; reading: number }
   | { state: "reading"; pct: number; msg: string | null };
+
+type Answer = { status: number; body: unknown };
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const detailOf = (body: unknown, status: number) => {
+  const d = (body as { detail?: unknown } | null)?.detail;
+  return typeof d === "string" ? d : d ? JSON.stringify(d) : `HTTP ${status}`;
+};
+
+/** POST a file with upload progress (fetch can't report it). */
+function postFile(path: string, file: Blob, onSent: (fraction: number) => void): Promise<Answer> {
+  return new Promise((resolve, reject) => {
+    const x = new XMLHttpRequest();
+    x.open("POST", `/api${path}`);
+    x.setRequestHeader("Content-Type", "application/octet-stream");
+    x.upload.onprogress = (e) => e.lengthComputable && onSent(e.loaded / e.total);
+    x.upload.onload = () => onSent(1);
+    x.onload = () => {
+      let body: unknown = null;
+      try {
+        body = JSON.parse(x.responseText);
+      } catch {
+        /* not JSON: a proxy's error page */
+      }
+      resolve({ status: x.status, body });
+    };
+    x.onerror = () => reject(new ApiError(0, "The upload didn't reach the server. Check your connection and try again."));
+    x.send(file);
+  });
+}
+
+/** Upload a model and follow the server's read to the end. A long read answers 202 and carries
+ *  on; the result then comes from GET /reading. The same applies when a proxy cuts the request
+ *  after the file arrived: the server is still reading it. */
+async function uploadModel(
+  id: string,
+  kind: "ifc" | "dxf",
+  file: Blob,
+  on: (p: UploadProgress) => void = () => undefined,
+): Promise<UploadResult> {
+  const ctl = { sent: false, accepted: false, stop: false };
+  const posting = postFile(`/projects/${id}/${kind}`, file, (f) => {
+    if (f >= 1) ctl.sent = true;
+    else on({ state: "uploading", pct: Math.round(f * 100) });
+  });
+  const polling = (async (): Promise<Answer> => {
+    let idle = 0;
+    while (!ctl.stop) {
+      await sleep(1000);
+      if (!ctl.sent || ctl.stop) continue;
+      let s: ReadingStatus;
+      try {
+        s = await request<ReadingStatus>(`/projects/${id}/reading`);
+      } catch {
+        continue; // a missed poll; try again
+      }
+      if (ctl.stop) break;
+      if (s.state === "done") return { status: 200, body: s.result };
+      if (s.state === "failed") return { status: s.status, body: { detail: s.detail } };
+      if (s.state === "idle") {
+        if (ctl.accepted && ++idle >= 5)
+          return { status: 0, body: { detail: "The server restarted while reading this model. Please upload it again." } };
+        continue;
+      }
+      idle = 0;
+      on(s);
+    }
+    return { status: 0, body: null };
+  })();
+  try {
+    let answer: Answer;
+    try {
+      answer = await Promise.race([posting, polling]);
+    } catch (e) {
+      if (!ctl.sent) throw e;
+      answer = { status: 502, body: null }; // the file arrived; follow the read
+    }
+    if (answer.status === 202 || (ctl.sent && (answer.status === 502 || answer.status === 504))) {
+      ctl.accepted = true;
+      answer = await polling;
+    }
+    if (answer.status >= 200 && answer.status < 300) return answer.body as UploadResult;
+    throw new ApiError(answer.status, detailOf(answer.body, answer.status));
+  } finally {
+    ctl.stop = true;
+  }
+}
 
 export interface UploadResult {
   model_version: string;
@@ -209,18 +303,8 @@ export const api = {
       `/projects/${id}/model`,
     ),
   reading: (id: string) => request<ReadingStatus>(`/projects/${id}/reading`),
-  uploadIfc: (id: string, file: Blob) =>
-    request<UploadResult>(`/projects/${id}/ifc`, {
-      method: "POST",
-      headers: { "Content-Type": "application/octet-stream" },
-      body: file,
-    }),
-  uploadDxf: (id: string, file: Blob) =>
-    request<UploadResult>(`/projects/${id}/dxf`, {
-      method: "POST",
-      headers: { "Content-Type": "application/octet-stream" },
-      body: file,
-    }),
+  uploadIfc: (id: string, file: Blob, on?: (p: UploadProgress) => void) => uploadModel(id, "ifc", file, on),
+  uploadDxf: (id: string, file: Blob, on?: (p: UploadProgress) => void) => uploadModel(id, "dxf", file, on),
   setDxfRoles: (id: string, roles: Record<string, string | null>) =>
     request<UploadResult>(`/projects/${id}/dxf/roles`, json("PUT", roles)),
   patchBrief: (id: string, answers: Record<string, unknown>) =>
